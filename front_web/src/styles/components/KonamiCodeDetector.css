@@ -1,0 +1,5 @@
+/* KonamiCodeDetector component styles */
+/* This component doesn't render any visible content */
+/* It's a utility component for keyboard event handling */
+/* Detects the Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A */
+/* When entered correctly, navigates to /admin-login */

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Setup Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .checklist li:before {
+            content: "✅ ";
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Google OAuth Setup Guide</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> You need to complete this setup to enable Gmail login functionality.
+        </div>
+
+        <div class="step">
+            <h3>Step 1: Open Google Cloud Console</h3>
+            <p>Click the button below to open the Google Cloud Console where you'll create your OAuth credentials.</p>
+            <a href="https://console.cloud.google.com/" target="_blank" class="button">🚀 Open Google Cloud Console</a>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Create or Select Project</h3>
+            <ul class="checklist">
+                <li>Sign in with your Google account</li>
+                <li>Click the project dropdown at the top</li>
+                <li>Click "NEW PROJECT" or select existing project</li>
+                <li>Enter project name: "DEVFORGE Authentication"</li>
+                <li>Click "CREATE"</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Enable Required APIs</h3>
+            <p>Go to "APIs & Services" → "Library" and enable:</p>
+            <ul class="checklist">
+                <li>Google Identity Services API</li>
+                <li>Google OAuth2 API</li>
+            </ul>
+            <a href="https://console.cloud.google.com/apis/library/identitytoolkit.googleapis.com" target="_blank" class="button">📚 Enable Identity Services API</a>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Configure OAuth Consent Screen</h3>
+            <ul class="checklist">
+                <li>Go to "APIs & Services" → "OAuth consent screen"</li>
+                <li>Choose "External" and click "CREATE"</li>
+                <li>Fill in: App name "DEVFORGE", User support email</li>
+                <li>Add scopes: email, profile, openid</li>
+                <li>Click "SAVE AND CONTINUE" through all steps</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Step 5: Create OAuth 2.0 Client ID</h3>
+            <ul class="checklist">
+                <li>Go to "APIs & Services" → "Credentials"</li>
+                <li>Click "+ CREATE CREDENTIALS" → "OAuth 2.0 Client IDs"</li>
+                <li>Select "Web application"</li>
+                <li>Name: "DEVFORGE Web Client"</li>
+                <li>Add to "Authorized JavaScript origins":</li>
+            </ul>
+            <div class="code">
+http://localhost:4000
+https://localhost:4000
+            </div>
+            <p><strong>Click "CREATE"</strong></p>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="button">🔑 Create Credentials</a>
+        </div>
+
+        <div class="step">
+            <h3>Step 6: Copy Client ID</h3>
+            <p>After creating the credentials, you'll see your Client ID. Copy it and update your configuration:</p>
+            <div class="code">
+// In src/config/googleAuth.js
+CLIENT_ID: 'your-client-id-here.apps.googleusercontent.com'
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>Step 7: Test Your Setup</h3>
+            <ul class="checklist">
+                <li>Save the configuration file</li>
+                <li>Restart your development server: npm run dev</li>
+                <li>Go to http://localhost:4000</li>
+                <li>Click "Login" → "Google"</li>
+                <li>Sign in with your Google account</li>
+            </ul>
+            <a href="http://localhost:4000" target="_blank" class="button">🧪 Test Your App</a>
+        </div>
+
+        <div class="warning">
+            <strong>💡 Pro Tip:</strong> Keep your Client ID secure and never commit it to public repositories. For production, consider using environment variables.
+        </div>
+    </div>
+
+    <script>
+        // Auto-open setup links after a delay
+        setTimeout(() => {
+            console.log('🔐 Ready to set up Google OAuth! Follow the steps above.');
+        }, 2000);
+    </script>
+</body>
+</html>

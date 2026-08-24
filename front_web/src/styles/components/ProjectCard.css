@@ -1,0 +1,125 @@
+.projectCard {
+  cursor: pointer;
+}
+
+.projectCardImageContainer {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+}
+
+.projectCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter 1s ease, transform 1s ease;
+}
+
+.projectCard:hover .projectCardImage {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+.projectCardImageOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  transition: background-color 0.7s ease;
+}
+
+.projectCard:hover .projectCardImageOverlay {
+  background-color: transparent;
+}
+
+.projectCardContent {
+  padding: 0 1rem;
+}
+
+.projectCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.projectCardTitleSection {
+  flex-grow: 1;
+}
+
+.projectCardCategory {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  color: rgba(255, 255, 255, 0.2);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.projectCardTitle {
+  font-size: 2.25rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: white;
+  line-height: 1.2;
+  transition: color 0.2s ease;
+}
+
+.projectCard:hover .projectCardTitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.projectCardArrowButton {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.projectCard:hover .projectCardArrowButton {
+  background-color: white;
+  color: black;
+}
+
+.projectCardArrowIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.projectCardDescription {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.projectCardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.projectCardTag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.2);
+}
