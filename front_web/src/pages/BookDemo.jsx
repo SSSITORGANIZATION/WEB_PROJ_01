@@ -311,7 +311,7 @@ const BookDemo = () => {
         )}
       </AnimatePresence>
 
-      {/* Projects Section - 2 Column Grid */}
+      {/* Projects Section - Horizontal Scroll */}
       <section id="projects" className="py-10">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-8">
@@ -322,17 +322,19 @@ const BookDemo = () => {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-48 bg-gray-200 rounded-lg animate-pulse" />
+                <div key={i} className="w-80 h-48 bg-gray-200 rounded-lg animate-pulse flex-shrink-0" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
               {projects.length > 0 ? projects.map(project => (
-                <ProjectCard key={project.id} project={project} onBook={handleBook} />
+                <div key={project.id} className="w-80 flex-shrink-0">
+                  <ProjectCard project={project} onBook={handleBook} />
+                </div>
               )) : (
-                <div className="col-span-full py-12 text-center">
+                <div className="w-full py-12 text-center">
                   <div className="max-w-md mx-auto">
                     <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">

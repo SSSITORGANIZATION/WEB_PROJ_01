@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 
 import {
-  ArrowRight, Code, Cpu, Globe, Zap,
+  ArrowRight, Code, Cpu, Globe as GlobeIcon, Zap,
   Users, BookOpen, Star, Shield,
   TrendingUp, Layers, MousePointer2,
   Github, Linkedin, Twitter, ExternalLink,
@@ -22,6 +22,8 @@ import Reviews from '../components/Reviews';
 import ScrollingReviews from '../components/ScrollingReviews';
 
 import Logo3D from '../components/Logo3D';
+import Globe from '../components/Globe/Globe';
+import { getGlobeSettings, subscribeToGlobeSettings } from '../utils/globeSettings';
 
 import {
   CurrencyConverter,
@@ -41,19 +43,19 @@ const StatCounter = ({ value, label, icon: Icon }) => (
 
     viewport={{ once: true }}
 
-    className="flex flex-col items-center p-4 glass-card border-white/5"
+    className="flex flex-col items-center p-4 rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm"
 
   >
 
-    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center mb-3">
+    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
 
-      <Icon className="w-5 h-5 text-blue-500" />
+      <Icon className="h-5 w-5 text-blue-600" />
 
     </div>
 
-    <span className="text-3xl font-bold text-white mb-1 serif">{value}</span>
+    <span className="mb-1 text-3xl font-bold text-gray-900">{value}</span>
 
-    <span className="text-zinc-500 text-xs uppercase tracking-widest font-medium">{label}</span>
+    <span className="text-xs font-medium uppercase tracking-widest text-gray-500">{label}</span>
 
   </motion.div>
 
@@ -67,11 +69,11 @@ const ProjectCard = ({ project }) => (
 
     whileHover={{ y: -8, scale: 1.02 }}
 
-    className="group relative glass-card border-white/5 overflow-hidden flex flex-col h-full"
+    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
 
   >
 
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 animate-shimmer" />
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-700" />
 
     <div className="h-44 overflow-hidden relative">
 
@@ -101,31 +103,31 @@ const ProjectCard = ({ project }) => (
 
     </div>
 
-    <div className="p-4 flex-grow flex flex-col">
+    <div className="flex-grow flex flex-col p-4">
 
-      <div className="flex items-center gap-2 mb-2">
+      <div className="mb-2 flex items-center gap-2">
 
-        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 border border-gray-200">
 
-          <Code className="w-4 h-4 text-blue-400" />
+          <Code className="h-4 w-4 text-blue-600" />
 
         </div>
 
-        <h3 className="text-lg font-bold text-white serif">{project.title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{project.title}</h3>
 
       </div>
 
-      <p className="text-zinc-400 text-base leading-relaxed mb-3 line-clamp-3">
+      <p className="mb-3 line-clamp-3 text-base leading-relaxed text-gray-600">
 
         {project.description}
 
       </p>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="mb-4 flex flex-wrap gap-2">
 
         {project.technologies_used?.split(',').slice(0, 3).map((tech, i) => (
 
-          <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/5 rounded-full text-sm text-zinc-400 uppercase tracking-wider">
+          <span key={i} className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-sm font-medium uppercase tracking-wider text-gray-600">
 
             {tech.trim()}
 
@@ -139,13 +141,13 @@ const ProjectCard = ({ project }) => (
 
         to={`/project/${project.id}`}
 
-        className="mt-auto flex items-center justify-between w-full px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-bold text-white transition-all group/btn"
+        className="mt-auto flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-all hover:bg-gray-50 group/btn"
 
       >
 
         View Project
 
-        <ArrowRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
+        <ArrowRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
 
       </Link>
 
@@ -172,19 +174,20 @@ const ResourceCard = ({ resource }) => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
+        whileHover={{ y: -8, scale: 1.02 }}
         className="group h-full"
       >
-        <div className="relative bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] overflow-hidden hover:border-white/[0.12] transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 h-[380px] flex flex-col">
+        <div className="relative flex h-[380px] flex-col overflow-hidden rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm transition-all hover:shadow-xl hover:border-blue-600">
 
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
           {/* Category badge */}
           <div className="absolute top-3 left-3 z-10">
-            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold backdrop-blur-md border ${resource.category === 'BLOG' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
-              resource.category === 'GUIDE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
-                resource.category === 'TOOL' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' :
-                  'bg-violet-500/20 text-violet-400 border-violet-500/30'
+            <div className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold ${resource.category === 'BLOG' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+              resource.category === 'GUIDE' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                resource.category === 'TOOL' ? 'bg-amber-50 text-amber-600 border-amber-200' :
+                  'bg-violet-50 text-violet-600 border-violet-200'
               }`}>
               {resource.category === 'BLOG' && <FileText className="w-3 h-3" />}
               {resource.category === 'GUIDE' && <BookOpen className="w-3 h-3" />}
@@ -197,14 +200,14 @@ const ResourceCard = ({ resource }) => {
           {/* Content */}
           <div className={`relative flex-1 flex flex-col ${isTool ? 'p-5' : 'p-6'} overflow-hidden`}>
             {/* Title */}
-            <h3 className={`font-bold text-white transition-colors line-clamp-2 leading-tight ${isTool ? 'mb-4 text-base mt-8' : 'mb-4 text-lg mt-8'
+            <h3 className={`font-bold text-gray-900 transition-colors line-clamp-2 leading-tight ${isTool ? 'mb-4 text-base mt-8' : 'mb-4 text-lg mt-8'
               }`}>
               {resource.title}
             </h3>
 
             {/* Tool Display - Only for tools */}
             {isTool && (
-              <div className="flex-1 bg-slate-900/40 backdrop-blur-sm rounded-xl p-4 border border-slate-700/30 overflow-hidden">
+              <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-4">
                 {resource.tool_type === "currency" && <CurrencyConverter />}
                 {resource.tool_type === "gst" && <GstCalculator />}
                 {resource.tool_type === "emi" && <EmiCalculator />}
@@ -216,23 +219,23 @@ const ResourceCard = ({ resource }) => {
               <div className="flex-1 flex flex-col min-h-0">
                 {/* Image Container - Only show if image exists */}
                 {hasImage && (
-                  <div className="relative h-36 mb-4 rounded-xl overflow-hidden flex-shrink-0 bg-slate-900/20 border border-slate-700/20">
+                  <div className="relative mb-4 h-36 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
                     <img
                       src={resource.thumbnail || `https://picsum.photos/seed/${resource.id}/800/600`}
                       alt={resource.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent" />
                   </div>
                 )}
 
                 {/* Content excerpt - Only show if no image */}
                 {!hasImage && (
-                  <div className="flex-1 min-h-0 mt-2">
-                    <p className="text-slate-400 text-sm leading-relaxed line-clamp-3">
+                  <div className="mt-2 flex-1 min-h-0">
+                    <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
                       {resource.content?.substring(0, 120)}...
                     </p>
                   </div>
@@ -242,14 +245,14 @@ const ResourceCard = ({ resource }) => {
 
             {/* Footer - Only for non-tools */}
             {!isTool && (
-              <div className="flex justify-between items-center pt-4 border-t border-slate-700/30 mt-4 flex-shrink-0">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <Calendar className="w-3 h-3" />
+              <div className="mt-4 flex shrink-0 items-center justify-between border-t border-gray-200 pt-4">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Calendar className="h-3 w-3" />
                   {new Date(resource.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 hover:border-blue-500/30">
+                <div className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 transition-all hover:bg-blue-100 hover:border-blue-300">
                   Read More
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
             )}
@@ -276,17 +279,17 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
       exit={{ opacity: 0, scale: 0.9 }}
 
-      whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)" }}
+      whileHover={{ y: -8, scale: 1.02 }}
 
-      className="group relative bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center flex flex-col h-full transition-all duration-300"
+      className="group relative flex h-full flex-col rounded-xl border border-[rgb(37,99,235)] bg-white p-4 text-center shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
 
     >
 
       {developer.is_featured && (
 
-        <div className="absolute top-4 right-4 bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 px-2 py-1 rounded-full text-xs font-bold">
+        <div className="absolute right-4 top-4 rounded-full border border-yellow-200 bg-yellow-50 px-2 py-1 text-xs font-bold text-yellow-600">
 
-          <Crown className="w-3 h-3 inline mr-1" />
+          <Crown className="mr-1 inline h-3 w-3" />
 
           Featured
 
@@ -296,9 +299,9 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
 
 
-      <div className="relative w-24 h-24 mx-auto mb-4">
+      <div className="relative mx-auto mb-4 h-24 w-24">
 
-        <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-2xl transition-all duration-500" />
+        <div className="absolute inset-0 rounded-full bg-blue-100 blur-2xl transition-all duration-500" />
 
         <img
 
@@ -306,13 +309,13 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
           alt={developer.name}
 
-          className="w-full h-full rounded-full object-cover border-2 border-white/20 relative z-10 transition-transform duration-300 shadow-2xl"
+          className="relative z-10 h-full w-full rounded-full border-2 border-gray-200 object-cover transition-transform duration-300 shadow-lg"
 
         />
 
-        <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center z-20 shadow-lg">
+        <div className="absolute bottom-1 right-1 z-20 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-green-500 shadow-lg">
 
-          <UserCheck className="w-2 h-2 text-white" />
+          <UserCheck className="h-2 w-2 text-white" />
 
         </div>
 
@@ -322,17 +325,17 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
       <div className="space-y-2">
 
-        <h3 className="text-xl font-bold text-white transition-colors duration-300" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+        <h3 className="text-xl font-semibold text-gray-900 transition-colors duration-300" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
 
           {developer.name}
 
         </h3>
 
-        <p className="text-blue-400 text-[11px] font-semibold uppercase tracking-wider">{developer.title}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">{developer.title}</p>
 
 
 
-        <p className="text-zinc-400 text-sm leading-relaxed line-clamp-2 px-1">
+        <p className="line-clamp-2 px-1 text-sm leading-relaxed text-gray-600">
 
           {developer.bio}
 
@@ -342,11 +345,11 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
 
 
-      <div className="flex flex-wrap justify-center gap-1 mb-3 mt-2">
+      <div className="mt-2 mb-3 flex flex-wrap justify-center gap-1">
 
         {developer.skills?.split(',').slice(0, 4).map((skill, i) => (
 
-          <span key={i} className="px-2 py-0.5 bg-white/10 border border-white/20 rounded-full text-[11px] text-zinc-300 font-medium transition-colors">
+          <span key={i} className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-700 transition-colors">
 
             {skill.trim()}
 
@@ -356,7 +359,7 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
         {developer.skills?.split(',').length > 4 && (
 
-          <span className="px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-[11px] text-zinc-500 font-medium">
+          <span className="rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-500">
 
             +{developer.skills.split(',').length - 4}
 
@@ -368,9 +371,9 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
 
 
-      <div className="flex-grow flex flex-col justify-end">
+      <div className="flex flex-grow flex-col justify-end">
         <div className="text-center">
-          <span className="text-[11px] font-bold text-blue-500 uppercase tracking-widest transition-colors">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-blue-600 transition-colors">
             View Full Profile →
           </span>
         </div>
@@ -387,8 +390,11 @@ const Home = () => {
   const [resources, setResources] = useState([]);
   const [developers, setDevelopers] = useState([]);
   const [heroSections, setHeroSections] = useState([]);
+  const [globeSettings, setGlobeSettings] = useState(getGlobeSettings);
   const [loading, setLoading] = useState(true);
   const [dataTimestamp, setDataTimestamp] = useState(Date.now());
+
+  useEffect(() => subscribeToGlobeSettings(setGlobeSettings), []);
 
   // Scroll to top when component mounts
   useEffect(() => {
@@ -567,239 +573,108 @@ const Home = () => {
 
   return (
 
-    <div className="pt-16">
+    <div className="bg-gray-50">
 
 
 
       {/* Hero Section */}
 
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden px-6">
+      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#2563eb_0%,#1d4ed8_34%,#102654_62%,#000000_100%)] text-white lg:bg-[linear-gradient(108deg,#2563eb_0%,#1d4ed8_34%,#102654_53%,#050b16_70%,#000000_100%)]">
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
+        {globeSettings.showGlobe && (
+          <div className="pointer-events-none absolute inset-0 opacity-80">
+            <Globe backgroundOnly />
+          </div>
+        )}
 
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
-
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
 
 
+        <div className="relative grid lg:grid-cols-2">
 
-        <div className="max-w-6xl mx-auto relative z-10">
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-
-            {/* Left Side - Hero Content */}
+          <div className="contents">
 
             <motion.div
 
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -20 }}
 
               animate={{ opacity: 1, x: 0 }}
 
-              transition={{ duration: 0.8 }}
-
-              className="text-center lg:text-left"
+              className="relative z-10 flex min-h-[32rem] max-w-none flex-col items-start justify-start px-6 py-16 sm:px-8 lg:px-12"
 
             >
 
-              {/* Use dynamic hero section data or fallback to hardcoded values */}
-              {heroSections && heroSections.length > 0 ? (
-                (() => {
-                  const hero = heroSections[0]; // Use first active hero section
-                  return (
-                    <>
-                      {hero.badge_text && (
-                        <div className="inline-flex items-center gap-2 px-3 py-1 glass-card rounded-full border-white/5 mb-4">
-                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping" />
-                          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">{hero.badge_text}</span>
-                        </div>
-                      )}
-
-                      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter serif leading-[0.9] mb-4">
-                        {hero.title.split('\n').map((line, index) => (
-                          <span key={index}>
-                            {line}
-                            {index < hero.title.split('\n').length - 1 && <br />}
-                          </span>
-                        ))}
-                      </h1>
-
-                      <p className="text-zinc-500 text-base leading-relaxed mb-6 max-w-xl">
-                        {hero.subtitle}
-                      </p>
-
-                      <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-                        {hero.primary_button_text && hero.primary_button_url && (
-                          hero.primary_button_url.startsWith('http') ? (
-                            <a
-                              href={hero.primary_button_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-6 py-3 accent-gradient rounded-2xl text-sm font-bold text-white shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 transition-all"
-                            >
-                              {hero.primary_button_text}
-                            </a>
-                          ) : (
-                            <Link
-                              to={hero.primary_button_url}
-                              className="px-6 py-3 accent-gradient rounded-2xl text-sm font-bold text-white shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 transition-all"
-                            >
-                              {hero.primary_button_text}
-                            </Link>
-                          )
-                        )}
-
-                        {hero.secondary_button_text && hero.secondary_button_url && (
-                          hero.secondary_button_url.startsWith('http') ? (
-                            <a
-                              href={hero.secondary_button_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-6 py-3 glass-card rounded-2xl text-sm font-bold text-white hover:bg-white/5 transition-all flex items-center gap-3"
-                            >
-                              {hero.secondary_button_text} <ArrowRight className="w-4 h-4" />
-                            </a>
-                          ) : (
-                            <Link
-                              to={hero.secondary_button_url}
-                              className="px-6 py-3 glass-card rounded-2xl text-sm font-bold text-white hover:bg-white/5 transition-all flex items-center gap-3"
-                            >
-                              {hero.secondary_button_text} <ArrowRight className="w-4 h-4" />
-                            </Link>
-                          )
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4 max-w-sm lg:max-w-none mx-auto lg:mx-0">
-                        <div className="flex flex-col">
-                          <span className="text-xl font-bold text-white serif">{hero.stat1_value}</span>
-                          <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">{hero.stat1_label}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-xl font-bold text-white serif">{hero.stat2_value}</span>
-                          <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">{hero.stat2_label}</span>
-                        </div>
-
-                        <div className="flex flex-col">
-                          <span className="text-xl font-bold text-white serif">{hero.stat3_value}</span>
-                          <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">{hero.stat3_label}</span>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })()
-              ) : (
-                /* Fallback to hardcoded values if no hero sections */
-                <>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 glass-card rounded-full border-white/5 mb-4">
-                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping" />
-                    {/* <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400">V2.0 Now Architected</span> */}
-                  </div>
-
-                  <h1 className="text-4xl md:text-6xl font-bold tracking-tighter serif leading-[0.9] mb-4">
-                    Innovative <br />
-                    <span className="italic text-blue-500">Software Solutions</span> for <br />
-                    Modern Business.
-                  </h1>
-
-                  <p className="text-zinc-500 text-base leading-relaxed mb-6 max-w-xl">
-                    Sai Software Solutions transforms business challenges into innovative digital solutions. We specialize in building scalable, secure applications that drive growth and efficiency.
-                  </p>
-
-                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-8">
-                    <Link to="/projects" className="px-6 py-3 accent-gradient rounded-2xl text-sm font-bold text-white shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:scale-105 transition-all">
-                      Explore Projects
-                    </Link>
-
-                    <Link to="/hiring" className="px-6 py-3 glass-card rounded-2xl text-sm font-bold text-white hover:bg-white/5 transition-all flex items-center gap-3">
-                      Join Community <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4 max-w-sm lg:max-w-none mx-auto lg:mx-0">
-                    <div className="flex flex-col">
-                      <span className="text-xl font-bold text-white serif">250+</span>
-                      <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Projects</span>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <span className="text-xl font-bold text-white serif">1.2k</span>
-                      <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Developers</span>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <span className="text-xl font-bold text-white serif">45k</span>
-                      <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Resources</span>
-                    </div>
-                  </div>
-                </>
-              )}
-
+              <h1 className="mb-6 text-4xl font-bold tracking-tight text-white md:text-5xl">
+                Innovative Software Solutions for Modern Business
+              </h1>
+              <p className="mb-8 text-xl leading-relaxed text-blue-100 md:text-2xl">
+                Nexora transforms business challenges into innovative digital solutions. We specialize in building scalable, secure applications that drive growth and efficiency.
+              </p>
+              <div className="flex flex-wrap gap-5 mb-8">
+                <div className="flex items-center gap-3 text-lg text-blue-100">
+                  <span className="text-xl font-bold">250+</span>
+                  <span>Projects</span>
+                </div>
+                <div className="flex items-center gap-3 text-lg text-blue-100">
+                  <span className="text-xl font-bold">1.2k</span>
+                  <span>Developers</span>
+                </div>
+                <div className="flex items-center gap-3 text-lg text-blue-100">
+                  <span className="text-xl font-bold">45k</span>
+                  <span>Resources</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Link to="/projects" className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50">
+                  Explore Projects
+                </Link>
+                <Link to="/hiring" className="rounded-lg border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10">
+                  Join Community
+                </Link>
+              </div>
             </motion.div>
 
-
-
-            {/* Right Side - 3D Logo */}
-
             <motion.div
 
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: 20 }}
 
               animate={{ opacity: 1, x: 0 }}
 
-              transition={{ duration: 0.8, delay: 0.2 }}
-
-              className="flex justify-center lg:justify-end"
+              className="flex min-h-[32rem] items-center justify-center px-6 py-10"
 
             >
 
-              <Logo3D />
+              <div className="relative h-96 w-full max-w-lg lg:h-[32rem]">
+
+                {globeSettings.showGlobe && <Globe {...globeSettings} />}
+
+              </div>
 
             </motion.div>
 
           </div>
 
         </div>
-
       </section>
 
 
 
       {/* Trust Section */}
 
-      <section className="py-10 border-y border-white/5 overflow-hidden">
-
-        <div className="max-w-7xl mx-auto px-6">
-
-          <p className="text-center text-[9px] text-zinc-500 uppercase tracking-[0.4em] font-bold mb-6">Trusted by 250+ Engineering Departments</p>
-
-          {/* <div className="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all">
-
-            {['VELOCITY', 'SYNTAX', 'PIXEL_PERFECT', 'CORE_ENG', 'BINARY'].map((brand) => (
-
-              <span key={brand} className="text-xl font-black tracking-tighter text-white mono">{brand}</span>
-
-            ))}
-
-          </div> */}
-
-        </div>
-
-      </section>
+   
 
 
 
       {/* Features Section */}
 
-      <section className="py-12 px-6">
+      <section className="py-12 px-6 bg-gray-50">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="text-center mb-10">
+          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
 
-            <h2 className="text-2xl md:text-3xl font-bold text-white serif mb-4">Your Technical Command Center</h2>
+            <h2 className="mb-4 text-3xl font-bold">Your Technical Command Center</h2>
 
-            <p className="text-zinc-500 max-w-2xl mx-auto text-sm">One source of truth for architectural decisions, project health, and developer performance metrics.</p>
+            <p className="mx-auto max-w-2xl text-lg text-blue-100">One source of truth for architectural decisions, project health, and developer performance metrics.</p>
 
           </div>
 
@@ -829,19 +704,21 @@ const Home = () => {
 
                 transition={{ delay: i * 0.1 }}
 
-                className="p-6 glass-card border-white/5 hover:border-white/20 transition-all group"
+                whileHover={{ y: -8, scale: 1.02 }}
+
+                className="rounded-xl border border-[rgb(37,99,235)] bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
 
               >
 
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 group-hover:scale-110 transition-transform">
 
-                  <feature.icon className="w-6 h-6 text-blue-500" />
+                  <feature.icon className="h-6 w-6 text-blue-600" />
 
                 </div>
 
-                <h3 className="text-lg font-bold text-white mb-2 serif">{feature.title}</h3>
+                <h3 className="mb-2 text-lg font-semibold text-blue-600">{feature.title}</h3>
 
-                <p className="text-zinc-500 text-xs leading-relaxed">{feature.desc}</p>
+                <p className="text-sm leading-relaxed text-gray-600">{feature.desc}</p>
 
               </motion.div>
 
@@ -857,23 +734,23 @@ const Home = () => {
 
       {/* Projects Showcase */}
 
-      <section className="py-12 bg-zinc-950/50 px-6">
+      <section className="py-12 px-6 bg-white">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-6">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
 
-            <div className="max-w-xl">
+            <h2 className="mb-4 text-3xl font-bold">Featured Projects</h2>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-white serif mb-4">Featured Projects</h2>
+            <p className="mx-auto max-w-2xl text-lg text-blue-100">Discover the most innovative solutions built by our community of elite developers.</p>
 
-              <p className="text-zinc-500 text-sm">Discover the most innovative solutions built by our community of elite developers.</p>
+          </div>
 
-            </div>
+          <div className="mb-8 text-center">
 
-            <Link to="/projects" className="flex items-center gap-2 text-blue-500 font-bold transition-colors uppercase tracking-widest text-[9px]">
+            <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
 
-              View All Projects <ArrowRight className="w-3 h-3" />
+              View All Projects <ArrowRight className="w-4 h-4" />
 
             </Link>
 
@@ -881,11 +758,11 @@ const Home = () => {
 
 
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[400px] glass-card animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[400px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
 
             ) : (
 
@@ -903,23 +780,23 @@ const Home = () => {
 
       {/* Resources Section */}
 
-      <section className="py-12 px-6">
+      <section className="py-12 px-6 bg-gray-50">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-6">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
 
-            <div className="max-w-xl">
+            <h2 className="mb-4 text-3xl font-bold">Developer Resources</h2>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-white serif mb-4">Developer <span className="italic text-blue-500">Resources</span></h2>
+            <p className="mx-auto max-w-2xl text-lg text-blue-100">Access curated collection of Blogs, guides, and development tools.</p>
 
-              <p className="text-zinc-500 text-sm">Access curated collection of Blogs, guides, and development tools.</p>
+          </div>
 
-            </div>
+          <div className="mb-8 text-center">
 
-            <Link to="/resources" className="flex items-center gap-3 text-blue-500 font-bold transition-colors uppercase tracking-widest text-lg">
+            <Link to="/resources" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
 
-              Explore All Resources <ArrowRight className="w-5 h-5" />
+              Explore All Resources <ArrowRight className="w-4 h-4" />
 
             </Link>
 
@@ -927,11 +804,11 @@ const Home = () => {
 
 
 
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[350px] glass-card animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[350px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
 
             ) : (
 
@@ -949,21 +826,21 @@ const Home = () => {
 
       {/* Developers Section */}
 
-      <section className="py-12 bg-zinc-950/50 px-6">
+      <section className="py-12 px-6 bg-white">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-6">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
 
-            <div className="max-w-xl">
+            <h2 className="mb-4 text-3xl font-bold">Meet The Nexora Team</h2>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-white serif mb-4">Meet The <span className="italic text-blue-500">Sai Software Solutions</span> Team</h2>
+          </div>
 
-            </div>
+          <div className="mb-8 text-center">
 
-            <Link to="/developers" className="flex items-center gap-3 text-blue-500 font-bold transition-colors uppercase tracking-widest text-lg">
+            <Link to="/developers" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
 
-              View All Developers <ArrowRight className="w-5 h-5" />
+              View All Developers <ArrowRight className="w-4 h-4" />
 
             </Link>
 
@@ -971,11 +848,11 @@ const Home = () => {
 
 
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[380px] glass-card animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[380px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
 
             ) : (
 
@@ -993,25 +870,25 @@ const Home = () => {
 
       {/* Reviews Section */}
 
-      <section className="py-12 px-6">
+      <section className="py-12 px-6 bg-gray-50">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="text-center mb-12">
+          <div className="mb-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
 
-            <h2 className="text-2xl md:text-3xl font-bold text-white serif mb-4">Client <span className="italic text-blue-500">Testimonials</span></h2>
+            <h2 className="mb-4 text-3xl font-bold">Client Testimonials</h2>
 
-            <p className="text-zinc-500 text-sm max-w-2xl mx-auto">Hear what our clients say about their experience working with our team</p>
+            <p className="mx-auto max-w-2xl text-lg text-blue-100">Hear what our clients say about their experience working with our team</p>
 
           </div>
 
           <ScrollingReviews limit={10} />
 
-          <div className="text-center mt-8">
+          <div className="mt-8 text-center">
 
-            <Link to="/reviews" className="flex items-center gap-2 text-blue-500 font-bold transition-colors uppercase tracking-widest text-[9px] justify-center">
+            <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 justify-center">
 
-              View All Reviews <ArrowRight className="w-3 h-3" />
+              View All Reviews <ArrowRight className="w-4 h-4" />
 
             </Link>
 
@@ -1022,56 +899,6 @@ const Home = () => {
       </section>
 
 
-
-      {/* CTA Section */}
-
-      <section className="py-12 px-6">
-
-        <div className="max-w-7xl mx-auto">
-
-          <motion.div
-
-            whileHover={{ scale: 1.01 }}
-
-            className="relative p-8 md:p-14 rounded-[2rem] overflow-hidden accent-gradient text-center"
-
-          >
-
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-
-            <div className="relative z-10">
-
-              <h2 className="text-3xl md:text-5xl font-bold text-white serif mb-4 leading-tight">Ready to Transform Your Business?</h2>
-
-              <p className="text-blue-100 text-base mb-6 max-w-2xl mx-auto opacity-80">
-
-                Partner with Sai Software Solutions for innovative digital transformation. Start your journey or book a consultation with our expert team.
-
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4">
-
-                <Link to="/contact" className="px-6 py-3 bg-white text-blue-600 rounded-2xl text-base font-bold hover:bg-zinc-100 transition-all shadow-xl">
-
-                  Get Started Now
-
-                </Link>
-
-                <Link to="/contact" className="px-6 py-3 bg-blue-700 text-white rounded-2xl text-base font-bold hover:bg-blue-800 transition-all border border-blue-400/30 shadow-xl">
-
-                  Book Consultation
-
-                </Link>
-
-              </div>
-
-            </div>
-
-          </motion.div>
-
-        </div>
-
-      </section>
 
     </div>
 

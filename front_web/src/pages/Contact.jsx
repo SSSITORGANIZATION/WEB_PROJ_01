@@ -73,7 +73,7 @@ const Contact = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-              Contact Sai Software Solutions
+              Contact Nexora
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 leading-relaxed">
               Have questions about our software solutions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.

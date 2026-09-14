@@ -43,7 +43,6 @@ const AdminDashboard = () => {
   const [recentDevelopers, setRecentDevelopers] = useState([]);
   const [recentResources, setRecentResources] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
@@ -199,8 +198,6 @@ const AdminDashboard = () => {
                       const colors = ['bg-blue-500', 'bg-green-500', 'bg-yellow-500'];
                       return (
                         <div key={project.id} className="flex items-center gap-2">
-                          <div className={`w-2 h-2 ${colors[index % colors.length]} rounded-full animate-pulse`} />
-                          <span className="text-sm text-gray-600">{project.title}</span>
                         </div>
                       );
                     }) : (

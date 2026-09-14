@@ -79,19 +79,37 @@ const Documentation = () => {
   });
 
   return (
-    <div className="min-h-screen pt-16 pb-12 px-6 bg-black">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
+              Technical <span className="text-blue-100">Repository</span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-lg text-blue-100">
+              Comprehensive guides and API references to help you integrate and build on the DevForge platform.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <div className="max-w-7xl mx-auto px-6 py-12 pb-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <aside className={`lg:w-60 flex-shrink-0 lg:block ${isSidebarOpen ? 'fixed inset-0 z-50 bg-black p-6' : 'hidden'}`}>
+          <aside className={`lg:w-60 flex-shrink-0 lg:block ${isSidebarOpen ? 'fixed inset-0 z-50 bg-white p-6' : 'hidden'}`}>
             <div className="flex items-center justify-between mb-6 lg:hidden">
-              <span className="text-base font-bold serif text-white">Documentation</span>
-              <button onClick={() => setIsSidebarOpen(false)}><X className="w-5 h-5 text-white" /></button>
+              <span className="text-base font-semibold text-gray-900">Documentation</span>
+              <button onClick={() => setIsSidebarOpen(false)}><X className="h-5 w-5 text-gray-900" /></button>
             </div>
 
             <div className="space-y-6">
               <div>
-                <h4 className="text-[8px] text-zinc-500 uppercase tracking-[0.3em] font-bold mb-3">Categories</h4>
+                <h4 className="mb-3 text-[8px] font-bold uppercase tracking-[0.3em] text-gray-500">Categories</h4>
                 <div className="flex flex-col gap-1">
                   {categories.map((cat) => (
                     <button
@@ -100,24 +118,24 @@ const Documentation = () => {
                         setActiveCategory(cat);
                         setIsSidebarOpen(false);
                       }}
-                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[10px] font-medium transition-all ${activeCategory === cat
-                        ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
-                        : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                      className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[10px] font-medium transition-all ${activeCategory === cat
+                        ? 'border-blue-200 bg-blue-50 text-blue-600'
+                        : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                     >
                       {cat}
-                      {activeCategory === cat && <ChevronRight className="w-2.5 h-2.5" />}
+                      {activeCategory === cat && <ChevronRight className="h-2.5 w-2.5" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="p-4 glass-card border-white/5 bg-blue-500/5">
-                <Shield className="w-5 h-5 text-blue-500 mb-2" />
-                <h5 className="text-white font-bold mb-1 text-[11px]">Need Help?</h5>
-                <p className="text-zinc-500 text-[9px] leading-relaxed mb-2">Our engineering team is available 24/7 for enterprise support.</p>
-                <Link to="/book-demo" className="text-blue-500 text-[9px] font-bold hover:text-blue-400 flex items-center gap-1">
-                  Contact Support <ArrowRight className="w-2 h-2" />
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <Shield className="mb-2 h-5 w-5 text-blue-600" />
+                <h5 className="mb-1 text-[11px] font-bold text-gray-900">Need Help?</h5>
+                <p className="mb-2 text-[9px] leading-relaxed text-gray-600">Our engineering team is available 24/7 for enterprise support.</p>
+                <Link to="/book-demo" className="flex items-center gap-1 text-[9px] font-bold text-blue-600 hover:text-blue-700">
+                  Contact Support <ArrowRight className="h-2 w-2" />
                 </Link>
               </div>
             </div>
@@ -125,41 +143,32 @@ const Documentation = () => {
 
           {/* Main Content */}
           <main className="flex-grow">
-            <div className="flex items-center justify-between mb-6">
+            <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-3 lg:hidden">
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="p-1.5 glass-card border-white/5 text-white"
+                  className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-900"
                 >
-                  <Menu className="w-4 h-4" />
+                  <Menu className="h-4 w-4" />
                 </button>
-                <span className="text-sm font-bold serif text-white">Docs</span>
+                <span className="text-sm font-semibold text-gray-900">Docs</span>
               </div>
 
               <div className="relative w-full lg:max-w-md group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 group-focus-within:text-blue-600 transition-colors" />
                 <input
                   type="text"
                   placeholder="Search documentation..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white/5 border border-white/5 rounded-xl py-2 pl-9 pr-4 text-[11px] text-white placeholder:text-zinc-600 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-[11px] text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
                 />
               </div>
             </div>
 
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-white serif mb-3 tracking-tighter">
-                Technical <span className="italic text-blue-500">Repository</span>
-              </h1>
-              <p className="text-zinc-500 text-base leading-relaxed max-w-2xl">
-                Comprehensive guides and API references to help you integrate and build on the DevForge platform.
-              </p>
-            </div>
-
             {loading ? (
               <div className="space-y-4">
-                {[1, 2, 3].map(i => <div key={i} className="h-32 glass-card animate-pulse" />)}
+                {[1, 2, 3].map(i => <div key={i} className="h-32 rounded-xl border border-gray-200 bg-white animate-pulse" />)}
               </div>
             ) : (
               <div className="grid gap-3">
@@ -168,42 +177,42 @@ const Documentation = () => {
                     key={doc.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-6 glass-card border-white/5 group hover:border-white/20 transition-all"
+                    className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="mb-3 flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
-                          <FileText className="w-4 h-4 text-blue-500" />
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-blue-50 group-hover:scale-110 transition-transform">
+                          <FileText className="h-4 w-4 text-blue-600" />
                         </div>
                         <div>
-                          <span className="text-[8px] text-zinc-500 uppercase tracking-widest font-bold mb-0.5 block">{doc.category || 'General'}</span>
-                          <h3 className="text-lg font-bold text-white serif group-hover:text-blue-400 transition-colors">{doc.title}</h3>
+                          <span className="mb-0.5 block text-[8px] font-bold uppercase tracking-widest text-gray-500">{doc.category || 'General'}</span>
+                          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{doc.title}</h3>
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
-                        <button className="p-1 text-zinc-500 hover:text-white transition-colors"><Bookmark className="w-3.5 h-3.5" /></button>
-                        <button className="p-1 text-zinc-500 hover:text-white transition-colors"><ExternalLink className="w-3.5 h-3.5" /></button>
+                        <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors"><Bookmark className="h-3.5 w-3.5" /></button>
+                        <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors"><ExternalLink className="h-3.5 w-3.5" /></button>
                       </div>
                     </div>
 
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-4 line-clamp-2">
+                    <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
                       {doc.content?.substring(0, 200)}...
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-[8px] text-zinc-500 uppercase tracking-widest font-bold">
-                          <Clock className="w-2 h-2" /> Updated 2 days ago
+                        <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
+                          <Clock className="h-2 w-2" /> Updated 2 days ago
                         </div>
-                        <div className="flex items-center gap-1 text-[8px] text-zinc-500 uppercase tracking-widest font-bold">
-                          <UserCheck className="w-2 h-2" /> Verified
+                        <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
+                          <UserCheck className="h-2 w-2" /> Verified
                         </div>
                       </div>
                       <Link
                         to={`/documentation/${doc.id}`}
-                        className="flex items-center gap-1 text-[10px] font-bold text-white group/link"
+                        className="flex items-center gap-1 text-[10px] font-medium text-blue-600 group/link"
                       >
-                        Read Guide <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
+                        Read Guide <ArrowRight className="h-3 w-3 transition-transform group-hover/link:translate-x-1" />
                       </Link>
                     </div>
                   </motion.div>
@@ -212,12 +221,12 @@ const Documentation = () => {
             )}
 
             {!loading && filteredDocs.length === 0 && (
-              <div className="py-24 text-center glass-card border-white/5 border-dashed">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Book className="w-8 h-8 text-zinc-700" />
+              <div className="py-24 text-center rounded-xl border border-dashed border-gray-200 bg-white">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                  <Book className="h-8 w-8 text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold text-white serif mb-1.5">No documentation found</h3>
-                <p className="text-zinc-500 text-sm">Try searching for something else or browse categories.</p>
+                <h3 className="mb-1.5 text-xl font-semibold text-gray-900">No documentation found</h3>
+                <p className="text-sm text-gray-600">Try searching for something else or browse categories.</p>
               </div>
             )}
           </main>

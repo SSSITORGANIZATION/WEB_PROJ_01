@@ -26,9 +26,14 @@ class AuthService {
     return this.currentUser;
   }
 
+  // Get token
+  getToken() {
+    return localStorage.getItem('authToken');
+  }
+
   // Check if user is authenticated
   isAuthenticated() {
-    return this.currentUser !== null;
+    return this.currentUser !== null && this.getToken() !== null;
   }
 
   // Listen to auth state changes
@@ -62,6 +67,15 @@ class AuthService {
     this.notifyListeners();
   }
 
+  // Set token
+  setToken(token) {
+    if (token) {
+      localStorage.setItem('authToken', token);
+    } else {
+      localStorage.removeItem('authToken');
+    }
+  }
+
   // Send OTP for email verification
   async sendOTP(email) {
     try {
@@ -85,9 +99,13 @@ class AuthService {
   async register(data) {
     try {
       const response = await apiService.registerCustomer(data);
-      const user = response.data;
+      const user = response.data.user || response.data;
+      const token = response.data.token;
+      
       this.setUser(user);
-      return user;
+      this.setToken(token);
+      
+      return { user, token };
     } catch (error) {
       if (error.response?.data?.error) {
         throw new Error(error.response.data.error);
@@ -100,9 +118,13 @@ class AuthService {
   async login(email, password) {
     try {
       const response = await apiService.loginCustomer(email, password);
-      const user = response.data;
+      const user = response.data.user || response.data;
+      const token = response.data.token;
+      
       this.setUser(user);
-      return user;
+      this.setToken(token);
+      
+      return { user, token };
     } catch (error) {
       if (error.response?.data?.error) {
         throw new Error(error.response.data.error);
@@ -126,6 +148,7 @@ class AuthService {
   // Logout
   async signOut() {
     this.setUser(null);
+    this.setToken(null);
   }
 
   // Firebase Google Authentication (Free and Easy)
@@ -147,13 +170,16 @@ class AuthService {
         email_verified: user.emailVerified,
         phone: user.phoneNumber || '',
         is_verified: user.emailVerified,
-        created_at: user.metadata.creationTime || new Date().toISOString()
+        created_at: user.metadata.creationTime || new Date().toISOString(),
+        token: 'firebase-token-' + user.uid
       };
 
       // You can optionally send this to your backend
       // await apiService.googleAuth(firebaseUser);
 
       this.setUser(firebaseUser);
+      this.setToken(firebaseUser.token);
+      
       return firebaseUser;
     } catch (error) {
       console.error('Firebase Google auth error:', error);
@@ -187,10 +213,13 @@ class AuthService {
         email_verified: user.emailVerified,
         phone: user.phoneNumber || '',
         is_verified: user.emailVerified,
-        created_at: user.metadata.creationTime || new Date().toISOString()
+        created_at: user.metadata.creationTime || new Date().toISOString(),
+        token: 'firebase-token-' + user.uid
       };
 
       this.setUser(firebaseUser);
+      this.setToken(firebaseUser.token);
+      
       return firebaseUser;
     } catch (error) {
       console.error('Firebase GitHub auth error:', error);

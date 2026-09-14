@@ -5,7 +5,7 @@ import {
   BookOpen, FileText, Settings,
   LogOut, ChevronRight, ChevronLeft, BarChart3,
   MessageSquare, Calendar, Shield,
-  Home, MapPin, Phone
+  Home, MapPin, Phone, Globe
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -38,6 +38,7 @@ const AdminSidebar = () => {
         { icon: Briefcase, label: 'Hiring', path: '/admin/hiring' },
         { icon: BarChart3, label: 'Analytics', path: '/admin/analytics' },
         { icon: Shield, label: 'Security', path: '/admin/security' },
+        { icon: Globe, label: 'Globe Settings', path: '/admin/globe-settings' },
         { icon: Settings, label: 'Settings', path: '/admin/settings' },
         { icon: MapPin, label: 'Footer', path: '/admin/footer' },
         { icon: Phone, label: 'Contact', path: '/admin/contact' },

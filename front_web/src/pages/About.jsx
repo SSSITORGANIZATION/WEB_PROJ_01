@@ -21,7 +21,7 @@ const About = () => {
             className="text-center max-w-4xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-              About Sai Software Solutions
+              About Nexora
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 leading-relaxed mb-8">
               Professional software development company focused on delivering innovative, scalable, and high-quality digital solutions for modern businesses.
@@ -48,11 +48,11 @@ const About = () => {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Sai Software Solutions
+                Nexora
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  Sai Software Solutions is a professional software development company focused on delivering innovative, scalable, and high-quality digital solutions. We specialize in building modern applications that help businesses streamline operations and achieve growth.
+                 Nexora is a professional software development company focused on delivering innovative, scalable, and high-quality digital solutions. We specialize in building modern applications that help businesses streamline operations and achieve growth.
                 </p>
                 <p>
                   Along with development services, we provide limited industry-oriented training programs to support skill development aligned with real-world project experience.

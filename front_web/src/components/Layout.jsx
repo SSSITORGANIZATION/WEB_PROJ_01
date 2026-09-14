@@ -65,81 +65,79 @@ const Footer = ({ siteSettings, footerData }) => {
               {/* Fallback social links if none exist */}
               {Object.keys(socialLinks).length === 0 && (
                 <>
-                  subItems: [
-                  {label: 'Developer Directory', path: '/developers' }
-                  ]
-                  <Linkedin className="layout-footer-social-icon" />
-                </a>
-              <a href="https://twitter.com" className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
-                <Twitter className="layout-footer-social-icon" />
-              </a>
-            </>
+                  <a href="https://linkedin.com" className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="layout-footer-social-icon" />
+                  </a>
+                  <a href="https://twitter.com" className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
+                    <Twitter className="layout-footer-social-icon" />
+                  </a>
+                </>
               )}
+            </div>
           </div>
-        </div>
 
-        {/* Quick Links Section */}
-        <div className="layout-footer-section">
-          <h4 className="layout-footer-section-title">Quick Links</h4>
-          <ul className="layout-footer-links">
-            {productLinks.slice(0, 4).map(item => (
-              <li key={item}>
-                <Link to={`/${item.toLowerCase()}`} className="layout-footer-link">{item}</Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {/* Quick Links Section */}
+          <div className="layout-footer-section">
+            <h4 className="layout-footer-section-title">Quick Links</h4>
+            <ul className="layout-footer-links">
+              {productLinks.slice(0, 4).map(item => (
+                <li key={item}>
+                  <Link to={`/${item.toLowerCase()}`} className="layout-footer-link">{item}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Company Section */}
-        <div className="layout-footer-section">
-          <h4 className="layout-footer-section-title">Company</h4>
-          <ul className="layout-footer-links">
-            {companyLinks.map(item => {
-              if (item === 'About Us') {
+          {/* Company Section */}
+          <div className="layout-footer-section">
+            <h4 className="layout-footer-section-title">Company</h4>
+            <ul className="layout-footer-links">
+              {companyLinks.map(item => {
+                if (item === 'About Us') {
+                  return (
+                    <li key={item}>
+                      <Link to="/about" className="layout-footer-link">{item}</Link>
+                    </li>
+                  );
+                }
                 return (
                   <li key={item}>
-                    <Link to="/about" className="layout-footer-link">{item}</Link>
+                    <a href="#" className="layout-footer-link">{item}</a>
                   </li>
                 );
-              }
-              return (
-                <li key={item}>
-                  <a href="#" className="layout-footer-link">{item}</a>
-                </li>
-              );
-            })}
-          </ul>
+              })}
+            </ul>
+          </div>
+
+          {/* Newsletter Section */}
+          <div className="layout-footer-section">
+            <h4 className="layout-footer-section-title">Stay Updated</h4>
+            <p className="layout-footer-newsletter-text">Get the latest updates on software solutions and technology trends.</p>
+            <div className="layout-footer-newsletter-form">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="layout-footer-newsletter-input"
+              />
+              <button className="layout-footer-newsletter-button">
+                <ArrowRight className="layout-footer-newsletter-icon" />
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* Newsletter Section */}
-        <div className="layout-footer-section">
-          <h4 className="layout-footer-section-title">Stay Updated</h4>
-          <p className="layout-footer-newsletter-text">Get the latest updates on software solutions and technology trends.</p>
-          <div className="layout-footer-newsletter-form">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="layout-footer-newsletter-input"
-            />
-            <button className="layout-footer-newsletter-button">
-              <ArrowRight className="layout-footer-newsletter-icon" />
-            </button>
+        {/* Footer Bottom */}
+        <div className="layout-footer-bottom">
+          <p className="layout-footer-copyright">
+            {footerData?.copyright_text || '© 2026 Sai Software Solutions. All rights reserved.'}
+          </p>
+          <div className="layout-footer-legal-links">
+            {legalLinks.map(item => (
+              <a key={item} href="#" className="layout-footer-legal-link">{item}</a>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Footer Bottom */}
-      <div className="layout-footer-bottom">
-        <p className="layout-footer-copyright">
-          {footerData?.copyright_text || '© 2026 Sai Software Solutions. All rights reserved.'}
-        </p>
-        <div className="layout-footer-legal-links">
-          {legalLinks.map(item => (
-            <a key={item} href="#" className="layout-footer-legal-link">{item}</a>
-          ))}
-        </div>
-      </div>
-    </div>
     </footer >
   );
 };
@@ -180,7 +178,6 @@ export const Layout = ({ children }) => {
 
   return (
     <div className="layout">
-      <HeaderWithSettings siteSettings={siteSettings} navbarLinks={navbarLinks} />
       <main className="layout-main">
         <AnimatePresence mode="wait">
           <motion.div
@@ -195,7 +192,6 @@ export const Layout = ({ children }) => {
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer siteSettings={siteSettings} footerData={footerData} />
     </div>
   );
 };

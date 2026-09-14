@@ -5,7 +5,7 @@ import {
   MoreHorizontal, Edit2, Trash2,
   ExternalLink, Github, CheckCircle,
   X as CloseIcon, Layout, Code, Globe, Save,
-  AlertCircle, ChevronRight, ArrowLeft, Upload, Image,
+  AlertCircle, ChevronRight, ArrowLeft, Upload,
   ChevronLeft
 } from 'lucide-react';
 import { apiService } from '../../services/api';
@@ -85,8 +85,16 @@ const AdminProjects = () => {
     // Create FormData for file upload
     const submitData = new FormData();
 
-    // Add all form fields
-    Object.keys(formData).forEach(key => {
+    // Send only fields writable by ProjectSerializer.
+    const writableFields = [
+      'title',
+      'description',
+      'github_repo',
+      'live_link',
+      'technologies_used',
+      'is_featured'
+    ];
+    writableFields.forEach(key => {
       if (key === 'technologies_used') {
         submitData.append(key, formData[key].split(',').map(s => s.trim()).join(','));
       } else {
@@ -98,11 +106,6 @@ const AdminProjects = () => {
     imageFiles.forEach((file, index) => {
       submitData.append(`project_images`, file);
     });
-
-    // Add legacy single image if selected
-    if (formData.project_image && !imageFiles.length) {
-      submitData.append('project_image', formData.project_image);
-    }
 
     // Add project developers
     projectDevelopers.forEach(dev => {
@@ -129,7 +132,7 @@ const AdminProjects = () => {
       setProjectDevelopers([]);
       fetchProjects();
     } catch (error) {
-      console.error("Error saving project:", error);
+      console.error("Error saving project:", error.response?.data || error);
     }
   };
 
@@ -208,14 +211,6 @@ const AdminProjects = () => {
     const newPreviews = imagePreviews.filter((_, i) => i !== index);
     setImageFiles(newFiles);
     setImagePreviews(newPreviews);
-  };
-
-  const handleImageUrlChange = (value) => {
-    setFormData({ ...formData, project_image: value });
-    if (value) {
-      setImagePreviews([value]);
-      setImageFiles([]);
-    }
   };
 
   const addProjectDeveloper = () => {
@@ -597,23 +592,10 @@ const AdminProjects = () => {
                       )}
                     </div>
 
-                    {/* URL Input */}
-                    <div className="space-y-2">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={formData.project_image}
-                          onChange={(e) => handleImageUrlChange(e.target.value)}
-                          placeholder="Or enter single image URL..."
-                          className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 pl-8 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                        />
-                        <Image className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                      </div>
-                    </div>
                   </div>
 
                   <p className="text-xs text-gray-600">
-                    Upload multiple images for a carousel display (auto-scrolls every 5 seconds) or provide a single image URL.
+                    Upload one or more images for a carousel display (auto-scrolls every 5 seconds).
                     First image will be featured on project cards.
                   </p>
                 </div>
@@ -626,6 +608,7 @@ const AdminProjects = () => {
                     onChange={(e) => setFormData({ ...formData, technologies_used: e.target.value })}
                     placeholder="React, Node.js, AWS"
                     className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    required
                   />
                 </div>
 

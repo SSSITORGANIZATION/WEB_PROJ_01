@@ -7,7 +7,7 @@ import {
   X as CloseIcon, User, Code, Globe, Save,
   AlertCircle, ChevronRight, ArrowLeft,
   Mail, Phone, Briefcase, Star,
-  Crown, UserCheck, Shield, Upload, Image,
+  Crown, UserCheck, Shield, Upload,
   ChevronLeft
 } from 'lucide-react';
 import { apiService } from '../../services/api';
@@ -73,8 +73,18 @@ const AdminDevelopers = () => {
     // Create FormData for file upload
     const submitData = new FormData();
 
-    // Add all form fields
-    Object.keys(formData).forEach(key => {
+    // Send only fields writable by DeveloperSerializer.
+    const writableFields = [
+      'name',
+      'title',
+      'bio',
+      'github_link',
+      'linkedin_link',
+      'skills',
+      'is_active',
+      'experience_years'
+    ];
+    writableFields.forEach(key => {
       if (key === 'skills') {
         submitData.append(key, formData[key].split(',').map(s => s.trim()).join(','));
       } else {
@@ -104,7 +114,7 @@ const AdminDevelopers = () => {
       setImagePreview('');
       fetchDevs();
     } catch (error) {
-      console.error("Error saving developer:", error);
+      console.error("Error saving developer:", error.response?.data || error);
     }
   };
 
@@ -159,12 +169,6 @@ const AdminDevelopers = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleImageUrlChange = (value) => {
-    setFormData({ ...formData, profile_image: value });
-    setImagePreview(value);
-    setImageFile(null);
   };
 
   const filteredDevs = useMemo(() => {
@@ -484,22 +488,9 @@ const AdminDevelopers = () => {
                       )}
                     </div>
 
-                    {/* URL Input */}
-                    <div className="space-y-2">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={formData.profile_image}
-                          onChange={(e) => handleImageUrlChange(e.target.value)}
-                          placeholder="Or enter image URL..."
-                          className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 pl-8 text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                        />
-                        <Image className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                      </div>
-                    </div>
                   </div>
 
-                  <p className="text-xs text-gray-600 text-center">Upload a profile photo or provide a URL to an online image.</p>
+                  <p className="text-xs text-gray-600 text-center">Upload a profile photo.</p>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -521,6 +512,7 @@ const AdminDevelopers = () => {
                       onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
                       placeholder="React, Python, AWS, Docker"
                       className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                      required
                     />
                   </div>
                 </div>
