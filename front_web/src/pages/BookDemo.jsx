@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Calendar, MapPin, Clock, Video, Phone, MessageSquare, X, Briefcase
@@ -218,6 +219,7 @@ const BookingForm = ({ project, onClose, onSubmit }) => {
 };
 
 const BookDemo = () => {
+  const { projectTitle } = useParams();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -229,6 +231,16 @@ const BookDemo = () => {
       try {
         const response = await apiService.getProjects();
         setProjects(response.data);
+        
+        // If projectTitle is provided in URL, find and pre-select the project
+        if (projectTitle) {
+          const decodedTitle = decodeURIComponent(projectTitle);
+          const foundProject = response.data.find(p => p.title === decodedTitle);
+          if (foundProject) {
+            setSelectedProject(foundProject);
+            setShowForm(true);
+          }
+        }
       } catch (error) {
         console.error("Error fetching projects:", error);
       } finally {
@@ -237,7 +249,7 @@ const BookDemo = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [projectTitle]);
 
   const handleBook = (project) => {
     setSelectedProject(project);

@@ -509,7 +509,7 @@ const AppContent = () => {
             <Route path="/hiring" element={<Layout><Hiring /></Layout>} />
             <Route path="/apply/:id" element={<Layout><ApplyForJob /></Layout>} />
             <Route path="/documentation" element={<Layout><Documentation /></Layout>} />
-            <Route path="/book-demo" element={<BookDemo />} />
+            <Route path="/book-demo/:projectTitle?" element={<BookDemo />} />
             <Route path="/review/:projectId" element={<Layout><ReviewPage /></Layout>} />
             <Route path="/reviews" element={<Layout><PublicReviews /></Layout>} />
             <Route path="/auth/login" element={<PublicRoute><CustomerLogin /></PublicRoute>} />

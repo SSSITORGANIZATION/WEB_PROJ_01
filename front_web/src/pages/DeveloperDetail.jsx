@@ -83,53 +83,54 @@ const DeveloperDetail = () => {
   if (!developer) return null;
 
   return (
-    <div className="min-h-screen pt-5 pb-12 px-6 bg-gray-50">
+    <div className="min-h-screen pt-0 pb-12 px-6 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        {/* Breadcrumb */}
+        {/* Breadcrumb - Only Back Button */}
         <Link
           to="/developers"
-          className="inline-flex items-center mt-1 gap-2 text-gray-500 hover:text-gray-700 transition-colors group mb-1"
+          className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors group mb-1 shadow-lg"
         >
-          <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
-          <span className="text-[10px] font-bold uppercase tracking-widest">Back</span>
+          <ArrowLeft className="w-6 h-6 transition-transform group-hover:-translate-x-1" />
         </Link>
 
-        {/* Profile Header with Blue Background */}
-        <div className="mb-1 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+        {/* Profile Header with Full Image Background */}
+        <div className="mb-1 rounded-xl overflow-hidden shadow-lg relative h-96">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden"
+            className="relative w-full h-full"
           >
-            {/* Profile Image */}
-            <div className="relative w-32 h-32 mx-auto mb-6">
-              <div className="absolute inset-0 rounded-full bg-white/20 blur-2xl" />
-              <img
-                src={developer.profile_image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${developer.name}`}
-                alt={developer.name}
-                className="relative z-10 w-full h-full rounded-full object-cover border-4 border-white/30"
-                referrerPolicy="no-referrer"
-              />
+            {/* Full Card Background Image */}
+            <img
+              src={developer.profile_image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${developer.name}`}
+              alt={developer.name}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+            
+            {/* Light Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
+            
+            {/* Developer Name Overlay */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-3xl md:text-4xl font-bold mb-2 tracking-tight text-white"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+              >
+                {developer.name}
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-white/90 text-sm font-semibold uppercase tracking-wider"
+              >
+                {developer.title}
+              </motion.p>
             </div>
-
-            {/* Name and Title */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl md:text-4xl font-bold mb-2 tracking-tight"
-              style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-            >
-              {developer.name}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-blue-100 text-sm font-semibold uppercase tracking-wider"
-            >
-              {developer.title}
-            </motion.p>
           </motion.div>
         </div>
 
@@ -193,8 +194,8 @@ const DeveloperDetail = () => {
           {/* Right Column: Detailed Content */}
           <div className="lg:col-span-2 space-y-10">
             <section>
-              <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg mb-6">
-                <h2 className="text-3xl font-bold mb-2">About the Developer</h2>
+              <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg mb-6">
+                <h2 className="text-2xl font-bold mb-1">About the Developer</h2>
               </div>
               <p className="text-gray-600 text-base leading-relaxed mb-6">
                 {developer.bio}
