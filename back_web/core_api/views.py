@@ -396,11 +396,16 @@ def register_customer(request):
     if Customer.objects.filter(email=email).exists():
         return Response({"error": "Email already registered"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Generate token for new customer
+    import secrets
+    token = secrets.token_urlsafe(32)
+
     customer = Customer.objects.create(
         email=email,
         name=name,
         phone=phone or "",
         password=make_password(password),
+        auth_token=token,
         is_verified=True,
     )
 
@@ -408,10 +413,13 @@ def register_customer(request):
 
     return Response(
         {
-            "id": customer.id,
-            "email": customer.email,
-            "name": customer.name,
-            "phone": customer.phone,
+            "token": token,
+            "user": {
+                "id": customer.id,
+                "email": customer.email,
+                "name": customer.name,
+                "phone": customer.phone,
+            }
         },
         status=status.HTTP_201_CREATED,
     )
@@ -424,12 +432,24 @@ def customer_login(request):
     serializer.is_valid(raise_exception=True)
     customer = serializer.validated_data["customer"]
 
+    # Generate a simple token for customer authentication
+    import secrets
+    token = secrets.token_urlsafe(32)
+    
+    # Store token in customer model (you may want to add a token field to Customer model)
+    # For now, we'll return the token directly
+    customer.auth_token = token
+    customer.save()
+
     return Response(
         {
-            "id": customer.id,
-            "email": customer.email,
-            "name": customer.name,
-            "phone": customer.phone,
+            "token": token,
+            "user": {
+                "id": customer.id,
+                "email": customer.email,
+                "name": customer.name,
+                "phone": customer.phone,
+            }
         },
         status=status.HTTP_200_OK,
     )

@@ -49,7 +49,7 @@ const CustomerLogin = () => {
       const response = await apiService.loginCustomer(formData.email, formData.password);
       console.log('Received response from backend:', response.data);
       
-      if (response.data && response.data.token) {
+      if (response.data && response.data.token && response.data.user) {
         setAuth(response.data.user, response.data.token);
         navigate('/');
       } else {

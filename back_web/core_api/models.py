@@ -357,6 +357,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, blank=True)
     name = models.CharField(max_length=100)
     password = models.CharField(max_length=128)  # hashed later
+    auth_token = models.CharField(max_length=255, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

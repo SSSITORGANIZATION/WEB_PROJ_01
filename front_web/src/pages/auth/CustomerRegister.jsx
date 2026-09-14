@@ -106,7 +106,7 @@ const CustomerRegister = () => {
         otp
       });
 
-      if (response.data) {
+      if (response.data && response.data.token && response.data.user) {
         setAuth(response.data.user, response.data.token);
         navigate('/');
       }
