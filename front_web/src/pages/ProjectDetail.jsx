@@ -99,8 +99,8 @@ const ProjectDetailPage = () => {
         </div>
 
         {/* Hero Section with Blue Header */}
-        <div className="mb-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
-          <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="mb-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center text-white shadow-lg">
+          <div className="flex items-center justify-center gap-3 mb-3">
             <span className="text-blue-100 font-mono text-sm">#{project.id}</span>
             <span className={`px-3 py-1 text-xs font-bold rounded-full border ${project.status === 'ACTIVE'
               ? 'bg-green-500/20 text-green-300 border-green-500/30'
@@ -117,11 +117,11 @@ const ProjectDetailPage = () => {
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
             {project.title}
           </h1>
 
-          <p className="text-lg text-blue-100 leading-relaxed max-w-3xl mx-auto">
+          <p className="text-base text-blue-100 leading-relaxed max-w-3xl mx-auto">
             {project.description}
           </p>
         </div>
@@ -186,7 +186,7 @@ const ProjectDetailPage = () => {
             </div>
 
             {/* Enhanced Quick Stats */}
-            <div className="grid grid-cols-3 gap-6 mb-8 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="grid grid-cols-3 gap-6 mb-6 p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
               <div className="text-center">
                 <p className="text-3xl font-bold text-gray-900">
                   {project.project_developers ? project.project_developers.length : 0}
@@ -206,6 +206,20 @@ const ProjectDetailPage = () => {
                 <p className="text-gray-500 text-sm">Assets</p>
               </div>
             </div>
+
+            {/* Technology Stack */}
+            {project.technologies_used && (
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Technology Stack</h3>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies_used.split(',').map((tech, i) => (
+                    <span key={i} className="px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-xs font-medium">
+                      {tech.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
@@ -222,27 +236,11 @@ const ProjectDetailPage = () => {
           </div>
         </div>
 
-        {/* Technology Stack */}
-        {project.technologies_used && (
-          <section className="mb-12">
-            <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg mb-6">
-              <h2 className="text-3xl font-bold mb-2">Technology Stack</h2>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {project.technologies_used.split(',').map((tech, i) => (
-                <span key={i} className="px-4 py-2 bg-white border border-gray-200 text-gray-900 rounded-lg text-sm shadow-sm">
-                  {tech.trim()}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* Development Team */}
         {project.project_developers && project.project_developers.length > 0 && (
           <section className="mb-12">
-            <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg mb-6">
-              <h2 className="text-3xl font-bold mb-2">Development Team</h2>
+            <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg mb-6">
+              <h2 className="text-2xl font-bold mb-1">Development Team</h2>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {project.project_developers
@@ -276,8 +274,8 @@ const ProjectDetailPage = () => {
 
         {/* Project Reviews */}
         <section className="mt-12">
-          <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg mb-6">
-            <h2 className="text-3xl font-bold mb-2">Project Reviews</h2>
+          <div className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg mb-6">
+            <h2 className="text-2xl font-bold mb-1">Project Reviews</h2>
           </div>
           <Reviews projectId={id} showForm={false} limit={5} />
         </section>

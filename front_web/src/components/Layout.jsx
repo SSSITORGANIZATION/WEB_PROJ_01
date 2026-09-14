@@ -7,6 +7,7 @@ import {
   Code2,
   BookOpen,
   LogIn,
+  LogOut,
   Menu,
   X,
   Github,
@@ -15,10 +16,12 @@ import {
   Mail,
   Terminal,
   ArrowRight,
-  Star
+  Star,
+  User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiService } from '../services/api';
+import { useAuth } from '../auth/authContext.jsx';
 import '../styles/components/Layout.css';
 
 const Footer = ({ siteSettings, footerData }) => {
@@ -200,6 +203,13 @@ const HeaderWithSettings = ({ siteSettings, navbarLinks }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, clearAuth } = useAuth();
+
+  // Truncate name if too long
+  const truncateName = (name, maxLength = 15) => {
+    if (!name) return 'User';
+    return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -329,14 +339,31 @@ const HeaderWithSettings = ({ siteSettings, navbarLinks }) => {
         </nav>
 
         <div className="layout-header-actions">
-          <motion.button
-            className="layout-cta-button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <LogIn size={16} />
-            <span>Login</span>
-          </motion.button>
+          {isAuthenticated && user ? (
+            <div className="layout-user-info">
+              <User size={16} />
+              <span className="layout-user-name">{truncateName(user.name)}</span>
+              <motion.button
+                className="layout-logout-button"
+                onClick={clearAuth}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <LogOut size={16} />
+              </motion.button>
+            </div>
+          ) : (
+            <Link to="/auth/login">
+              <motion.button
+                className="layout-cta-button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <LogIn size={16} />
+                <span>Login</span>
+              </motion.button>
+            </Link>
+          )}
 
           <button
             className="layout-mobile-menu-toggle"

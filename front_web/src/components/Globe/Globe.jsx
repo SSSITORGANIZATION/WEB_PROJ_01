@@ -4,7 +4,6 @@ import { OrbitControls, Stars, Sphere, MeshDistortMaterial } from '@react-three/
 import * as THREE from 'three';
 import GeographicLines from './GeographicLines';
 import LocationMarker from './LocationMarker';
-import ContinentOutlines from './ContinentOutlines';
 
 const Earth = ({ earthRef, textureLoaded, setTextureLoaded }) => {
   const earthTexture = useRef();
@@ -148,7 +147,7 @@ const Lights = () => {
   );
 };
 
-const GlobeScene = ({ autoRotate = true, showClouds = true, showAtmosphere = true, showGeographicLines = true, showContinentOutlines = true, backgroundOnly = false }) => {
+const GlobeScene = ({ autoRotate = true, showClouds = true, showAtmosphere = true, showGeographicLines = true, backgroundOnly = false }) => {
   const earthRef = useRef();
   const [textureLoaded, setTextureLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -209,7 +208,6 @@ const GlobeScene = ({ autoRotate = true, showClouds = true, showAtmosphere = tru
             {showAtmosphere && <Atmosphere />}
             {showClouds && <Clouds />}
             {showGeographicLines && <GeographicLines />}
-            {showContinentOutlines && <ContinentOutlines />}
           </>
         )}
 
