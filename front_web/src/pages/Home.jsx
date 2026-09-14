@@ -43,13 +43,13 @@ const StatCounter = ({ value, label, icon: Icon }) => (
 
     viewport={{ once: true }}
 
-    className="flex flex-col items-center p-4 rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm"
+    className="flex flex-col items-center p-6 rounded-xl border border-gray-200 bg-white shadow-lg"
 
   >
 
-    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-50">
+    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
 
-      <Icon className="h-5 w-5 text-blue-600" />
+      <Icon className="h-6 w-6 text-blue-600" />
 
     </div>
 
@@ -69,7 +69,7 @@ const ProjectCard = ({ project }) => (
 
     whileHover={{ y: -8, scale: 1.02 }}
 
-    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
+    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all hover:shadow-xl"
 
   >
 
@@ -107,9 +107,9 @@ const ProjectCard = ({ project }) => (
 
       <div className="mb-2 flex items-center gap-2">
 
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 border border-gray-200">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
 
-          <Code className="h-4 w-4 text-blue-600" />
+          <Code className="h-6 w-6 text-blue-600" />
 
         </div>
 
@@ -177,7 +177,7 @@ const ResourceCard = ({ resource }) => {
         whileHover={{ y: -8, scale: 1.02 }}
         className="group h-full"
       >
-        <div className="relative flex h-[380px] flex-col overflow-hidden rounded-xl border border-[rgb(37,99,235)] bg-white shadow-sm transition-all hover:shadow-xl hover:border-blue-600">
+        <div className="relative flex h-[380px] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all hover:shadow-xl">
 
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -281,7 +281,7 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
       whileHover={{ y: -8, scale: 1.02 }}
 
-      className="group relative flex h-full flex-col rounded-xl border border-[rgb(37,99,235)] bg-white p-4 text-center shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
+      className="group relative flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 text-center shadow-lg transition-all hover:shadow-xl"
 
     >
 
@@ -670,11 +670,11 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg">
 
-            <h2 className="mb-4 text-3xl font-bold">Your Technical Command Center</h2>
+            <h2 className="mb-2 text-2xl font-bold">Your Technical Command Center</h2>
 
-            <p className="mx-auto max-w-2xl text-lg text-blue-100">One source of truth for architectural decisions, project health, and developer performance metrics.</p>
+            <p className="mx-auto max-w-2xl text-base text-blue-100">One source of truth for architectural decisions, project health, and developer performance metrics.</p>
 
           </div>
 
@@ -706,13 +706,13 @@ const Home = () => {
 
                 whileHover={{ y: -8, scale: 1.02 }}
 
-                className="rounded-xl border border-[rgb(37,99,235)] bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:border-blue-600"
+                className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg transition-all hover:shadow-xl"
 
               >
 
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 group-hover:scale-110 transition-transform">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100">
 
-                  <feature.icon className="h-6 w-6 text-blue-600" />
+                  <feature.icon className="h-8 w-8 text-blue-600" />
 
                 </div>
 
@@ -738,21 +738,25 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
 
-            <h2 className="mb-4 text-3xl font-bold">Featured Projects</h2>
+            <div className="flex items-center justify-between">
 
-            <p className="mx-auto max-w-2xl text-lg text-blue-100">Discover the most innovative solutions built by our community of elite developers.</p>
+              <div className="text-center flex-1">
 
-          </div>
+                <h2 className="mb-2 text-2xl font-bold">Featured Projects</h2>
 
-          <div className="mb-8 text-center">
+                <p className="mx-auto max-w-2xl text-base text-blue-100">Discover the most innovative solutions built by our community of elite developers.</p>
 
-            <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
+              </div>
 
-              View All Projects <ArrowRight className="w-4 h-4" />
+              <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
 
-            </Link>
+                View All <ArrowRight className="w-4 h-4" />
+
+              </Link>
+
+            </div>
 
           </div>
 
@@ -762,7 +766,7 @@ const Home = () => {
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[400px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[400px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
 
             ) : (
 
@@ -784,21 +788,25 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
 
-            <h2 className="mb-4 text-3xl font-bold">Developer Resources</h2>
+            <div className="flex items-center justify-between">
 
-            <p className="mx-auto max-w-2xl text-lg text-blue-100">Access curated collection of Blogs, guides, and development tools.</p>
+              <div className="text-center flex-1">
 
-          </div>
+                <h2 className="mb-2 text-2xl font-bold">Developer Resources</h2>
 
-          <div className="mb-8 text-center">
+                <p className="mx-auto max-w-2xl text-base text-blue-100">Access curated collection of Blogs, guides, and development tools.</p>
 
-            <Link to="/resources" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
+              </div>
 
-              Explore All Resources <ArrowRight className="w-4 h-4" />
+              <Link to="/resources" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
 
-            </Link>
+                View All <ArrowRight className="w-4 h-4" />
+
+              </Link>
+
+            </div>
 
           </div>
 
@@ -808,7 +816,7 @@ const Home = () => {
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[350px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[350px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
 
             ) : (
 
@@ -830,19 +838,23 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
 
-            <h2 className="mb-4 text-3xl font-bold">Meet The Nexora Team</h2>
+            <div className="flex items-center justify-between">
 
-          </div>
+              <div className="text-center flex-1">
 
-          <div className="mb-8 text-center">
+                <h2 className="mb-2 text-2xl font-bold">Meet The Nexora Team</h2>
 
-            <Link to="/developers" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700">
+              </div>
 
-              View All Developers <ArrowRight className="w-4 h-4" />
+              <Link to="/developers" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
 
-            </Link>
+                View All <ArrowRight className="w-4 h-4" />
+
+              </Link>
+
+            </div>
 
           </div>
 
@@ -852,7 +864,7 @@ const Home = () => {
 
             {loading ? (
 
-              [1, 2, 3].map(i => <div key={i} className="h-[380px] rounded-xl border border-[rgb(37,99,235)] bg-white animate-pulse" />)
+              [1, 2, 3].map(i => <div key={i} className="h-[380px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
 
             ) : (
 
@@ -874,25 +886,29 @@ const Home = () => {
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-12 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
 
-            <h2 className="mb-4 text-3xl font-bold">Client Testimonials</h2>
+            <div className="flex items-center justify-between">
 
-            <p className="mx-auto max-w-2xl text-lg text-blue-100">Hear what our clients say about their experience working with our team</p>
+              <div className="text-center flex-1">
+
+                <h2 className="mb-2 text-2xl font-bold">Client Testimonials</h2>
+
+                <p className="mx-auto max-w-2xl text-base text-blue-100">Hear what our clients say about their experience working with our team</p>
+
+              </div>
+
+              <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
+
+                View All <ArrowRight className="w-4 h-4" />
+
+              </Link>
+
+            </div>
 
           </div>
 
           <ScrollingReviews limit={10} />
-
-          <div className="mt-8 text-center">
-
-            <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition-colors hover:text-blue-700 justify-center">
-
-              View All Reviews <ArrowRight className="w-4 h-4" />
-
-            </Link>
-
-          </div>
 
         </div>
 

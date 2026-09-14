@@ -188,7 +188,7 @@ const Hiring = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
@@ -231,14 +231,19 @@ const Hiring = () => {
       </section>
 
       {/* Open Positions */}
-      <section id="open-positions" className="py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Open Positions</h2>
+      <section id="open-positions" className="py-20">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Open Positions</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Explore our current openings and find the role that matches your skills and aspirations.
             </p>
-          </div>
+          </motion.div>
 
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

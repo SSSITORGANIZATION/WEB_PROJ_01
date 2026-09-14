@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import {
   ArrowLeft, Calendar, Clock, Tag,
   ArrowRight, BookOpen, FileText,
-  Lightbulb, Shield
+  Lightbulb, Shield, X
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import ReactMarkdown from 'react-markdown';
@@ -22,6 +22,7 @@ const ResourceDetail = () => {
   const [resource, setResource] = useState(null);
   const [relatedResources, setRelatedResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchResourceData = async () => {
@@ -71,7 +72,7 @@ const ResourceDetail = () => {
   if (!resource) return null;
 
   return (
-    <div className="min-h-screen bg-[#faf8fe] pt-24 pb-16 px-4 md:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#faf8fe] pt-0 pb-16 px-4 md:px-6 lg:px-8">
       <div className="w-full max-w-5xl mx-auto">
         {/* Breadcrumb & Navigation */}
         <motion.div
@@ -94,22 +95,22 @@ const ResourceDetail = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-6 p-6 bg-white border border-gray-200 rounded-3xl relative overflow-hidden"
+          className="mb-6 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl relative overflow-hidden text-white"
         >
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-3">
-              <span className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${resource.category === 'BLOG' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                  resource.category === 'GUIDE' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                    resource.category === 'TOOL' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                      'bg-rose-50 text-rose-700 border border-rose-200'
+              <span className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${resource.category === 'BLOG' ? 'bg-white/20 text-white border border-white/30' :
+                  resource.category === 'GUIDE' ? 'bg-white/20 text-white border border-white/30' :
+                    resource.category === 'TOOL' ? 'bg-white/20 text-white border border-white/30' :
+                      'bg-white/20 text-white border border-white/30'
                 }`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
                 {resource.category}
               </span>
-              <div className="flex items-center gap-1.5 text-xs text-gray-500 uppercase tracking-wider font-semibold" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              <div className="flex items-center gap-1.5 text-xs text-blue-100 uppercase tracking-wider font-semibold" style={{ fontFamily: 'Work Sans, sans-serif' }}>
                 <Calendar className="w-3 h-3" />
                 {new Date(resource.published_on || resource.created_at).toLocaleDateString()}
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-gray-500 uppercase tracking-wider font-semibold" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+              <div className="flex items-center gap-1.5 text-xs text-blue-100 uppercase tracking-wider font-semibold" style={{ fontFamily: 'Work Sans, sans-serif' }}>
                 <Clock className="w-3 h-3" />
                 8 min read
               </div>
@@ -117,18 +118,18 @@ const ResourceDetail = () => {
 
             <div className="flex flex-col lg:flex-row lg:items-start gap-6">
               <div className="flex-1">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight" style={{ fontFamily: 'Manrope, sans-serif' }}>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight" style={{ fontFamily: 'Manrope, sans-serif' }}>
                   {resource.title}
                 </h1>
               </div>
 
               {/* Thumbnail Image */}
               {resource.thumbnail && (
-                <div className="lg:w-48 w-full rounded-2xl overflow-hidden border border-gray-200">
+                <div className="lg:w-48 w-full rounded-2xl overflow-hidden border border-white/30 cursor-pointer" onClick={() => setSelectedImage(getMediaUrl(resource.thumbnail))}>
                   <img
                     src={getMediaUrl(resource.thumbnail)}
                     alt={resource.title}
-                    className="w-full h-auto object-cover rounded-2xl"
+                    className="w-full h-auto object-cover rounded-2xl hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
@@ -144,9 +145,9 @@ const ResourceDetail = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-6 p-6 bg-white border border-gray-200 rounded-3xl relative overflow-hidden"
+          className="mb-6 p-6 bg-white border border-gray-200 rounded-xl relative overflow-hidden"
         >
-          <div className="text-gray-700 text-base md:text-lg lg:text-xl leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Work Sans, sans-serif' }}>
+          <div className="text-gray-700 text-base md:text-lg leading-relaxed whitespace-pre-wrap" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
             {resource.content}
           </div>
         </motion.div>
@@ -180,7 +181,7 @@ const ResourceDetail = () => {
                   >
                     {/* Thumbnail Image */}
                     {rel.thumbnail && (
-                      <div className="relative h-40 overflow-hidden rounded-xl mb-4 bg-gray-100">
+                      <div className="relative h-40 overflow-hidden rounded-xl mb-4 bg-gray-100 cursor-pointer" onClick={() => setSelectedImage(getMediaUrl(rel.thumbnail))}>
                         <img
                           src={getMediaUrl(rel.thumbnail)}
                           alt={rel.title}
@@ -227,6 +228,37 @@ const ResourceDetail = () => {
             </div>
           </div>
         </motion.section>
+
+        {/* Image Modal */}
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              className="relative max-w-5xl max-h-[90vh]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage}
+                alt="Full size"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              />
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-4 -right-4 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-6 h-6 text-gray-900" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
