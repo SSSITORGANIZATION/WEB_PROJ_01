@@ -5,7 +5,6 @@ import { Mail, ArrowRight, AlertCircle, Shield } from 'lucide-react';
 import { useAuth } from '../../auth/authContext.jsx';
 import { apiService } from '../../services/api';
 import PasswordInput from '../../components/auth/PasswordInput';
-import SocialLogin from '../../components/auth/SocialLogin';
 
 const CustomerLogin = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +16,7 @@ const CustomerLogin = () => {
   const [error, setError] = useState('');
   const { setAuth } = useAuth();
   const navigate = useNavigate();
+  const firebaseReady = typeof window !== 'undefined' && !!window.__FIREBASE_READY__;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,7 +48,7 @@ const CustomerLogin = () => {
       console.log('Sending login credentials to backend:', { email: formData.email });
       const response = await apiService.loginCustomer(formData.email, formData.password);
       console.log('Received response from backend:', response.data);
-      
+
       if (response.data && response.data.token && response.data.user) {
         setAuth(response.data.user, response.data.token);
         navigate('/');
@@ -69,10 +69,7 @@ const CustomerLogin = () => {
     }
   };
 
-  const handleSocialLoginSuccess = (result) => {
-    setAuth(result, result.token || 'social-token');
-    navigate('/');
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-6">
@@ -110,7 +107,9 @@ const CustomerLogin = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition disabled:opacity-50"
+                    autoComplete="username"
+                    inputMode="email"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
                     disabled={loading}
                   />
                 </div>
@@ -161,17 +160,11 @@ const CustomerLogin = () => {
               </button>
             </form>
 
-            <div className="my-6 flex items-center gap-4">
-              <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-sm text-gray-400">or continue with</span>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
-
-            <SocialLogin
-              onLoadingChange={setLoading}
-              onError={setError}
-              onSuccess={handleSocialLoginSuccess}
-            />
+            {!firebaseReady && (
+              <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                Google and GitHub sign-in require Firebase credentials in <span className="font-semibold">front_web/.env.local</span>.
+              </div>
+            )}
 
             <div className="mt-6 text-center">
               <p className="text-gray-600 text-sm">

@@ -1,11 +1,11 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Search, Book, Code, Globe,
   ArrowRight, ChevronRight, FileText,
   Terminal, Layers, Shield, Zap,
   Cpu, Database, Layout, Smartphone,
-  Menu, X, Bookmark, ExternalLink, Clock
+  Menu, X, Bookmark, ExternalLink, Clock, UserCheck
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -15,8 +15,64 @@ const Documentation = () => {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [savedView, setSavedView] = useState(false);
+  const [bookmarkedDocs, setBookmarkedDocs] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('bookmarkedDocs') || '[]');
+    } catch {
+      return [];
+    }
+  });
 
-  const categories = ['All', 'Getting Started', 'API Reference', 'Frontend', 'Backend', 'Deployment', 'Security'];
+  const categories = ['All', 'Saved', 'Getting Started', 'API Reference', 'Frontend', 'Backend', 'Deployment', 'Security'];
+
+  const toggleBookmark = (docId) => {
+    setBookmarkedDocs((prev) => {
+      const next = prev.includes(docId)
+        ? prev.filter((id) => id !== docId)
+        : [...prev, docId];
+
+      try {
+        localStorage.setItem('bookmarkedDocs', JSON.stringify(next));
+      } catch (error) {
+        console.error('Failed to update bookmarks:', error);
+      }
+
+      return next;
+    });
+  };
+
+  const shareDoc = async (doc) => {
+    const shareUrl = `${window.location.origin}/documentation/${doc.id}`;
+    const shareText = `Check out "${doc.title}" on DevForge.`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: doc.title,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      } else {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = `${shareText} ${shareUrl}`;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+      }
+
+      window.alert('Documentation link copied to clipboard.');
+    } catch (error) {
+      console.error('Share failed:', error);
+      window.alert('Unable to share this documentation right now.');
+    }
+  };
 
   useEffect(() => {
     const fetchDocs = async () => {
@@ -71,19 +127,27 @@ const Documentation = () => {
     fetchDocs();
   }, []);
 
-  const filteredDocs = docs.filter(doc => {
+  const savedDocs = docs.filter(doc => bookmarkedDocs.includes(doc.id));
+
+  const filteredDocs = (savedView ? savedDocs : docs).filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(search.toLowerCase()) ||
       doc.content.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = activeCategory === 'All' || doc.category === activeCategory;
+    const matchesCategory = savedView || activeCategory === 'All' || doc.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category);
+    setSavedView(category === 'Saved');
+    setIsSidebarOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12">
+        <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -114,17 +178,14 @@ const Documentation = () => {
                   {categories.map((cat) => (
                     <button
                       key={cat}
-                      onClick={() => {
-                        setActiveCategory(cat);
-                        setIsSidebarOpen(false);
-                      }}
-                      className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[10px] font-medium transition-all ${activeCategory === cat
-                        ? 'border-blue-200 bg-blue-50 text-blue-600'
-                        : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
+                      onClick={() => handleCategoryChange(cat)}
+                      className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[10px] font-medium transition-all ${(savedView && cat === 'Saved') || (!savedView && activeCategory === cat)
+                          ? 'border-blue-200 bg-blue-50 text-blue-600'
+                          : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                     >
                       {cat}
-                      {activeCategory === cat && <ChevronRight className="h-2.5 w-2.5" />}
+                      {((savedView && cat === 'Saved') || (!savedView && activeCategory === cat)) && <ChevronRight className="h-2.5 w-2.5" />}
                     </button>
                   ))}
                 </div>
@@ -171,62 +232,93 @@ const Documentation = () => {
                 {[1, 2, 3].map(i => <div key={i} className="h-32 rounded-xl border border-gray-200 bg-white animate-pulse" />)}
               </div>
             ) : (
-              <div className="grid gap-3">
-                {filteredDocs.map((doc) => (
-                  <motion.div
-                    key={doc.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
-                  >
-                    <div className="mb-3 flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-blue-50 group-hover:scale-110 transition-transform">
-                          <FileText className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <div>
-                          <span className="mb-0.5 block text-[8px] font-bold uppercase tracking-widest text-gray-500">{doc.category || 'General'}</span>
-                          <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{doc.title}</h3>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors"><Bookmark className="h-3.5 w-3.5" /></button>
-                        <button className="p-1 text-gray-500 hover:text-gray-900 transition-colors"><ExternalLink className="h-3.5 w-3.5" /></button>
-                      </div>
+              <div className="space-y-4">
+                {savedView && (
+                  <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                    {savedDocs.length} saved document{savedDocs.length === 1 ? '' : 's'}
+                  </div>
+                )}
+                {filteredDocs.length === 0 ? (
+                  <div className="py-24 text-center rounded-xl border border-dashed border-gray-200 bg-white">
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                      <Book className="h-8 w-8 text-gray-400" />
                     </div>
-
-                    <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
-                      {doc.content?.substring(0, 200)}...
+                    <h3 className="mb-1.5 text-xl font-semibold text-gray-900">
+                      {savedView ? 'No saved documents yet' : 'No documentation found'}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {savedView ? 'Click the bookmark icon on any guide to save it here.' : 'Try searching for something else or browse categories.'}
                     </p>
-
-                    <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
-                          <Clock className="h-2 w-2" /> Updated 2 days ago
-                        </div>
-                        <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
-                          <UserCheck className="h-2 w-2" /> Verified
-                        </div>
-                      </div>
-                      <Link
-                        to={`/documentation/${doc.id}`}
-                        className="flex items-center gap-1 text-[10px] font-medium text-blue-600 group/link"
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {filteredDocs.map((doc) => (
+                      <motion.div
+                        key={doc.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
                       >
-                        Read Guide <ArrowRight className="h-3 w-3 transition-transform group-hover/link:translate-x-1" />
-                      </Link>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+                        <div className="mb-3 flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-blue-50 group-hover:scale-110 transition-transform">
+                              <FileText className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <span className="mb-0.5 block text-[8px] font-bold uppercase tracking-widest text-gray-500">{doc.category || 'General'}</span>
+                              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{doc.title}</h3>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleBookmark(doc.id);
+                              }}
+                              className={`p-1 transition-colors ${bookmarkedDocs.includes(doc.id) ? 'text-blue-600 hover:text-blue-700' : 'text-gray-500 hover:text-gray-900'}`}
+                              aria-label={bookmarkedDocs.includes(doc.id) ? 'Remove bookmark' : 'Save document'}
+                            >
+                              <Bookmark className={`h-3.5 w-3.5 ${bookmarkedDocs.includes(doc.id) ? 'fill-current' : ''}`} />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                shareDoc(doc);
+                              }}
+                              className="p-1 text-gray-500 hover:text-gray-900 transition-colors"
+                              aria-label="Share documentation"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
 
-            {!loading && filteredDocs.length === 0 && (
-              <div className="py-24 text-center rounded-xl border border-dashed border-gray-200 bg-white">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                  <Book className="h-8 w-8 text-gray-400" />
-                </div>
-                <h3 className="mb-1.5 text-xl font-semibold text-gray-900">No documentation found</h3>
-                <p className="text-sm text-gray-600">Try searching for something else or browse categories.</p>
+                        <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
+                          {doc.content?.substring(0, 200)}...
+                        </p>
+
+                        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
+                              <Clock className="h-2 w-2" /> Updated 2 days ago
+                            </div>
+                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
+                              <UserCheck className="h-2 w-2" /> Verified
+                            </div>
+                          </div>
+                          <Link
+                            to={`/documentation/${doc.id}`}
+                            className="flex items-center gap-1 text-[10px] font-medium text-blue-600 group/link"
+                          >
+                            Read Guide <ArrowRight className="h-3 w-3 transition-transform group-hover/link:translate-x-1" />
+                          </Link>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </main>
@@ -235,12 +327,6 @@ const Documentation = () => {
     </div>
   );
 };
-
-const UserCheck = ({ className }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><polyline points="16 11 18 13 22 9" />
-  </svg>
-);
 
 export default Documentation;
 

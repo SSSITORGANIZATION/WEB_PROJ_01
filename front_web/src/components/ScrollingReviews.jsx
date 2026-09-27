@@ -34,7 +34,7 @@ const ScrollingReviews = ({ limit = 6 }) => {
       const approvedReviews = reviewsData;
 
       // Find the highest rating first
-      const highestRating = approvedReviews.length > 0 
+      const highestRating = approvedReviews.length > 0
         ? Math.max(...approvedReviews.map(review => review.rating))
         : 0;
 
@@ -94,7 +94,7 @@ const ScrollingReviews = ({ limit = 6 }) => {
   const getVisibleReviews = () => {
     if (reviews.length === 0) return [];
     if (reviews.length === 1) return [reviews[0]];
-    
+
     const visible = [];
     for (let i = 0; i < 2; i++) {
       const index = (currentIndex + i) % reviews.length;
@@ -107,13 +107,13 @@ const ScrollingReviews = ({ limit = 6 }) => {
     return (
       <div className={`grid ${reviews.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-6`}>
         {[...Array(reviews.length === 1 ? 1 : 2)].map((_, i) => (
-          <div key={i} className="glass-card border-white/5 p-6 animate-pulse">
+          <div key={i} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm animate-pulse">
             <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-zinc-800" />
+              <div className="w-10 h-10 rounded-full bg-slate-200" />
               <div className="flex-1 space-y-3">
-                <div className="h-3 bg-zinc-800 rounded w-1/3" />
-                <div className="h-2 bg-zinc-800 rounded w-1/2" />
-                <div className="h-12 bg-zinc-800 rounded" />
+                <div className="h-3 bg-slate-200 rounded w-1/3" />
+                <div className="h-2 bg-slate-200 rounded w-1/2" />
+                <div className="h-12 bg-slate-200 rounded" />
               </div>
             </div>
           </div>
@@ -125,8 +125,8 @@ const ScrollingReviews = ({ limit = 6 }) => {
   if (reviews.length === 0) {
     return (
       <div className="text-center py-12">
-        <Quote className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-        <p className="text-zinc-400">No reviews yet. Be the first to share your experience!</p>
+        <Quote className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+        <p className="text-slate-600">No reviews yet. Be the first to share your experience!</p>
       </div>
     );
   }
@@ -143,10 +143,10 @@ const ScrollingReviews = ({ limit = 6 }) => {
             initial={{ opacity: 0, x: index === 0 ? -20 : 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="glass-card border-white/5 p-6 hover:border-white/10 transition-all relative overflow-hidden"
+            className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden"
           >
             {/* Quote Icon */}
-            <div className="absolute top-4 right-4 text-blue-500/20">
+            <div className="absolute top-4 right-4 text-blue-500/15">
               <Quote className="w-8 h-8" />
             </div>
 
@@ -161,31 +161,31 @@ const ScrollingReviews = ({ limit = 6 }) => {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h4 className="text-white font-bold text-sm serif">
+                    <h4 className="text-slate-900 font-bold text-sm serif">
                       {review.reviewer_name || 'Anonymous Client'}
                     </h4>
                     {review.project_title && (
-                      <p className="text-zinc-500 text-xs">
+                      <p className="text-slate-600 text-xs">
                         {review.project_title}
                       </p>
                     )}
                   </div>
                   <div className="text-right">
                     {renderStars(review.rating)}
-                    <p className="text-zinc-500 text-xs mt-1">
+                    <p className="text-slate-600 text-xs mt-1">
                       {formatDate(review.created_at)}
                     </p>
                   </div>
                 </div>
 
                 {/* Review Text */}
-                <p className="text-zinc-300 text-sm leading-relaxed line-clamp-3">
+                <p className="text-slate-700 text-sm leading-relaxed line-clamp-3">
                   {review.feedback}
                 </p>
 
                 {/* Review Period */}
                 {review.review_period && (
-                  <div className="flex items-center gap-2 text-zinc-500 text-xs mt-3">
+                  <div className="flex items-center gap-2 text-slate-600 text-xs mt-3">
                     <Calendar className="w-3 h-3" />
                     <span>{review.review_period}</span>
                   </div>
@@ -203,11 +203,10 @@ const ScrollingReviews = ({ limit = 6 }) => {
             <button
               key={i}
               onClick={() => setCurrentIndex(i * 2)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                Math.floor(currentIndex / 2) === i
+              className={`w-2 h-2 rounded-full transition-all ${Math.floor(currentIndex / 2) === i
                   ? 'bg-blue-500 w-6'
-                  : 'bg-zinc-700 hover:bg-zinc-600'
-              }`}
+                  : 'bg-slate-300 hover:bg-slate-400'
+                }`}
             />
           ))}
         </div>

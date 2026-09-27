@@ -1,14 +1,15 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Briefcase, MapPin, Clock, DollarSign, CheckCircle, X
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { apiService } from '../services/api';
 
 
 
 const JobCard = ({ job, applications, setSelectedJob, setShowForm }) => {
+  const navigate = useNavigate();
   const isApplied = applications.some(
     (app) =>
       app.job === job.id ||
@@ -64,10 +65,7 @@ const JobCard = ({ job, applications, setSelectedJob, setShowForm }) => {
           </span>
         ) : (
           <button
-            onClick={() => {
-              setSelectedJob(job);
-              setShowForm(true);
-            }}
+            onClick={() => navigate(`/apply/${job.id}`)}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
             Apply Now
@@ -98,6 +96,7 @@ const Hiring = () => {
 
   const [resume, setResume] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [formMessage, setFormMessage] = useState({ type: '', text: '' });
 
   // ✅ NOW useEffect AFTER state
   useEffect(() => {
@@ -150,13 +149,59 @@ const Hiring = () => {
     setOpenId(openId === id ? null : id);
   };
   const handleSubmit = async () => {
+    if (!selectedJob) {
+      setFormMessage({ type: 'error', text: 'Please select a job before submitting.' });
+      return;
+    }
+
+    const requiredFields = {
+      first_name: form.first_name,
+      last_name: form.last_name,
+      email: form.email,
+      contact: form.contact,
+      education: form.education,
+      skill_set: form.skill_set,
+      experience: form.experience,
+      linkedin_id: form.linkedin_id,
+    };
+
+    const missingField = Object.entries(requiredFields).find(([, value]) => !String(value || '').trim());
+    if (missingField) {
+      setFormMessage({ type: 'error', text: `Please enter your ${missingField[0].replace('_', ' ')}.` });
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(form.email.trim())) {
+      setFormMessage({ type: 'error', text: 'Please enter a valid email address.' });
+      return;
+    }
+
+    const numericPhone = form.contact.replace(/\D/g, '');
+    if (numericPhone.length < 10) {
+      setFormMessage({ type: 'error', text: 'Please enter a valid 10-digit phone number.' });
+      return;
+    }
+
     if (!resume) {
-      alert("Upload resume");
+      setFormMessage({ type: 'error', text: 'Upload your resume before submitting.' });
+      return;
+    }
+
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(resume.type)) {
+      setFormMessage({ type: 'error', text: 'Please upload a PDF, DOC, or DOCX resume file.' });
+      return;
+    }
+
+    if (resume.size > 5 * 1024 * 1024) {
+      setFormMessage({ type: 'error', text: 'Resume must be smaller than 5MB.' });
       return;
     }
 
     try {
       setSubmitting(true);
+      setFormMessage({ type: '', text: '' });
       const data = new FormData();
 
       Object.entries(form).forEach(([key, value]) => {
@@ -167,7 +212,7 @@ const Hiring = () => {
           }
           data.append("linkedin_id", link);
         } else {
-          data.append(key, value);
+          data.append(key, value.trim());
         }
       });
 
@@ -176,13 +221,30 @@ const Hiring = () => {
 
       await apiService.createJobApplication(data);
 
-      alert("✅ Applied Successfully");
+      setFormMessage({ type: 'success', text: 'Application submitted successfully.' });
 
-      setShowForm(false);
-      setSelectedJob(null);
+      setTimeout(() => {
+        setShowForm(false);
+        setSelectedJob(null);
+        setResume(null);
+        setForm({
+          first_name: "",
+          last_name: "",
+          position: "",
+          education: "",
+          skill_set: "",
+          certification: "",
+          experience: "",
+          email: "",
+          contact: "",
+          linkedin_id: "",
+        });
+        setFormMessage({ type: '', text: '' });
+      }, 1200);
 
     } catch (err) {
       console.error(err.response?.data);
+      setFormMessage({ type: 'error', text: err.response?.data?.detail || err.response?.data?.error || 'Failed to submit application. Please try again.' });
     } finally {
       setSubmitting(false);
     }
@@ -192,7 +254,7 @@ const Hiring = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-7xl mx-auto px-6 py-24 sm:px-8 lg:px-12">
+        <div className="relative max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -258,8 +320,6 @@ const Hiring = () => {
                   key={job.id}
                   job={job}
                   applications={applications}
-                  setSelectedJob={setSelectedJob}
-                  setShowForm={setShowForm}
                 />
               )) : (
                 <div className="col-span-full py-16 text-center">
@@ -300,6 +360,14 @@ const Hiring = () => {
               </div>
 
               <div className="space-y-4">
+                {formMessage.text && (
+                  <div className={`rounded-lg border px-3 py-2 text-sm ${formMessage.type === 'error'
+                    ? 'border-red-200 bg-red-50 text-red-700'
+                    : 'border-green-200 bg-green-50 text-green-700'}`}>
+                    {formMessage.text}
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Position
@@ -346,7 +414,10 @@ const Hiring = () => {
                     name="email"
                     type="email"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, email: e.target.value });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="john@example.com"
                   />
@@ -359,9 +430,14 @@ const Hiring = () => {
                   <input
                     name="contact"
                     value={form.contact}
-                    onChange={(e) => setForm({ ...form, contact: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, contact: e.target.value.replace(/[^0-9]/g, '') });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="1234567890"
                   />
                 </div>
 
@@ -372,7 +448,10 @@ const Hiring = () => {
                   <input
                     name="education"
                     value={form.education}
-                    onChange={(e) => setForm({ ...form, education: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, education: e.target.value });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Bachelor's in Computer Science"
                   />
@@ -385,7 +464,10 @@ const Hiring = () => {
                   <input
                     name="skill_set"
                     value={form.skill_set}
-                    onChange={(e) => setForm({ ...form, skill_set: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, skill_set: e.target.value });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="React, Python, TypeScript..."
                   />
@@ -398,7 +480,10 @@ const Hiring = () => {
                   <input
                     name="experience"
                     value={form.experience}
-                    onChange={(e) => setForm({ ...form, experience: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, experience: e.target.value });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="3+ years of software development"
                   />
@@ -411,7 +496,10 @@ const Hiring = () => {
                   <input
                     name="linkedin_id"
                     value={form.linkedin_id}
-                    onChange={(e) => setForm({ ...form, linkedin_id: e.target.value })}
+                    onChange={(e) => {
+                      setForm({ ...form, linkedin_id: e.target.value });
+                      if (formMessage.type === 'error') setFormMessage({ type: '', text: '' });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="linkedin.com/in/johndoe"
                   />

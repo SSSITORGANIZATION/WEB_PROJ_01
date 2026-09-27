@@ -119,7 +119,7 @@ export default function PublicReviews() {
       <div className="min-h-screen bg-gray-50">
         <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
           <div className="absolute inset-0 bg-black/10" />
-          <div className="relative mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12">
+          <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
             <div className="mx-auto flex max-w-4xl items-center justify-center gap-4 text-center">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200/30 border-t-white" />
               <p className="text-lg text-blue-100">Loading client reviews...</p>
@@ -143,7 +143,7 @@ export default function PublicReviews() {
       {/* Header */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative mx-auto max-w-7xl px-6 py-20 sm:px-8 lg:px-12">
+        <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

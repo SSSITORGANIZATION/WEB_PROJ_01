@@ -1,13 +1,11 @@
-﻿import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect } from 'react';
 import {
   Search, Filter, Code, Globe, Github,
   ExternalLink, ArrowRight, Layers,
-  Cpu, Database, Layout, Smartphone, Users, RefreshCw
+  Cpu, Database, Layout, Smartphone, Users
 } from 'lucide-react';
 import { apiService } from '../services/api';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRealTimeSync } from '../hooks/useRealTimeSync';
 import { ProjectImageCarousel, DeveloperImage } from '../components/ImageComponents';
 
 const BASE_BACKEND_URL = "http://localhost:8000";
@@ -16,13 +14,8 @@ const ProjectCard = ({ project }) => {
   const navigate = useNavigate();
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -4 }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+    <div
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-1"
     >
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-indigo-700" />
 
@@ -172,7 +165,7 @@ const ProjectCard = ({ project }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -218,9 +211,12 @@ const Projects = () => {
     }
   };
 
-  // Use real-time sync hook
-  const { manualRefresh } = useRealTimeSync(fetchProjects, 30000); // Refresh every 30 seconds
+  // Initial data fetch
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
+  // Filter projects based on search and category
   useEffect(() => {
     let filtered = projects;
 
@@ -238,7 +234,7 @@ const Projects = () => {
     }
 
     setFilteredProjects(filtered);
-  }, [search, activeCategory, projects]);
+  }, [search, activeCategory, projects.length]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -246,32 +242,20 @@ const Projects = () => {
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12">
-          <div className="flex items-center justify-between">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-3xl"
-            >
+          <div className="flex items-center">
+            <div className="max-w-3xl">
               <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
                 Project <span className="text-blue-100">Showcase</span>
               </h1>
               <p className="text-lg leading-relaxed text-blue-100">
                 Explore our curated gallery of high-performance software solutions, from enterprise-grade cloud architectures to innovative mobile experiences.
               </p>
-            </motion.div>
-            <button
-              onClick={manualRefresh}
-              className="flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
-              title="Refresh projects"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span className="text-sm">Refresh</span>
-            </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-12 pb-12">
+      <div className="max-w-7xl mx-auto px-6 py-6 pb-6">
 
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8 p-1.5 rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -311,11 +295,9 @@ const Projects = () => {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </AnimatePresence>
+            {filteredProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
           </div>
         )}
 

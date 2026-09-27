@@ -171,7 +171,8 @@ const CustomerRegister = () => {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="John Doe"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition disabled:opacity-50"
+                      autoComplete="name"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
                       disabled={loading}
                     />
                   </div>
@@ -187,7 +188,9 @@ const CustomerRegister = () => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="you@example.com"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition disabled:opacity-50"
+                      autoComplete="email"
+                      inputMode="email"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
                       disabled={loading}
                     />
                   </div>
@@ -201,9 +204,16 @@ const CustomerRegister = () => {
                       type="tel"
                       name="phone"
                       value={formData.phone}
-                      onChange={handleChange}
-                      placeholder="+1 (555) 123-4567"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition disabled:opacity-50"
+                      onChange={(e) => {
+                        const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+                        setFormData((prev) => ({ ...prev, phone: digitsOnly }));
+                        setError('');
+                      }}
+                      placeholder="1234567890"
+                      autoComplete="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
                       disabled={loading}
                     />
                   </div>

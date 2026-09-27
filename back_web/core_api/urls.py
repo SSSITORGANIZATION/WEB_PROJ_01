@@ -33,7 +33,9 @@ from .views import (
     admin_forgot_password,
     admin_reset_password,
     security_dashboard,
-    security_settings
+    security_settings,
+    google_auth,
+    github_auth
 )
 
 router = DefaultRouter()
@@ -62,6 +64,10 @@ urlpatterns = [
     path("customer/register/", register_customer),
     path("customer/login/", customer_login),
     path("reset-customer-password/", reset_customer_password),
+    
+    # Social Authentication URLs
+    path('auth/google/', google_auth, name='google_auth'),
+    path('auth/github/', github_auth, name='github_auth'),
     
     # Admin Authentication URLs
     path('auth/admin/login/', AdminLoginView.as_view(), name='admin_login'),

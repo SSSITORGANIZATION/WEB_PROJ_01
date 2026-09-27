@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -599,7 +599,7 @@ const Home = () => {
 
               animate={{ opacity: 1, x: 0 }}
 
-              className="relative z-10 flex min-h-[32rem] max-w-none flex-col items-start justify-start px-6 py-16 sm:px-8 lg:px-12"
+              className="relative z-10 flex min-h-[32rem] max-w-none flex-col items-start justify-start px-6 py-12 sm:px-8 lg:px-12"
 
             >
 
@@ -882,7 +882,7 @@ const Home = () => {
 
       {/* Reviews Section */}
 
-      <section className="py-12 px-6 bg-gray-50">
+      <section className="py-12 px-6 bg-white">
 
         <div className="max-w-7xl mx-auto">
 

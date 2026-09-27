@@ -21,7 +21,9 @@ const PasswordInput = ({ label, name, value, onChange, placeholder, required = f
           placeholder={placeholder || '••••••••'}
           required={required}
           disabled={disabled}
-          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition disabled:opacity-50 disabled:cursor-not-allowed"
+          autoComplete={name === 'password' ? 'current-password' : 'off'}
+          className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 disabled:cursor-not-allowed placeholder:text-slate-400"
+          style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc', textShadow: '0 0 0 transparent' }}
         />
         <button
           type="button"

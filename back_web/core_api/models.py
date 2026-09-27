@@ -356,10 +356,24 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, blank=True)
     name = models.CharField(max_length=100)
-    password = models.CharField(max_length=128)  # hashed later
+    password = models.CharField(max_length=128, blank=True, null=True)  # hashed later, nullable for social auth
     auth_token = models.CharField(max_length=255, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Social authentication fields
+    google_id = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    github_id = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    avatar_url = models.URLField(blank=True, null=True)
+    auth_provider = models.CharField(
+        max_length=20,
+        choices=[
+            ('email', 'Email'),
+            ('google', 'Google'),
+            ('github', 'GitHub'),
+        ],
+        default='email'
+    )
 
     def __str__(self):
         return self.email

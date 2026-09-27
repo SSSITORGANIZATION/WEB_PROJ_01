@@ -24,6 +24,7 @@ const ResourceDetail = React.lazy(() => import('./pages/ResourceDetail'));
 const Hiring = React.lazy(() => import('./pages/Hiring'));
 const ApplyForJob = React.lazy(() => import('./pages/ApplyForJob'));
 const Documentation = React.lazy(() => import('./pages/Documentation'));
+const DocumentationDetail = React.lazy(() => import('./pages/DocumentationDetail'));
 const BookDemo = React.lazy(() => import('./pages/BookDemo'));
 const ReviewPage = React.lazy(() => import('./pages/ReviewPage'));
 const PublicReviews = React.lazy(() => import('./pages/PublicReviews'));
@@ -84,7 +85,7 @@ const AdminRoute = ({ children }) => {
 // Components
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, clearAuth } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [siteSettings, setSiteSettings] = useState(null);
   const navigate = useNavigate();
@@ -112,7 +113,8 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    await authService.signOut();
+    clearAuth();
+    authService.signOut();
     navigate('/');
   };
 
@@ -160,7 +162,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gradient-to-r from-blue-700 to-indigo-800 backdrop-blur-xl border-b border-white/10 py-2' : 'bg-gradient-to-r from-blue-600 to-indigo-700 py-4'}`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center gap-2 group -ml-2 md:-ml-3">
           {siteSettings?.logo && (
             <img
               src={siteSettings.logo}
@@ -227,9 +229,11 @@ const Navbar = () => {
           {user ? (
             <div className="relative group">
               <button className="flex items-center gap-2 p-1 pl-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition-all">
-                <span className="text-sm font-medium text-white">{user.name || user.email?.split('@')[0]}</span>
+                <span className="text-sm font-medium text-white">
+                  {user.name ? user.name.split(' ')[0] : user.email?.split('@')[0]}
+                </span>
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center border border-white/30 overflow-hidden">
-                  {user.photoURL ? <img src={user.photoURL} alt="" /> : <User className="w-4 h-4 text-white" />}
+                  {user.avatar_url || user.photoURL ? <img src={user.avatar_url || user.photoURL} alt="" className="w-full h-full object-cover" /> : <User className="w-4 h-4 text-white" />}
                 </div>
               </button>
               <div className="absolute right-0 top-full mt-2 w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
@@ -477,8 +481,9 @@ const App = () => {
 const AppContent = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
-  const noFooterPages = ['/book-demo', '/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
-  const shouldShowFooter = !isAdminPage && !noFooterPages.includes(location.pathname);
+  const authPages = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
+  const shouldShowNavbar = !isAdminPage;
+  const shouldShowFooter = !isAdminPage && !authPages.includes(location.pathname) && !['/book-demo'].includes(location.pathname);
 
   // Scroll to top when route changes
   useEffect(() => {
@@ -487,7 +492,7 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {!isAdminPage && !noFooterPages.includes(location.pathname) && <Navbar />}
+      {shouldShowNavbar && <Navbar />}
       <main className="flex-grow">
         <Suspense fallback={
           <div className="h-screen w-full flex items-center justify-center bg-black">
@@ -501,24 +506,25 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/projects" element={<Layout><Projects /></Layout>} />
-            <Route path="/project/:id" element={<Layout><ProjectDetail /></Layout>} />
+            <Route path="/project/:id" element={<ProtectedRoute><Layout><ProjectDetail /></Layout></ProtectedRoute>} />
             <Route path="/developers" element={<Layout><Developers /></Layout>} />
-            <Route path="/developer/:id" element={<Layout><DeveloperDetail /></Layout>} />
+            <Route path="/developer/:id" element={<ProtectedRoute><Layout><DeveloperDetail /></Layout></ProtectedRoute>} />
             <Route path="/resources" element={<Layout><Resources /></Layout>} />
-            <Route path="/resources/:id" element={<Layout><ResourceDetail /></Layout>} />
+            <Route path="/resources/:id" element={<ProtectedRoute><Layout><ResourceDetail /></Layout></ProtectedRoute>} />
             <Route path="/hiring" element={<Layout><Hiring /></Layout>} />
-            <Route path="/apply/:id" element={<Layout><ApplyForJob /></Layout>} />
+            <Route path="/apply/:id" element={<ProtectedRoute><Layout><ApplyForJob /></Layout></ProtectedRoute>} />
             <Route path="/documentation" element={<Layout><Documentation /></Layout>} />
+            <Route path="/documentation/:id" element={<Layout><DocumentationDetail /></Layout>} />
             <Route path="/book-demo/:projectTitle?" element={<BookDemo />} />
             <Route path="/review/:projectId" element={<Layout><ReviewPage /></Layout>} />
             <Route path="/reviews" element={<Layout><PublicReviews /></Layout>} />
+            <Route path="/join-community" element={<Layout><JoinCommunity /></Layout>} />
+            <Route path="/about" element={<Layout><About /></Layout>} />
+            <Route path="/contact" element={<Layout><Contact /></Layout>} />
             <Route path="/auth/login" element={<PublicRoute><CustomerLogin /></PublicRoute>} />
             <Route path="/auth/register" element={<PublicRoute><CustomerRegister /></PublicRoute>} />
             <Route path="/auth/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
             <Route path="/auth/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
-            <Route path="/join-community" element={<Layout><JoinCommunity /></Layout>} />
-            <Route path="/about" element={<Layout><About /></Layout>} />
-            <Route path="/contact" element={<Layout><Contact /></Layout>} />
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/developer/onboarding" element={<Layout><DeveloperOnboarding /></Layout>} />
 

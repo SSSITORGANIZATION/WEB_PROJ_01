@@ -273,7 +273,7 @@ const BookDemo = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-7xl mx-auto px-6 py-16 sm:px-8 lg:px-12">
+        <div className="relative max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

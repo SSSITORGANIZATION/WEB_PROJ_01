@@ -475,6 +475,124 @@ def reset_customer_password(request):
     return Response({"success": True}, status=status.HTTP_200_OK)
 
 
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def google_auth(request):
+    """Handle Google OAuth authentication"""
+    google_id = request.data.get("google_id")
+    email = request.data.get("email")
+    name = request.data.get("name")
+    avatar_url = request.data.get("avatar_url")
+    
+    if not google_id or not email:
+        return Response({"error": "Google ID and email are required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        # Try to find existing customer by Google ID
+        customer = Customer.objects.get(google_id=google_id)
+    except Customer.DoesNotExist:
+        # Try to find by email (in case they registered with email before)
+        try:
+            customer = Customer.objects.get(email=email)
+            # Link Google account to existing customer
+            customer.google_id = google_id
+            customer.auth_provider = 'google'
+            if avatar_url:
+                customer.avatar_url = avatar_url
+            customer.is_verified = True
+            customer.save()
+        except Customer.DoesNotExist:
+            # Create new customer
+            customer = Customer.objects.create(
+                email=email,
+                name=name or email.split('@')[0],
+                google_id=google_id,
+                avatar_url=avatar_url,
+                auth_provider='google',
+                is_verified=True,
+                password=''  # No password for social auth
+            )
+    
+    # Generate token
+    token = secrets.token_urlsafe(32)
+    customer.auth_token = token
+    customer.save()
+    
+    return Response(
+        {
+            "token": token,
+            "user": {
+                "id": customer.id,
+                "email": customer.email,
+                "name": customer.name,
+                "phone": customer.phone,
+                "avatar_url": customer.avatar_url,
+                "auth_provider": customer.auth_provider
+            }
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def github_auth(request):
+    """Handle GitHub OAuth authentication"""
+    github_id = request.data.get("github_id")
+    email = request.data.get("email")
+    name = request.data.get("name")
+    avatar_url = request.data.get("avatar_url")
+    
+    if not github_id:
+        return Response({"error": "GitHub ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        # Try to find existing customer by GitHub ID
+        customer = Customer.objects.get(github_id=github_id)
+    except Customer.DoesNotExist:
+        # Try to find by email (in case they registered with email before)
+        try:
+            customer = Customer.objects.get(email=email)
+            # Link GitHub account to existing customer
+            customer.github_id = github_id
+            customer.auth_provider = 'github'
+            if avatar_url:
+                customer.avatar_url = avatar_url
+            customer.is_verified = True
+            customer.save()
+        except Customer.DoesNotExist:
+            # Create new customer
+            customer = Customer.objects.create(
+                email=email or f"github-{github_id}@placeholder.com",
+                name=name or email.split('@')[0] if email else f"GitHub User {github_id}",
+                github_id=github_id,
+                avatar_url=avatar_url,
+                auth_provider='github',
+                is_verified=True,
+                password=''  # No password for social auth
+            )
+    
+    # Generate token
+    token = secrets.token_urlsafe(32)
+    customer.auth_token = token
+    customer.save()
+    
+    return Response(
+        {
+            "token": token,
+            "user": {
+                "id": customer.id,
+                "email": customer.email,
+                "name": customer.name,
+                "phone": customer.phone,
+                "avatar_url": customer.avatar_url,
+                "auth_provider": customer.auth_provider
+            }
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
 from rest_framework import viewsets, permissions
 from .models import PerformanceReview
 from .serializers import PerformanceReviewSerializer

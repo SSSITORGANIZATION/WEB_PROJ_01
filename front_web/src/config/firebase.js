@@ -13,11 +13,28 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-const isFirebaseConfigured = Object.values(firebaseConfig).every(Boolean);
+// Check if Firebase is properly configured (not using placeholder values)
+const isFirebaseConfigured = Object.values(firebaseConfig).every(value => {
+  if (!value) return false;
+  // Check for placeholder values
+  const placeholderPatterns = [
+    'your-firebase',
+    'your-project',
+    'your-app',
+    'placeholder'
+  ];
+  const lowerValue = String(value).toLowerCase();
+  return !placeholderPatterns.some(pattern => lowerValue.includes(pattern));
+});
+
 const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
 const auth = app ? getAuth(app) : null;
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
+
+if (typeof window !== 'undefined') {
+  window.__FIREBASE_READY__ = isFirebaseConfigured;
+}
 
 // Configure Google Provider
 googleProvider.setCustomParameters({

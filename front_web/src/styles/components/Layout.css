@@ -60,6 +60,7 @@
 .layout-logo-wrapper {
   display: flex;
   align-items: center;
+  margin-right: auto;
 }
 
 .layout-logo-link {
@@ -134,6 +135,14 @@
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.layout-nav-items-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .layout-nav-item-wrapper {
@@ -187,6 +196,7 @@
   font-weight: 500;
   color: white;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .layout-desktop-nav-link:hover .layout-nav-text,
@@ -383,6 +393,7 @@
   color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .layout-mobile-nav-link:hover {

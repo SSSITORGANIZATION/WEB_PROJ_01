@@ -147,9 +147,11 @@ const CustomerLogin = () => {
                   type="tel"
                   required={isSignUp}
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+123 456 7890"
-                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-4 py-3 text-sm text-white outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
+                  onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="1234567890"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-4 py-3 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
                 />
               </div>
             )}
@@ -164,7 +166,9 @@ const CustomerLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-11 py-3 text-sm text-white outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
+                  autoComplete="username"
+                  inputMode="email"
+                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-11 py-3 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
                 />
               </div>
             </div>
@@ -179,7 +183,9 @@ const CustomerLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-11 py-3 text-sm text-white outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
+                  autoComplete="current-password"
+                  className="w-full rounded-3xl border border-sky-400/10 bg-slate-950/80 px-11 py-3 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-sky-300 focus:ring-2 focus:ring-sky-400/20"
+                  style={{ WebkitTextSecurity: 'disc', textShadow: '0 0 0 transparent' }}
                 />
               </div>
             </div>

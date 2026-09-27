@@ -393,9 +393,9 @@ class CustomerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Customer
-        fields = ["id", "email", "name", "phone", "password"]
+        fields = ["id", "email", "name", "phone", "password", "avatar_url", "auth_provider", "google_id", "github_id"]
         extra_kwargs = {
-            "password": {"write_only": True}
+            "password": {"write_only": True, "required": False, "allow_null": True}
         }
 
     def validate_email(self, value):
@@ -404,12 +404,14 @@ class CustomerSerializer(serializers.ModelSerializer):
         return value
 
     def validate_password(self, value):
-        if len(value) < 6:
+        if value and len(value) < 6:
             raise serializers.ValidationError("Password must be at least 6 characters long")
         return value
 
     def create(self, validated_data):
-        validated_data["password"] = make_password(validated_data["password"])
+        password = validated_data.get("password")
+        if password:
+            validated_data["password"] = make_password(password)
         return super().create(validated_data)
 
 
@@ -422,6 +424,10 @@ class CustomerLoginSerializer(serializers.Serializer):
             customer = Customer.objects.get(email=data["email"])
         except Customer.DoesNotExist:
             raise serializers.ValidationError("Invalid credentials")
+
+        # Check if customer uses social auth (no password)
+        if not customer.password:
+            raise serializers.ValidationError("This account uses social authentication. Please sign in with Google or GitHub.")
 
         if not check_password(data["password"], customer.password):
             raise serializers.ValidationError("Invalid credentials")
