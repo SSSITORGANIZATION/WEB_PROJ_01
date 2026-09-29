@@ -16,7 +16,6 @@ const CustomerLogin = () => {
   const [error, setError] = useState('');
   const { setAuth } = useAuth();
   const navigate = useNavigate();
-  const firebaseReady = typeof window !== 'undefined' && !!window.__FIREBASE_READY__;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -159,12 +158,6 @@ const CustomerLogin = () => {
                 <ArrowRight className="w-5 h-5" />
               </button>
             </form>
-
-            {!firebaseReady && (
-              <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                Google and GitHub sign-in require Firebase credentials in <span className="font-semibold">front_web/.env.local</span>.
-              </div>
-            )}
 
             <div className="mt-6 text-center">
               <p className="text-gray-600 text-sm">

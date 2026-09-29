@@ -59,6 +59,8 @@ const Earth = ({ earthRef, textureLoaded, setTextureLoaded }) => {
         shininess={15}
         color={0x123b68}
         side={THREE.DoubleSide}
+        emissive={new THREE.Color(0x0a1a3a)}
+        emissiveIntensity={0.3}
       />
     </Sphere>
   );
@@ -69,7 +71,7 @@ const Atmosphere = () => {
 
   useFrame((state) => {
     if (atmosphereRef.current) {
-      atmosphereRef.current.rotation.y = state.clock.getElapsedTime() * 0.05;
+      atmosphereRef.current.rotation.y = state.clock.elapsedTime * 0.05;
     }
   });
 
@@ -105,7 +107,7 @@ const Clouds = () => {
 
   useFrame((state) => {
     if (cloudRef.current) {
-      cloudRef.current.rotation.y = state.clock.getElapsedTime() * 0.02;
+      cloudRef.current.rotation.y = state.clock.elapsedTime * 0.02;
     }
   });
 
@@ -128,21 +130,24 @@ const Lights = () => {
 
   useFrame((state) => {
     if (sunRef.current) {
-      sunRef.current.position.x = Math.sin(state.clock.getElapsedTime() * 0.1) * 20;
-      sunRef.current.position.z = Math.cos(state.clock.getElapsedTime() * 0.1) * 20;
+      sunRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.1) * 20;
+      sunRef.current.position.z = Math.cos(state.clock.elapsedTime * 0.1) * 20;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={0.1} />
+      <ambientLight intensity={0.4} />
       <directionalLight
         ref={sunRef}
-        intensity={1.5}
+        intensity={1.2}
         position={[10, 5, 10]}
         castShadow
       />
-      <pointLight intensity={0.5} position={[-10, -5, -10]} />
+      <pointLight intensity={0.8} position={[-10, -5, -10]} />
+      <pointLight intensity={0.6} position={[10, -5, -10]} />
+      <pointLight intensity={0.6} position={[-10, 5, 10]} />
+      <hemisphereLight intensity={0.5} color={0x123b68} groundColor={0x000000} />
     </>
   );
 };

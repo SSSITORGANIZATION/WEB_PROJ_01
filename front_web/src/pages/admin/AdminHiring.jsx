@@ -19,6 +19,7 @@ const AdminHiring = () => {
   const [search, setSearch] = useState('');
   const [showJobModal, setShowJobModal] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
+  const [jobFormError, setJobFormError] = useState('');
 
   const [jobFormData, setJobFormData] = useState({
     title: '',
@@ -114,6 +115,7 @@ const AdminHiring = () => {
 
   const handleJobSubmit = async (e) => {
     e.preventDefault();
+    setJobFormError('');
     try {
       if (editingJob) {
         await apiService.updateJob(editingJob.id, jobFormData);
@@ -122,10 +124,17 @@ const AdminHiring = () => {
       }
       setShowJobModal(false);
       setEditingJob(null);
-      setJobFormData({ title: '', description: '', experience_required: '', skills_required: '', location: '' });
+      setJobFormData({ title: '', description: '', experience_required: '0', skills_required: '', location: '' });
       fetchData();
     } catch (error) {
       console.error("Error saving job:", error);
+      const responseData = error.response?.data;
+      const validationMessages = responseData && typeof responseData === 'object'
+        ? Object.entries(responseData)
+          .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+          .join(' ')
+        : '';
+      setJobFormError(validationMessages || responseData?.detail || 'Could not save the job posting. Please try again.');
     }
   };
 
@@ -151,7 +160,7 @@ const AdminHiring = () => {
   };
 
   const filteredApps = applications.filter(app =>
-    app.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+    `${app.first_name || ''} ${app.last_name || ''}`.toLowerCase().includes(search.toLowerCase()) ||
     app.email?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -217,10 +226,11 @@ const AdminHiring = () => {
                     setJobFormData({
                       title: '',
                       description: '',
-                      experience_required: '',
+                      experience_required: '0',
                       skills_required: '',
                       location: ''
                     });
+                    setJobFormError('');
                     setShowJobModal(true);
                   }}
                   className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2"
@@ -281,7 +291,7 @@ const AdminHiring = () => {
                             <Users className="w-5 h-5 text-gray-500" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900 leading-tight">{app.full_name}</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 leading-tight">{`${app.first_name || ''} ${app.last_name || ''}`.trim()}</h3>
                             <div className="flex items-center gap-3 mt-0.5">
                               <span className="text-xs text-gray-500 flex items-center gap-1"><Mail className="w-3 h-3" /> {app.email}</span>
                               <span className="text-xs text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3" /> Applied {new Date(app.applied_at).toLocaleDateString()}</span>
@@ -292,9 +302,9 @@ const AdminHiring = () => {
                         <div className="flex flex-wrap items-center gap-2">
                           <a
                             href={
-                              app.resume.startsWith("http")
+                              app.resume?.startsWith("http")
                                 ? app.resume
-                                : `http://127.0.0.1:8000${app.resume}`
+                                : `http://127.0.0.1:8000${app.resume || ''}`
                             }
                             target="_blank"
                             rel="noreferrer"
@@ -305,27 +315,33 @@ const AdminHiring = () => {
                           </a>
                           {app.portfolio_url && <a href={app.portfolio_url} target="_blank" rel="noreferrer" className="p-1.5 bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors rounded-lg" title="Portfolio"><LinkIcon className="w-4 h-4" /></a>}
                           {app.github_url && <a href={app.github_url} target="_blank" rel="noreferrer" className="p-1.5 bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors rounded-lg" title="GitHub"><Github className="w-4 h-4" /></a>}
-                          {app.linkedin_url && <a href={app.linkedin_url} target="_blank" rel="noreferrer" className="p-1.5 bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors rounded-lg" title="LinkedIn"><Linkedin className="w-4 h-4" /></a>}
+                          {app.linkedin_id && <a href={app.linkedin_id} target="_blank" rel="noreferrer" className="p-1.5 bg-gray-100 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors rounded-lg" title="LinkedIn"><Linkedin className="w-4 h-4" /></a>}
 
                           <div className="h-6 w-px bg-gray-200 mx-1 hidden lg:block" />
 
                           <select
                             value={app.status}
                             onChange={(e) => handleStatusUpdate(app.id, e.target.value)}
-                            className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wide focus:outline-none transition-all ${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                              app.status === 'reviewing' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
-                                app.status === 'shortlisted' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
-                                  app.status === 'hired' ? 'bg-green-100 text-green-700 border border-green-200' :
-                                    'bg-red-100 text-red-700 border border-red-200'
+                            className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wide focus:outline-none transition-all ${app.status === 'submitted' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                              app.status === 'viewed' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
+                                app.status === 'selected' ? 'bg-green-100 text-green-700 border border-green-200' :
+                                  'bg-red-100 text-red-700 border border-red-200'
                               }`}
                           >
-                            <option value="pending">Pending</option>
-                            <option value="reviewing">Reviewing</option>
-                            <option value="shortlisted">Shortlisted</option>
+                            <option value="submitted">Submitted</option>
+                            <option value="viewed">Viewed</option>
+                            <option value="selected">Selected</option>
                             <option value="rejected">Rejected</option>
-                            <option value="hired">Hired</option>
                           </select>
                         </div>
+                      </div>
+                      <div className="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                        <p className="text-gray-600"><span className="font-semibold text-gray-800">Position:</span> {app.job_title || app.position}</p>
+                        <p className="text-gray-600"><span className="font-semibold text-gray-800">Phone:</span> {app.contact}</p>
+                        <p className="text-gray-600"><span className="font-semibold text-gray-800">Experience:</span> {app.experience}</p>
+                        <p className="text-gray-600"><span className="font-semibold text-gray-800">Education:</span> {app.education}</p>
+                        {app.certification && <p className="text-gray-600"><span className="font-semibold text-gray-800">Certification:</span> {app.certification}</p>}
+                        <p className="text-gray-600 sm:col-span-2 lg:col-span-3"><span className="font-semibold text-gray-800">Skills:</span> {app.skill_set}</p>
                       </div>
                       {app.cover_letter && (
                         <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
@@ -481,6 +497,7 @@ const AdminHiring = () => {
                     <input
                       type="text"
                       value={jobFormData.skills_required}
+                      required
                       onChange={(e) => setJobFormData({ ...jobFormData, skills_required: e.target.value })}
                       placeholder="Skills Required"
                       className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
@@ -513,11 +530,18 @@ const AdminHiring = () => {
                 <div>
                   <label className="block text-xs text-gray-600 uppercase tracking-wide font-semibold mb-1.5">Experience Required</label>
                   <select
+                    required
                     value={jobFormData.experience_required}
                     onChange={(e) => setJobFormData({ ...jobFormData, experience_required: e.target.value })}
                     className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
                   >
                     <option value="0">0 years</option>
+
+                    {jobFormError && (
+                      <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                        {jobFormError}
+                      </p>
+                    )}
                     <option value="1">1 year</option>
                     <option value="2">2 years</option>
                     <option value="3">3 years</option>

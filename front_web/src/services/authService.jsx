@@ -1,5 +1,4 @@
 import { apiService } from './api';
-import { auth, googleProvider, githubProvider, signInWithPopup, isFirebaseConfigured } from '../config/firebase';
 
 // AuthUser structure for reference (not needed in JS but documented for clarity)
 // {
@@ -149,91 +148,6 @@ class AuthService {
   async signOut() {
     this.setUser(null);
     this.setToken(null);
-  }
-
-  // Firebase Google Authentication (Free and Easy)
-  async signInWithGoogle() {
-    try {
-      if (!isFirebaseConfigured) {
-        throw new Error('Social sign-in is not configured. Add Firebase credentials to front_web/.env.local.');
-      }
-      // Sign in with Google using Firebase
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      // Create user object for your app
-      const firebaseUser = {
-        id: user.uid,
-        email: user.email,
-        name: user.displayName,
-        picture: user.photoURL,
-        email_verified: user.emailVerified,
-        phone: user.phoneNumber || '',
-        is_verified: user.emailVerified,
-        created_at: user.metadata.creationTime || new Date().toISOString(),
-        token: 'firebase-token-' + user.uid
-      };
-
-      // You can optionally send this to your backend
-      // await apiService.googleAuth(firebaseUser);
-
-      this.setUser(firebaseUser);
-      this.setToken(firebaseUser.token);
-      
-      return firebaseUser;
-    } catch (error) {
-      console.error('Firebase Google auth error:', error);
-
-      // Handle specific Firebase errors
-      if (error.code === 'auth/popup-closed-by-user') {
-        throw new Error('Sign-in popup was closed. Please try again.');
-      } else if (error.code === 'auth/popup-blocked') {
-        throw new Error('Pop-up was blocked by browser. Please allow pop-ups for this site.');
-      } else if (error.code === 'auth/cancelled-popup-request') {
-        throw new Error('Sign-in was cancelled. Please try again.');
-      } else {
-        throw new Error('Failed to sign in with Google. Please try again.');
-      }
-    }
-  }
-
-  async signInWithGithub() {
-    try {
-      if (!isFirebaseConfigured) {
-        throw new Error('Social sign-in is not configured. Add Firebase credentials to front_web/.env.local.');
-      }
-      const result = await signInWithPopup(auth, githubProvider);
-      const user = result.user;
-
-      const firebaseUser = {
-        id: user.uid,
-        email: user.email,
-        name: user.displayName || user.email?.split('@')[0],
-        picture: user.photoURL,
-        email_verified: user.emailVerified,
-        phone: user.phoneNumber || '',
-        is_verified: user.emailVerified,
-        created_at: user.metadata.creationTime || new Date().toISOString(),
-        token: 'firebase-token-' + user.uid
-      };
-
-      this.setUser(firebaseUser);
-      this.setToken(firebaseUser.token);
-      
-      return firebaseUser;
-    } catch (error) {
-      console.error('Firebase GitHub auth error:', error);
-
-      if (error.code === 'auth/popup-closed-by-user') {
-        throw new Error('Sign-in popup was closed. Please try again.');
-      } else if (error.code === 'auth/popup-blocked') {
-        throw new Error('Pop-up was blocked by browser. Please allow pop-ups for this site.');
-      } else if (error.code === 'auth/cancelled-popup-request') {
-        throw new Error('Sign-in was cancelled. Please try again.');
-      } else {
-        throw new Error('Failed to sign in with GitHub. Please try again.');
-      }
-    }
   }
 }
 

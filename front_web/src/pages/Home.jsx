@@ -43,7 +43,7 @@ const StatCounter = ({ value, label, icon: Icon }) => (
 
     viewport={{ once: true }}
 
-    className="flex flex-col items-center p-6 rounded-xl border border-gray-200 bg-white shadow-lg"
+    className="flex flex-col items-center p-6 rounded-xl neu-card-light shadow-lg"
 
   >
 
@@ -69,7 +69,7 @@ const ProjectCard = ({ project }) => (
 
     whileHover={{ y: -8, scale: 1.02 }}
 
-    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all hover:shadow-xl"
+    className="group relative flex h-full flex-col overflow-hidden rounded-xl neu-card-light transition-all hover:shadow-xl"
 
   >
 
@@ -177,7 +177,7 @@ const ResourceCard = ({ resource }) => {
         whileHover={{ y: -8, scale: 1.02 }}
         className="group h-full"
       >
-        <div className="relative flex h-[380px] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all hover:shadow-xl">
+        <div className="relative flex h-[380px] flex-col overflow-hidden rounded-xl neu-card-light transition-all hover:shadow-xl">
 
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-indigo-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -281,7 +281,7 @@ const DeveloperCard = ({ developer, dataTimestamp }) => (
 
       whileHover={{ y: -8, scale: 1.02 }}
 
-      className="group relative flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 text-center shadow-lg transition-all hover:shadow-xl"
+      className="group relative flex h-full flex-col rounded-xl neu-card-light p-6 text-center transition-all hover:shadow-xl"
 
     >
 
@@ -611,23 +611,23 @@ const Home = () => {
               </p>
               <div className="flex flex-wrap gap-5 mb-8">
                 <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">250+</span>
+                  <span className="text-xl font-bold">{projects.length}+</span>
                   <span>Projects</span>
                 </div>
                 <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">1.2k</span>
+                  <span className="text-xl font-bold">{developers.length}+</span>
                   <span>Developers</span>
                 </div>
                 <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">45k</span>
+                  <span className="text-xl font-bold">{resources.length}+</span>
                   <span>Resources</span>
                 </div>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link to="/projects" className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50">
+                <Link to="/projects" className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 shadow-lg hover:shadow-xl">
                   Explore Projects
                 </Link>
-                <Link to="/hiring" className="rounded-lg border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10">
+                <Link to="/hiring" className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 shadow-lg hover:shadow-xl border border-blue-400/30">
                   Join Community
                 </Link>
               </div>
@@ -660,17 +660,17 @@ const Home = () => {
 
       {/* Trust Section */}
 
-   
+
 
 
 
       {/* Features Section */}
 
-      <section className="py-12 px-6 bg-gray-50">
+      <section className="py-12 px-6 bg-gray-50 section-spacing">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg">
+          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg w-full">
 
             <h2 className="mb-2 text-2xl font-bold">Your Technical Command Center</h2>
 
@@ -706,7 +706,7 @@ const Home = () => {
 
                 whileHover={{ y: -8, scale: 1.02 }}
 
-                className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg transition-all hover:shadow-xl"
+                className="rounded-xl neu-card-light p-6 transition-all hover:shadow-xl"
 
               >
 
@@ -734,11 +734,11 @@ const Home = () => {
 
       {/* Projects Showcase */}
 
-      <section className="py-12 px-6 bg-white">
+      <section className="py-12 px-6 bg-white section-spacing">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
 
             <div className="flex items-center justify-between">
 
@@ -784,11 +784,11 @@ const Home = () => {
 
       {/* Resources Section */}
 
-      <section className="py-12 px-6 bg-gray-50">
+      <section className="py-12 px-6 bg-gray-50 section-spacing">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
 
             <div className="flex items-center justify-between">
 
@@ -834,11 +834,11 @@ const Home = () => {
 
       {/* Developers Section */}
 
-      <section className="py-12 px-6 bg-white">
+      <section className="py-12 px-6 bg-white section-spacing">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
 
             <div className="flex items-center justify-between">
 
@@ -882,11 +882,11 @@ const Home = () => {
 
       {/* Reviews Section */}
 
-      <section className="py-12 px-6 bg-white">
+      <section className="py-12 px-6 bg-white section-spacing">
 
         <div className="max-w-7xl mx-auto">
 
-          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg">
+          <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
 
             <div className="flex items-center justify-between">
 

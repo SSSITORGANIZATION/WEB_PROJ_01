@@ -117,7 +117,7 @@ export default function PublicReviews() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
           <div className="absolute inset-0 bg-black/10" />
           <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
             <div className="mx-auto flex max-w-4xl items-center justify-center gap-4 text-center">
@@ -141,7 +141,7 @@ export default function PublicReviews() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
           <motion.div

@@ -445,6 +445,7 @@ class JobApplication(models.Model):
     education = models.CharField(max_length=200)
     skill_set = models.TextField()
     certification = models.CharField(max_length=200, blank=True)
+    cover_letter = models.TextField(blank=True)
     email = models.EmailField()
     contact = models.CharField(max_length=20)
     linkedin_id = models.URLField(blank=True)

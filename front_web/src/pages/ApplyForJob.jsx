@@ -6,7 +6,7 @@ import {
   DollarSign, CheckCircle, Shield,
   ArrowRight, User, Mail, Link as LinkIcon,
   FileText, Send, AlertCircle, Globe,
-  Zap, Users, Star, Github, MessageSquare
+  Zap, Users, Star, Github, MessageSquare, Phone
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -20,12 +20,17 @@ const ApplyForJob = () => {
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
-    full_name: '',
+    first_name: '',
+    last_name: '',
     email: '',
-    resume_url: '',
-    portfolio_url: '',
-    github_url: '',
-    linkedin_url: '',
+    contact: '',
+    position: '',
+    education: '',
+    skill_set: '',
+    certification: '',
+    experience: '',
+    linkedin_id: '',
+    resume: null,
     cover_letter: ''
   });
 
@@ -38,6 +43,11 @@ const ApplyForJob = () => {
 
         if (jobData) {
           setJob(jobData);
+          // Pre-fill position from job title
+          setFormData(prev => ({
+            ...prev,
+            position: jobData.title
+          }));
         } else {
           navigate('/hiring');
         }
@@ -50,29 +60,120 @@ const ApplyForJob = () => {
     fetchJob();
   }, [id, navigate]);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type (only PDF)
+      if (file.type !== 'application/pdf') {
+        setError('Please upload a PDF file only');
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('File size must be less than 5MB');
+        return;
+      }
+      setFormData({ ...formData, resume: file });
+      setError(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
 
     try {
-      await apiService.createJobApplication({
-        first_name: formData.full_name.split(" ")[0],
-        last_name: formData.full_name.split(" ")[1] || "",
-        email: formData.email,
-        contact: "9999999999", // temporary
-        resume: formData.resume_url,
-        experience: "2 years", // temporary
-        skill_set: "React",
-        education: "B.Tech",
-        position: job.title,
-        job: id
-      });
+      // Validate required fields
+      if (!formData.first_name || !formData.last_name) {
+        setError('Please enter your full name (first and last name)');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.email) {
+        setError('Please enter your email address');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.contact) {
+        setError('Please enter your contact number');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.resume) {
+        setError('Please upload your resume (PDF file)');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.education) {
+        setError('Please enter your education');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.skill_set) {
+        setError('Please enter your skills');
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.experience) {
+        setError('Please enter your experience');
+        setSubmitting(false);
+        return;
+      }
+
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      formDataToSend.append('first_name', formData.first_name);
+      formDataToSend.append('last_name', formData.last_name);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('contact', formData.contact);
+      formDataToSend.append('resume', formData.resume);
+      formDataToSend.append('experience', formData.experience);
+      formDataToSend.append('skill_set', formData.skill_set);
+      formDataToSend.append('education', formData.education);
+      formDataToSend.append('certification', formData.certification || '');
+      formDataToSend.append('linkedin_id', formData.linkedin_id || '');
+      formDataToSend.append('cover_letter', formData.cover_letter || '');
+      formDataToSend.append('position', job.title);
+      formDataToSend.append('job', id);
+
+      // Log what we're sending for debugging
+      console.log('Submitting job application with data:');
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(`${key}:`, value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value);
+      }
+
+      await apiService.createJobApplication(formDataToSend);
 
       setSubmitted(true);
     } catch (err) {
-      console.error(err);
-      setError("Failed to submit application");
+      console.error('Application submission error:', err);
+      console.error('Error response:', err.response?.data);
+      console.error('Error status:', err.response?.status);
+
+      if (err.response?.data) {
+        // Handle specific backend validation errors
+        const errorData = err.response.data;
+        console.log('Error data structure:', typeof errorData, errorData);
+
+        if (typeof errorData === 'string') {
+          setError(errorData);
+        } else if (errorData.detail) {
+          setError(errorData.detail);
+        } else if (errorData.error) {
+          setError(errorData.error);
+        } else if (errorData.message) {
+          setError(errorData.message);
+        } else {
+          // Try to extract field errors
+          const errorMessages = Object.entries(errorData)
+            .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
+            .join('\n');
+          setError(errorMessages || 'Failed to submit application. Please check your inputs.');
+        }
+      } else {
+        setError('Failed to submit application. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -209,20 +310,36 @@ const ApplyForJob = () => {
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
                     <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
-                      <User className="w-2.5 h-2.5 text-blue-600" /> Full Name
+                      <User className="w-2.5 h-2.5 text-blue-600" /> First Name *
                     </label>
                     <input
                       type="text"
                       required
-                      value={formData.full_name}
-                      onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                      placeholder="John Doe"
+                      value={formData.first_name}
+                      onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                      placeholder="John"
                       className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                     />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
-                      <Mail className="w-2.5 h-2.5 text-blue-600" /> Email Address
+                      <User className="w-2.5 h-2.5 text-blue-600" /> Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.last_name}
+                      onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                      placeholder="Doe"
+                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                      <Mail className="w-2.5 h-2.5 text-blue-600" /> Email Address *
                     </label>
                     <input
                       type="email"
@@ -233,31 +350,16 @@ const ApplyForJob = () => {
                       className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                     />
                   </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
                     <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
-                      <FileText className="w-2.5 h-2.5 text-blue-600" /> Resume URL (PDF/Drive)
+                      <Phone className="w-2.5 h-2.5 text-blue-600" /> Contact Number *
                     </label>
                     <input
-                      type="url"
+                      type="tel"
                       required
-                      value={formData.resume_url}
-                      onChange={(e) => setFormData({ ...formData, resume_url: e.target.value })}
-                      placeholder="https://drive.google.com/..."
-                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
-                      <Globe className="w-2.5 h-2.5 text-blue-600" /> Portfolio URL
-                    </label>
-                    <input
-                      type="url"
-                      value={formData.portfolio_url}
-                      onChange={(e) => setFormData({ ...formData, portfolio_url: e.target.value })}
-                      placeholder="https://johndoe.dev"
+                      value={formData.contact}
+                      onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                      placeholder="+91 9876543210"
                       className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                     />
                   </div>
@@ -266,13 +368,75 @@ const ApplyForJob = () => {
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-1.5">
                     <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
-                      <Github className="w-2.5 h-2.5 text-blue-600" /> GitHub URL
+                      <FileText className="w-2.5 h-2.5 text-blue-600" /> Resume (PDF only, max 5MB) *
                     </label>
                     <input
-                      type="url"
-                      value={formData.github_url}
-                      onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-                      placeholder="https://github.com/johndoe"
+                      type="file"
+                      required
+                      accept=".pdf,application/pdf"
+                      onChange={handleFileChange}
+                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {formData.resume && (
+                      <p className="text-[10px] text-green-600 mt-1 flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" /> {formData.resume.name}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                      <Star className="w-2.5 h-2.5 text-blue-600" /> Education *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.education}
+                      onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                      placeholder="B.Tech Computer Science"
+                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                      <Zap className="w-2.5 h-2.5 text-blue-600" /> Skills *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.skill_set}
+                      onChange={(e) => setFormData({ ...formData, skill_set: e.target.value })}
+                      placeholder="React, Node.js, Python, Django"
+                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                      <Clock className="w-2.5 h-2.5 text-blue-600" /> Experience *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.experience}
+                      onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                      placeholder="3 years"
+                      className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[8px] text-gray-500 uppercase tracking-widest font-bold flex items-center gap-2">
+                      <Shield className="w-2.5 h-2.5 text-blue-600" /> Certification
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.certification}
+                      onChange={(e) => setFormData({ ...formData, certification: e.target.value })}
+                      placeholder="AWS Certified, etc."
                       className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                     />
                   </div>
@@ -282,8 +446,8 @@ const ApplyForJob = () => {
                     </label>
                     <input
                       type="url"
-                      value={formData.linkedin_url}
-                      onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                      value={formData.linkedin_id}
+                      onChange={(e) => setFormData({ ...formData, linkedin_id: e.target.value })}
                       placeholder="https://linkedin.com/in/johndoe"
                       className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
                     />
@@ -296,10 +460,9 @@ const ApplyForJob = () => {
                   </label>
                   <textarea
                     rows={5}
-                    required
                     value={formData.cover_letter}
                     onChange={(e) => setFormData({ ...formData, cover_letter: e.target.value })}
-                    placeholder="Tell us why you're excited about DevForge..."
+                    placeholder="Tell us why you're excited about this position..."
                     className="w-full border border-gray-300 rounded-xl py-2.5 px-4 text-[11px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none"
                   />
                 </div>

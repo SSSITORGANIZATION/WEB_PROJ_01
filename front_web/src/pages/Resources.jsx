@@ -221,7 +221,7 @@ const Resources = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-10xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
           <div className="text-center max-w-4xl mx-auto">

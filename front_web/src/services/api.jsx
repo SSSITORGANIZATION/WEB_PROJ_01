@@ -71,9 +71,11 @@ export const apiService = {
   // Job Applications
   getJobApplications: () => api.get('/job-applications/'),
   getJobApplication: (id) => api.get(`/job-applications/${id}/`),
-  createJobApplication: (data) => api.post('/job-applications/', data, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
+  createJobApplication: (data) => {
+    return api.post('/job-applications/', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
   updateJobApplication: (id, data) =>
     api.patch(`/job-applications/${id}/`, data),
   markApplicationViewed: (id) => api.post(`/job-applications/${id}/mark_viewed/`),

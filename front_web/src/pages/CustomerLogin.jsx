@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Globe, Mail, Lock, ArrowRight,
-  Github, Chrome, Shield, AlertCircle,
-  CheckCircle, User, LogIn, UserPlus
+  Shield, AlertCircle,
+  CheckCircle, User
 } from 'lucide-react';
 import { authService } from '../services/authService';
 
@@ -52,44 +52,6 @@ const CustomerLogin = () => {
     } catch (err) {
       console.error('Auth error:', err);
       setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await authService.signInWithGoogle();
-      console.log('Google user signed in:', result);
-
-      setError(null);
-      setTimeout(() => {
-        navigate('/');
-      }, 500);
-    } catch (err) {
-      console.error('Google login error:', err);
-      setError(err.message || 'Failed to sign in with Google. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await authService.signInWithGithub();
-      console.log('GitHub user signed in:', result);
-
-      setError(null);
-      setTimeout(() => {
-        navigate('/');
-      }, 500);
-    } catch (err) {
-      console.error('GitHub login error:', err);
-      setError(err.message || 'Failed to sign in with GitHub. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -241,25 +203,6 @@ const CustomerLogin = () => {
               )}
             </button>
           </form>
-
-          <div className="mt-6 flex flex-col gap-3">
-            <button
-              onClick={handleGoogleLogin}
-              disabled={loading}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/5 text-sm font-semibold text-white transition hover:border-sky-300 hover:bg-white/10"
-            >
-              <Chrome className="h-4 w-4" />
-              Continue with Google
-            </button>
-            <button
-              onClick={handleGithubLogin}
-              disabled={loading}
-              className="flex h-12 w-full items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/5 text-sm font-semibold text-white transition hover:border-slate-300 hover:bg-white/10"
-            >
-              <Github className="h-4 w-4" />
-              Continue with GitHub
-            </button>
-          </div>
 
           <div className="mt-6 text-center text-sm text-slate-400">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}

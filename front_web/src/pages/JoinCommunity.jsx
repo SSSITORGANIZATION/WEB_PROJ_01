@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Globe, Mail, Lock, ArrowRight, Phone, User,
-  Github, Chrome, Shield, AlertCircle, CheckCircle,
+  Shield, AlertCircle, CheckCircle,
   Users, Code, Briefcase, Star, MessageSquare
 } from 'lucide-react';
 import { authService } from '../services/authService';
@@ -105,24 +105,6 @@ const JoinCommunity = () => {
     } catch (err) {
       console.error('Registration error:', err);
       setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleJoin = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await authService.signInWithGoogle();
-      console.log('Google user joined:', result);
-      setSuccess('Successfully joined with Google!');
-      setTimeout(() => {
-        navigate('/');
-      }, 1500);
-    } catch (err) {
-      console.error('Google join error:', err);
-      setError(err.message || 'Failed to join with Google.');
     } finally {
       setLoading(false);
     }
@@ -406,26 +388,6 @@ const JoinCommunity = () => {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
-              <div className="relative flex justify-center text-xs uppercase tracking-wider font-medium text-gray-500">
-                <span className="bg-white px-4">Or continue with</span>
-              </div>
-            </div>
-
-            {/* Social Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleGoogleJoin}
-                disabled={loading}
-                className="flex items-center justify-center gap-2.5 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all text-sm font-medium text-gray-700 disabled:opacity-50"
-              >
-                <Chrome className="w-4 h-4" /> Google
-              </button>
-              <button 
-                disabled={loading}
-                className="flex items-center justify-center gap-2.5 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-all text-sm font-medium text-gray-700 disabled:opacity-50"
-              >
-                <Github className="w-4 h-4" /> GitHub
-              </button>
             </div>
           </div>
 
