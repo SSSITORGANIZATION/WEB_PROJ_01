@@ -3,14 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation,
 
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Menu, X, ChevronDown, User, LogOut,
-  Github, Linkedin, Twitter, ArrowRight,
-  Layout as LayoutIcon, Users, BookOpen, Briefcase,
-  Search, Globe, Shield, HelpCircle,
-  FileText, MessageSquare, Star, Calendar,
-  Settings, Database, Clock, HardDrive,
-  CheckCircle, AlertCircle, TrendingUp,
-  Mail, Phone, MapPin, Facebook, Instagram, ExternalLink
+  Mail, Phone, MapPin, Facebook, Instagram, ExternalLink,
+  Globe, Twitter, Linkedin
 } from 'lucide-react';
 
 // Lazy load pages
@@ -21,6 +15,7 @@ const Developers = React.lazy(() => import('./pages/Developers'));
 const DeveloperDetail = React.lazy(() => import('./pages/DeveloperDetail'));
 const Resources = React.lazy(() => import('./pages/Resources'));
 const ResourceDetail = React.lazy(() => import('./pages/ResourceDetail'));
+const Tools = React.lazy(() => import('./pages/Tools'));
 const Hiring = React.lazy(() => import('./pages/Hiring'));
 const ApplyForJob = React.lazy(() => import('./pages/ApplyForJob'));
 const Documentation = React.lazy(() => import('./pages/Documentation'));
@@ -58,6 +53,7 @@ const DeveloperOnboarding = React.lazy(() => import('./pages/DeveloperOnboarding
 import AdminLogin from './pages/admin/AdminLogin';
 import KonamiCodeDetector from './components/KonamiCodeDetector';
 import { Layout } from './components/Layout';
+import Navbar from './components/Navbar';
 import { authService } from './services/authService';
 import { apiService } from './services/api';
 import { AuthProvider } from './auth/authContext.jsx';
@@ -82,230 +78,6 @@ const AdminRoute = ({ children }) => {
   return isAdmin ? <>{children}</> : <Navigate to="/admin-login" replace />;
 };
 
-// Components
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { user, isAuthenticated, clearAuth } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-  const [siteSettings, setSiteSettings] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const fetchSiteSettings = async () => {
-      try {
-        const response = await apiService.getSiteSettings();
-        if (response.data && response.data.length > 0) {
-          setSiteSettings(response.data[0]);
-        }
-      } catch (error) {
-        console.error('Error fetching site settings:', error);
-      }
-    };
-
-    fetchSiteSettings();
-  }, []);
-
-  const handleLogout = async () => {
-    clearAuth();
-    authService.signOut();
-    navigate('/');
-  };
-
-  const userRole = isAuthenticated ? 'customer' : null;
-
-  const NavItem = ({ title, links }) => {
-    const [isHovered, setIsHovered] = useState(false);
-
-    return (
-      <div
-        className="relative group"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white hover:text-white transition-colors">
-          {title}
-          <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isHovered ? 'rotate-180' : ''}`} />
-        </button>
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="absolute left-0 top-full w-64 p-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden"
-            >
-              <div className="flex flex-col gap-1">
-                {links?.map((link, idx) => (
-                  <Link
-                    key={idx}
-                    to={link.to}
-                    className="px-4 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-gray-50 rounded-lg transition-all"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
-
-  return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-gradient-to-r from-blue-700 to-indigo-800 backdrop-blur-xl border-b border-white/10 py-2' : 'bg-gradient-to-r from-blue-600 to-indigo-700 py-4'}`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group -ml-2 md:-ml-3">
-          {siteSettings?.logo && (
-            <img
-              src={siteSettings.logo}
-              alt="Site Logo"
-              className="w-22 h-10 object-contain rounded"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          )}
-          <span className="text-lg font-bold tracking-tighter serif text-white">{siteSettings?.heading || 'Sai Software Solutions'}</span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden lg:flex items-center gap-2">
-          <NavItem
-            title="PROJECTS"
-            links={[
-              { label: "Project Showcase", to: "/projects" },
-              { label: "Documentation", to: "/documentation" }
-            ]}
-          />
-          <NavItem
-            title="DEVELOPERS"
-            links={[
-              { label: "Developer Directory", to: "/developers" }
-            ]}
-          />
-          <NavItem
-            title="RESOURCES"
-            links={[
-              { label: "Blogs", to: "/resources?category=BLOG" },
-              { label: "Guides", to: "/resources?category=GUIDE" },
-              { label: "Tools", to: "/resources?category=TOOL" },
-              { label: "Glossary", to: "/resources?category=GLOSSARY" },
-              { label: "All Resources", to: "/resources" }
-            ]}
-          />
-
-          <Link
-            to="/reviews"
-            className="px-4 py-2 text-sm font-medium text-white hover:text-white transition-colors"
-          >
-            REVIEWS
-          </Link>
-
-          <Link
-            to="/hiring"
-            className="px-4 py-2 text-sm font-medium text-white hover:text-white transition-colors"
-          >
-            HIRING
-          </Link>
-
-          <NavItem
-            title="COMPANY"
-            links={[
-              { label: "About Us", to: "/about" },
-              { label: "Contact", to: "/contact" }
-            ]}
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          {user ? (
-            <div className="relative group">
-              <button className="flex items-center gap-2 p-1 pl-3 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition-all">
-                <span className="text-sm font-medium text-white">
-                  {user.name ? user.name.split(' ')[0] : user.email?.split('@')[0]}
-                </span>
-                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center border border-white/30 overflow-hidden">
-                  {user.avatar_url || user.photoURL ? <img src={user.avatar_url || user.photoURL} alt="" className="w-full h-full object-cover" /> : <User className="w-4 h-4 text-white" />}
-                </div>
-              </button>
-              <div className="absolute right-0 top-full mt-2 w-56 p-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                <div className="px-4 py-2 border-b border-gray-200 mb-1">
-                  <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Account</p>
-                  <p className="text-sm text-gray-900 truncate">{user.email}</p>
-                </div>
-                {userRole === 'admin' && (
-                  <Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-gray-50 rounded-lg transition-all">
-                    <Shield className="w-4 h-4" /> Admin Dashboard
-                  </Link>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all"
-                >
-                  <LogOut className="w-4 h-4" /> Logout
-                </button>
-              </div>
-            </div>
-          ) : (
-            <Link
-              to="/auth/login"
-              className="px-6 py-2 text-sm font-semibold text-white hover:text-white/90 transition-colors"
-            >
-              Login
-            </Link>
-          )}
-
-          <Link
-            to="/book-demo"
-            className="hidden sm:flex items-center gap-2 px-5 py-2 bg-white text-blue-600 rounded-full text-xs font-bold shadow-lg hover:bg-white/90 hover:scale-105 transition-all"
-          >
-            Book Demo
-          </Link>
-
-          <button className="lg:hidden p-2 text-white" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Nav */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-gradient-to-r from-blue-600 to-indigo-700 border-b border-white/10 overflow-hidden"
-          >
-            <div className="p-6 flex flex-col gap-4">
-              <Link to="/projects" className="text-white font-bold">PROJECTS</Link>
-              <Link to="/developers" className="text-white font-bold">DEVELOPERS</Link>
-              <Link to="/resources" className="text-white font-bold">RESOURCES</Link>
-              <Link to="/reviews" className="text-white font-bold">REVIEWS</Link>
-              <Link to="/hiring" className="text-white font-bold">HIRING</Link>
-              <div className="space-y-2">
-                <div className="text-white font-bold">COMPANY</div>
-                <div className="pl-4 space-y-2">
-                  <Link to="/about" className="text-white font-medium">About Us</Link>
-                  <Link to="/contact" className="text-white font-medium">Contact</Link>
-                </div>
-              </div>
-              <Link to="/documentation" className="text-white font-bold">DOCUMENTATION</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -412,7 +184,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-2">
               <li><Link to="/resources?category=BLOG" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Blogs</Link></li>
               <li><Link to="/resources?category=GUIDE" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Guides</Link></li>
-              <li><Link to="/resources?category=TOOL" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Tools</Link></li>
+              <li><Link to="/tools" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Tools</Link></li>
               <li><Link to="/resources?category=GLOSSARY" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Glossary</Link></li>
               <li><Link to="/resources" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">All Resources</Link></li>
             </ul>
@@ -510,6 +282,7 @@ const AppContent = () => {
             <Route path="/developers" element={<Layout><Developers /></Layout>} />
             <Route path="/developer/:id" element={<ProtectedRoute><Layout><DeveloperDetail /></Layout></ProtectedRoute>} />
             <Route path="/resources" element={<Layout><Resources /></Layout>} />
+            <Route path="/tools" element={<Layout><Tools /></Layout>} />
             <Route path="/resources/:id" element={<ProtectedRoute><Layout><ResourceDetail /></Layout></ProtectedRoute>} />
             <Route path="/hiring" element={<Layout><Hiring /></Layout>} />
             <Route path="/apply/:id" element={<ProtectedRoute><Layout><ApplyForJob /></Layout></ProtectedRoute>} />
