@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -102,7 +102,6 @@ const ResourceDetail = () => {
             <div className="flex flex-wrap items-center gap-3">
               <span className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${resource.category === 'BLOG' ? 'bg-white/20 text-white border border-white/30' :
                   resource.category === 'GUIDE' ? 'bg-white/20 text-white border border-white/30' :
-                    resource.category === 'TOOL' ? 'bg-white/20 text-white border border-white/30' :
                       'bg-white/20 text-white border border-white/30'
                 }`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
                 {resource.category}
@@ -197,17 +196,14 @@ const ResourceDetail = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${rel.category === 'BLOG' ? 'bg-emerald-50 border-emerald-200' :
                           rel.category === 'GUIDE' ? 'bg-blue-50 border-blue-200' :
-                            rel.category === 'TOOL' ? 'bg-amber-50 border-amber-200' :
                               'bg-rose-50 border-rose-200'
                         }`}>
                         {rel.category === 'BLOG' && <FileText className="w-5 h-5 text-emerald-600" />}
                         {rel.category === 'GUIDE' && <BookOpen className="w-5 h-5 text-blue-600" />}
-                        {rel.category === 'TOOL' && <Lightbulb className="w-5 h-5 text-amber-600" />}
                         {rel.category === 'GLOSSARY' && <Tag className="w-5 h-5 text-rose-600" />}
                       </div>
                       <span className={`px-2 py-1 text-xs font-bold uppercase tracking-wider rounded-full ${rel.category === 'BLOG' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                           rel.category === 'GUIDE' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                            rel.category === 'TOOL' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
                               'bg-rose-50 text-rose-700 border border-rose-200'
                         }`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
                         {rel.category}

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   BookOpen, Plus, Search, Filter,
@@ -23,7 +23,6 @@ const AdminResources = () => {
     thumbnail: '',
     content: '',
     category: 'BLOG',
-    tool_type: '',
     author: '',
     is_featured: false,
     published_on: new Date().toISOString().split('T')[0]
@@ -34,12 +33,7 @@ const AdminResources = () => {
   const [totalResources, setTotalResources] = useState(0);
   const resourcesPerPage = 10;
 
-  const categories = ['BLOG', 'GUIDE', 'TOOL', 'GLOSSARY'];
-  const toolTypes = [
-    { value: 'currency', label: 'Currency Converter' },
-    { value: 'gst', label: 'GST Calculator' },
-    { value: 'emi', label: 'EMI Calculator' }
-  ];
+  const categories = ['BLOG', 'GUIDE', 'GLOSSARY'];
 
   useEffect(() => {
     fetchResources();
@@ -127,7 +121,6 @@ const AdminResources = () => {
       setEditingResource(null);
       setFormData({
         title: '', thumbnail: '', content: '', category: 'BLOG',
-        tool_type: '',
         author: '', is_featured: false,
         published_on: new Date().toISOString().split('T')[0]
       });
@@ -170,7 +163,6 @@ const AdminResources = () => {
       thumbnail: resource.thumbnail || '',
       content: resource.content,
       category: resource.category || 'BLOG',
-      tool_type: resource.tool_type || '',
       author: resource.author_id || '',
       is_featured: resource.is_featured || false,
       published_on: resource.published_on || new Date().toISOString().split('T')[0]
@@ -272,7 +264,6 @@ const AdminResources = () => {
                         <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200">
                           {resource.category === 'BLOG' && <FileText className="w-4 h-4 text-blue-600" />}
                           {resource.category === 'GUIDE' && <BookOpen className="w-4 h-4 text-blue-600" />}
-                          {resource.category === 'TOOL' && <Lightbulb className="w-4 h-4 text-blue-600" />}
                           {resource.category === 'GLOSSARY' && <Tag className="w-4 h-4 text-blue-600" />}
                         </div>
                         <div>
@@ -494,7 +485,7 @@ const AdminResources = () => {
                     <label className="text-xs text-gray-600 uppercase tracking-wide font-semibold">Category</label>
                     <select
                       value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value, tool_type: e.target.value !== 'TOOL' ? '' : formData.tool_type })}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
                     >
                       {categories.map(cat => (
@@ -504,34 +495,16 @@ const AdminResources = () => {
                   </div>
                 </div>
 
-                {formData.category === 'TOOL' && (
-                  <div className="space-y-1.5">
-                    <label className="text-xs text-gray-600 uppercase tracking-wide font-semibold">Tool Type</label>
-                    <select
-                      value={formData.tool_type}
-                      onChange={(e) => setFormData({ ...formData, tool_type: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
-                    >
-                      <option value="">Select Tool Type</option>
-                      {toolTypes.map(tool => (
-                        <option key={tool.value} value={tool.value}>{tool.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {formData.category !== 'TOOL' && (
-                  <div className="space-y-1.5">
-                    <label className="text-xs text-gray-600 uppercase tracking-wide font-semibold">Content (Markdown supported)</label>
-                    <textarea
-                      rows={10}
-                      required
-                      value={formData.content}
-                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none font-mono"
-                    />
-                  </div>
-                )}
+                <div className="space-y-1.5">
+                  <label className="text-xs text-gray-600 uppercase tracking-wide font-semibold">Content (Markdown supported)</label>
+                  <textarea
+                    rows={10}
+                    required
+                    value={formData.content}
+                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg py-2.5 px-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none font-mono"
+                  />
+                </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">

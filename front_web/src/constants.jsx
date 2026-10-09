@@ -21,7 +21,6 @@ export const PROJECT_CATEGORIES = [
 export const RESOURCE_CATEGORIES = [
   { value: 'BLOG', label: 'Blog' },
   { value: 'GUIDE', label: 'Guide' },
-  { value: 'TOOL', label: 'Tool / Calculator' },
   { value: 'GLOSSARY', label: 'Glossary Item' }
 ];
 

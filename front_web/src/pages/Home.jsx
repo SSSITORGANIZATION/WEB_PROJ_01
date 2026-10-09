@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { motion } from 'motion/react';
 
+import Navbar from '../components/Navbar';
+
 import {
   ArrowRight, Code, Cpu, Globe as GlobeIcon, Zap,
   Users, BookOpen, Star, Shield,
@@ -25,11 +27,7 @@ import Logo3D from '../components/Logo3D';
 import Globe from '../components/Globe/Globe';
 import { getGlobeSettings, subscribeToGlobeSettings } from '../utils/globeSettings';
 
-import {
-  CurrencyConverter,
-  GstCalculator,
-  EmiCalculator,
-} from "../components/calculators";
+
 
 
 
@@ -160,9 +158,7 @@ const ProjectCard = ({ project }) => (
 
 
 const ResourceCard = ({ resource }) => {
-  const isTool = resource.category === "TOOL";
-
-  const hasImage = resource.thumbnail && !isTool;
+  const hasImage = resource.thumbnail;
 
   return (
     <Link
@@ -186,76 +182,60 @@ const ResourceCard = ({ resource }) => {
           <div className="absolute top-3 left-3 z-10">
             <div className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold ${resource.category === 'BLOG' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
               resource.category === 'GUIDE' ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                resource.category === 'TOOL' ? 'bg-amber-50 text-amber-600 border-amber-200' :
                   'bg-violet-50 text-violet-600 border-violet-200'
               }`}>
               {resource.category === 'BLOG' && <FileText className="w-3 h-3" />}
               {resource.category === 'GUIDE' && <BookOpen className="w-3 h-3" />}
-              {resource.category === 'TOOL' && <Lightbulb className="w-3 h-3" />}
               {resource.category === 'GLOSSARY' && <Tag className="w-3 h-3" />}
               {resource.category}
             </div>
           </div>
 
           {/* Content */}
-          <div className={`relative flex-1 flex flex-col ${isTool ? 'p-5' : 'p-6'} overflow-hidden`}>
+          <div className="relative flex-1 flex flex-col p-6 overflow-hidden">
             {/* Title */}
-            <h3 className={`font-bold text-gray-900 transition-colors line-clamp-2 leading-tight ${isTool ? 'mb-4 text-base mt-8' : 'mb-4 text-lg mt-8'
-              }`}>
+            <h3 className="font-bold text-gray-900 transition-colors line-clamp-2 leading-tight mb-4 text-lg mt-8">
               {resource.title}
             </h3>
 
-            {/* Tool Display - Only for tools */}
-            {isTool && (
-              <div className="flex-1 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-4">
-                {resource.tool_type === "currency" && <CurrencyConverter />}
-                {resource.tool_type === "gst" && <GstCalculator />}
-                {resource.tool_type === "emi" && <EmiCalculator />}
-              </div>
-            )}
-
-            {/* Thumbnail and Content - Only for non-tools */}
-            {!isTool && (
-              <div className="flex-1 flex flex-col min-h-0">
-                {/* Image Container - Only show if image exists */}
-                {hasImage && (
-                  <div className="relative mb-4 h-36 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
-                    <img
-                      src={resource.thumbnail || `https://picsum.photos/seed/${resource.id}/800/600`}
-                      alt={resource.title}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent" />
-                  </div>
-                )}
-
-                {/* Content excerpt - Only show if no image */}
-                {!hasImage && (
-                  <div className="mt-2 flex-1 min-h-0">
-                    <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
-                      {resource.content?.substring(0, 120)}...
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Footer - Only for non-tools */}
-            {!isTool && (
-              <div className="mt-4 flex shrink-0 items-center justify-between border-t border-gray-200 pt-4">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <Calendar className="h-3 w-3" />
-                  {new Date(resource.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            {/* Thumbnail and Content */}
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* Image Container - Only show if image exists */}
+              {hasImage && (
+                <div className="relative mb-4 h-36 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
+                  <img
+                    src={resource.thumbnail || `https://picsum.photos/seed/${resource.id}/800/600`}
+                    alt={resource.title}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent" />
                 </div>
-                <div className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 transition-all hover:bg-blue-100 hover:border-blue-300">
-                  Read More
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              )}
+
+              {/* Content excerpt - Only show if no image */}
+              {!hasImage && (
+                <div className="mt-2 flex-1 min-h-0">
+                  <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
+                    {resource.content?.substring(0, 120)}...
+                  </p>
                 </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="mt-4 flex shrink-0 items-center justify-between border-t border-gray-200 pt-4">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <Calendar className="h-3 w-3" />
+                {new Date(resource.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </div>
-            )}
+              <div className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600 transition-all hover:bg-blue-100 hover:border-blue-300">
+                Read More
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -490,8 +470,6 @@ const Home = () => {
 
         const latestResources = enrichedResources
 
-          .filter(resource => resource.category !== 'TOOL') // Exclude calculators/tools
-
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // Sort by newest first
 
           .slice(0, 3);
@@ -579,8 +557,11 @@ const Home = () => {
 
       {/* Hero Section */}
 
-      <section className="relative overflow-hidden bg-[linear-gradient(180deg,#2563eb_0%,#1d4ed8_34%,#102654_62%,#000000_100%)] text-white lg:bg-[linear-gradient(108deg,#2563eb_0%,#1d4ed8_34%,#102654_53%,#050b16_70%,#000000_100%)]">
+      <section className="relative bg-[linear-gradient(180deg,#2563eb_0%,#1d4ed8_34%,#102654_62%,#000000_100%)] text-white lg:bg-[linear-gradient(108deg,#2563eb_0%,#1d4ed8_34%,#102654_53%,#050b16_70%,#000000_100%)]">
 
+        <Navbar transparent />
+
+        <div className="relative overflow-hidden">
         {globeSettings.showGlobe && (
           <div className="pointer-events-none absolute inset-0 opacity-80">
             <Globe backgroundOnly />
@@ -599,36 +580,52 @@ const Home = () => {
 
               animate={{ opacity: 1, x: 0 }}
 
-              className="relative z-10 flex min-h-[32rem] max-w-none flex-col items-start justify-start px-6 py-12 sm:px-8 lg:px-12"
+              className="relative z-10 flex min-h-[28rem] max-w-none flex-col items-start justify-center px-6 py-4 sm:px-8 lg:px-12"
 
             >
-
-              <h1 className="mb-6 text-4xl font-bold tracking-tight text-white md:text-5xl">
-                Innovative Software Solutions for Modern Business
+              <h1 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-[2.6rem] leading-tight">
+                <span className="text-blue-300">We Build Software That Works.</span>
               </h1>
-              <p className="mb-8 text-xl leading-relaxed text-blue-100 md:text-2xl">
-                Nexora transforms business challenges into innovative digital solutions. We specialize in building scalable, secure applications that drive growth and efficiency.
+              <p className="mb-5 text-sm leading-relaxed text-blue-100/90 md:text-base max-w-lg">
+                SA Technologies partners with startups, growing businesses, and large enterprises to design, develop, and scale high-quality digital products — fast, secure, and built to last.
               </p>
-              <div className="flex flex-wrap gap-5 mb-8">
-                <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">{projects.length}+</span>
-                  <span>Projects</span>
+
+              <div className="mb-6 flex flex-col gap-2">
+                {[
+                  { label: 'Custom Web & Mobile App Development' },
+                  { label: 'Cloud Infrastructure & DevOps Automation' },
+                  { label: 'AI Integration & Data-Driven Solutions' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-blue-100/90">
+                    <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-400/30 text-blue-300">
+                      <svg className="h-2.5 w-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    </span>
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-4 mb-6">
+                <div className="flex items-center gap-2 text-sm text-blue-100">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">{projects.length}+</span>
+                  <span className="text-white/70">Projects Delivered</span>
                 </div>
-                <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">{developers.length}+</span>
-                  <span>Developers</span>
+                <div className="flex items-center gap-2 text-sm text-blue-100">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">{developers.length}+</span>
+                  <span className="text-white/70">Expert Engineers</span>
                 </div>
-                <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <span className="text-xl font-bold">{resources.length}+</span>
-                  <span>Resources</span>
+                <div className="flex items-center gap-2 text-sm text-blue-100">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-xs font-bold text-white">5★</span>
+                  <span className="text-white/70">Client Satisfaction</span>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/projects" className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 shadow-lg hover:shadow-xl">
-                  Explore Projects
+
+              <div className="flex flex-wrap gap-3">
+                <Link to="/projects" className="rounded-lg bg-white px-5 py-2.5 text-xs font-semibold text-blue-700 transition-all hover:bg-blue-50 shadow-lg hover:shadow-xl tracking-wide uppercase">
+                  View Our Work
                 </Link>
-                <Link to="/hiring" className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 shadow-lg hover:shadow-xl border border-blue-400/30">
-                  Join Community
+                <Link to="/book-demo" className="rounded-lg border border-white/30 bg-white/10 px-5 py-2.5 text-xs font-semibold text-white transition-all hover:bg-white/20 shadow-lg tracking-wide uppercase backdrop-blur-sm">
+                  Book a Demo
                 </Link>
               </div>
             </motion.div>
@@ -639,7 +636,7 @@ const Home = () => {
 
               animate={{ opacity: 1, x: 0 }}
 
-              className="flex min-h-[32rem] items-center justify-center px-6 py-10"
+              className="flex min-h-[28rem] items-center justify-center px-6 py-6"
 
             >
 
@@ -654,6 +651,7 @@ const Home = () => {
           </div>
 
         </div>
+        </div>
       </section>
 
 
@@ -664,71 +662,7 @@ const Home = () => {
 
 
 
-      {/* Features Section */}
 
-      <section className="py-12 px-6 bg-gray-50 section-spacing">
-
-        <div className="max-w-7xl mx-auto">
-
-          <div className="mb-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-center text-white shadow-lg w-full">
-
-            <h2 className="mb-2 text-2xl font-bold">Your Technical Command Center</h2>
-
-            <p className="mx-auto max-w-2xl text-base text-blue-100">One source of truth for architectural decisions, project health, and developer performance metrics.</p>
-
-          </div>
-
-
-
-          <div className="grid md:grid-cols-3 gap-4 mb-12">
-
-            {[
-
-              { icon: Shield, title: "Architectural Integrity", desc: "Automated policy enforcement for system design. Ensure every commit aligns with your defined architectural vision before it hits production." },
-
-              { icon: Zap, title: "Dev-First Experience", desc: "CLI tools and API access that integrate into your existing CI/CD pipelines. Built by developers, for developers." },
-
-              { icon: TrendingUp, title: "Metric Deep-Dives", desc: "DORA metrics and productivity analytics without the friction. Real-time insights into team performance and project health." }
-
-            ].map((feature, i) => (
-
-              <motion.div
-
-                key={i}
-
-                initial={{ opacity: 0, y: 20 }}
-
-                whileInView={{ opacity: 1, y: 0 }}
-
-                viewport={{ once: true }}
-
-                transition={{ delay: i * 0.1 }}
-
-                whileHover={{ y: -8, scale: 1.02 }}
-
-                className="rounded-xl neu-card-light p-6 transition-all hover:shadow-xl"
-
-              >
-
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100">
-
-                  <feature.icon className="h-8 w-8 text-blue-600" />
-
-                </div>
-
-                <h3 className="mb-2 text-lg font-semibold text-blue-600">{feature.title}</h3>
-
-                <p className="text-sm leading-relaxed text-gray-600">{feature.desc}</p>
-
-              </motion.div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-      </section>
 
 
 
