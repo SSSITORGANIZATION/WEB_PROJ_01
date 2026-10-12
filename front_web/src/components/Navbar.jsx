@@ -17,7 +17,6 @@ import {
   Sparkles,
   User,
   Users,
-  Wrench,
   X,
 } from 'lucide-react';
 import { useAuth } from '../auth/authContext.jsx';
@@ -41,7 +40,6 @@ const navigationGroups = [
       { label: 'All resources', description: 'Browse the library', to: '/resources', icon: FileText },
       { label: 'Blogs', description: 'News and insights', to: '/resources?category=BLOG', icon: FileText },
       { label: 'Guides', description: 'Helpful how-tos', to: '/resources?category=GUIDE', icon: BookOpen },
-      { label: 'Tools', description: 'Calculators and utilities', to: '/tools', icon: Wrench },
       { label: 'Glossary', description: 'Technical terminology', to: '/resources?category=GLOSSARY', icon: ReceiptText },
     ],
   },
@@ -74,7 +72,7 @@ const isLinkActive = (to, location) => {
 const isGroupActive = (group, location) =>
   group.links.some((link) => isLinkActive(link.to, location));
 
-const NavGroup = ({ group, location, open, onToggle, onNavigate }) => {
+const NavGroup = ({ group, location, open, onToggle, onNavigate, transparent = false }) => {
   const Icon = group.icon;
   const active = isGroupActive(group, location);
 
@@ -88,13 +86,20 @@ const NavGroup = ({ group, location, open, onToggle, onNavigate }) => {
         onKeyDown={(event) => {
           if (event.key === 'Escape') onToggle(false);
         }}
-        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
-          active || open
-            ? 'border-white/35 bg-white/20 text-white shadow-inner'
-            : 'border-transparent text-white/85 hover:border-white/20 hover:bg-white/10 hover:text-white'
-        }`}
+        className={
+          transparent
+            ? `inline-flex items-center gap-1 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                active || open ? 'text-white' : 'text-white/75 hover:text-white'
+              }`
+            : `inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 ${
+                active || open
+                  ? 'border-white/35 bg-white/20 text-white shadow-inner'
+                  : 'border-transparent text-white/85 hover:border-white/20 hover:bg-white/10 hover:text-white'
+              }`
+        }
+        style={undefined}
       >
-        <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+        {!transparent && <Icon className="h-3.5 w-3.5" aria-hidden="true" />}
         {group.title}
         <ChevronDown
           className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
@@ -141,7 +146,7 @@ const NavGroup = ({ group, location, open, onToggle, onNavigate }) => {
   );
 };
 
-const Navbar = () => {
+const Navbar = ({ transparent = false }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState(null);
   const [openMobileGroup, setOpenMobileGroup] = useState(null);
@@ -194,21 +199,28 @@ const Navbar = () => {
   return (
     <nav
       aria-label="Main navigation"
-      className="relative z-50 w-full pb-2"
+      className={`relative z-50 w-full ${transparent ? '' : 'pb-2'}`}
+      style={transparent ? { fontFamily: "'Open Sans', sans-serif" } : undefined}
     >
       <motion.div
-        animate={{
-          boxShadow: [
-            '0 8px 24px rgba(29, 78, 216, 0.30), inset 0 1px 0 rgba(255,255,255,0.85), inset 0 -2px 0 rgba(30,64,175,0.18)',
-            '0 12px 34px rgba(37, 99, 235, 0.48), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -2px 0 rgba(30,64,175,0.22)',
-            '0 8px 24px rgba(29, 78, 216, 0.30), inset 0 1px 0 rgba(255,255,255,0.85), inset 0 -2px 0 rgba(30,64,175,0.18)',
-          ],
-          y: [0, -1, 0],
-        }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="w-full border-y border-blue-100/80 bg-gradient-to-r from-blue-500/95 via-blue-400/95 to-sky-400/95 backdrop-blur-2xl"
+        {...(!transparent && {
+          animate: {
+            boxShadow: [
+              '0 8px 24px rgba(29, 78, 216, 0.30), inset 0 1px 0 rgba(255,255,255,0.85), inset 0 -2px 0 rgba(30,64,175,0.18)',
+              '0 12px 34px rgba(37, 99, 235, 0.48), inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -2px 0 rgba(30,64,175,0.22)',
+              '0 8px 24px rgba(29, 78, 216, 0.30), inset 0 1px 0 rgba(255,255,255,0.85), inset 0 -2px 0 rgba(30,64,175,0.18)',
+            ],
+            y: [0, -1, 0],
+          },
+          transition: { duration: 5, repeat: Infinity, ease: 'easeInOut' },
+        })}
+        className={
+          transparent
+            ? 'w-full'
+            : 'w-full border-y border-blue-100/80 bg-gradient-to-r from-blue-500/95 via-blue-400/95 to-sky-400/95 backdrop-blur-2xl'
+        }
       >
-        <div className="mx-auto flex min-h-[56px] w-full max-w-none items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <div className={`mx-auto flex w-full max-w-none items-center justify-between gap-3 px-6 sm:px-8 lg:px-12 ${transparent ? 'min-h-[64px] py-4' : 'min-h-[56px] px-4 sm:px-6 lg:px-8'}`}>
           <Link to="/" className="flex min-w-0 items-center gap-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80">
             {siteSettings?.logo && (
               <img
@@ -218,12 +230,18 @@ const Navbar = () => {
                 onError={(event) => { event.currentTarget.style.display = 'none'; }}
               />
             )}
-            <span className="max-w-[150px] truncate text-sm font-bold tracking-tight text-white sm:max-w-none">
+            <span
+              className="max-w-[150px] truncate text-sm font-bold tracking-tight text-white sm:max-w-none"
+            >
               {siteSettings?.heading || 'Sai Software Solutions'}
             </span>
           </Link>
 
-          <div className="hidden items-center gap-0.5 rounded-full border border-white/65 bg-blue-500/15 p-1 shadow-[inset_0_1px_3px_rgba(30,64,175,0.18)] lg:flex">
+          <div className={`hidden items-center lg:flex ${
+            transparent
+              ? 'gap-1'
+              : 'gap-0.5 rounded-full border border-white/65 bg-blue-500/15 p-1 shadow-[inset_0_1px_3px_rgba(30,64,175,0.18)]'
+          }`}>
             {navigationGroups.map((group) => (
               <NavGroup
                 key={group.title}
@@ -232,6 +250,7 @@ const Navbar = () => {
                 open={openGroup === group.title}
                 onToggle={(nextOpen) => toggleGroup(group.title, nextOpen)}
                 onNavigate={() => setOpenGroup(null)}
+                transparent={transparent}
               />
             ))}
           </div>

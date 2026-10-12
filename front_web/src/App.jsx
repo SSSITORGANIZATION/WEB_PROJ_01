@@ -15,7 +15,6 @@ const Developers = React.lazy(() => import('./pages/Developers'));
 const DeveloperDetail = React.lazy(() => import('./pages/DeveloperDetail'));
 const Resources = React.lazy(() => import('./pages/Resources'));
 const ResourceDetail = React.lazy(() => import('./pages/ResourceDetail'));
-const Tools = React.lazy(() => import('./pages/Tools'));
 const Hiring = React.lazy(() => import('./pages/Hiring'));
 const ApplyForJob = React.lazy(() => import('./pages/ApplyForJob'));
 const Documentation = React.lazy(() => import('./pages/Documentation'));
@@ -184,7 +183,6 @@ const Footer = () => {
             <ul className="flex flex-col gap-2">
               <li><Link to="/resources?category=BLOG" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Blogs</Link></li>
               <li><Link to="/resources?category=GUIDE" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Guides</Link></li>
-              <li><Link to="/tools" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Tools</Link></li>
               <li><Link to="/resources?category=GLOSSARY" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">Glossary</Link></li>
               <li><Link to="/resources" className="text-white/70 text-sm hover:text-white hover:translate-x-1 transition-all duration-300">All Resources</Link></li>
             </ul>
@@ -254,7 +252,6 @@ const AppContent = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
   const authPages = ['/auth/login', '/auth/register', '/auth/forgot-password', '/auth/reset-password'];
-  const shouldShowNavbar = !isAdminPage;
   const shouldShowFooter = !isAdminPage && !authPages.includes(location.pathname) && !['/book-demo'].includes(location.pathname);
 
   // Scroll to top when route changes
@@ -264,7 +261,6 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {shouldShowNavbar && <Navbar />}
       <main className="flex-grow">
         <Suspense fallback={
           <div className="h-screen w-full flex items-center justify-center bg-black">
@@ -276,13 +272,12 @@ const AppContent = () => {
           </div>
         }>
           <Routes>
-            <Route path="/" element={<Layout><Home /></Layout>} />
+            <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Layout><Projects /></Layout>} />
             <Route path="/project/:id" element={<ProtectedRoute><Layout><ProjectDetail /></Layout></ProtectedRoute>} />
             <Route path="/developers" element={<Layout><Developers /></Layout>} />
             <Route path="/developer/:id" element={<ProtectedRoute><Layout><DeveloperDetail /></Layout></ProtectedRoute>} />
             <Route path="/resources" element={<Layout><Resources /></Layout>} />
-            <Route path="/tools" element={<Layout><Tools /></Layout>} />
             <Route path="/resources/:id" element={<ProtectedRoute><Layout><ResourceDetail /></Layout></ProtectedRoute>} />
             <Route path="/hiring" element={<Layout><Hiring /></Layout>} />
             <Route path="/apply/:id" element={<ProtectedRoute><Layout><ApplyForJob /></Layout></ProtectedRoute>} />

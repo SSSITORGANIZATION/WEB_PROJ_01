@@ -22,6 +22,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { apiService } from '../services/api';
 import { useAuth } from '../auth/authContext.jsx';
+import Navbar from './Navbar';
 import '../styles/components/Layout.css';
 
 const Footer = ({ siteSettings, footerData }) => {
@@ -148,7 +149,6 @@ const Footer = ({ siteSettings, footerData }) => {
 export const Layout = ({ children }) => {
   const location = useLocation();
   const [siteSettings, setSiteSettings] = useState(null);
-  const [navbarLinks, setNavbarLinks] = useState([]);
   const [footerData, setFooterData] = useState(null);
 
   useEffect(() => {
@@ -158,12 +158,6 @@ export const Layout = ({ children }) => {
         const settingsResponse = await apiService.getSiteSettings();
         if (settingsResponse.data && settingsResponse.data.length > 0) {
           setSiteSettings(settingsResponse.data[0]);
-        }
-
-        // Fetch navbar links
-        const navbarResponse = await apiService.getNavbarLinks();
-        if (navbarResponse.data) {
-          setNavbarLinks(navbarResponse.data);
         }
 
         // Fetch footer data
@@ -181,6 +175,7 @@ export const Layout = ({ children }) => {
 
   return (
     <div className="layout">
+      <Navbar />
       <main className="layout-main">
         <AnimatePresence mode="wait">
           <motion.div
@@ -195,260 +190,7 @@ export const Layout = ({ children }) => {
           </motion.div>
         </AnimatePresence>
       </main>
+      <Footer siteSettings={siteSettings} footerData={footerData} />
     </div>
-  );
-};
-
-const HeaderWithSettings = ({ siteSettings, navbarLinks }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
-  const { user, isAuthenticated, clearAuth } = useAuth();
-
-  // Truncate name if too long
-  const truncateName = (name, maxLength = 15) => {
-    if (!name) return 'User';
-    return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Convert navbar links to navItems format, fallback to default if no links
-  const navItems = navbarLinks && navbarLinks.length > 0
-    ? navbarLinks.map(link => ({
-      name: link.title,
-      path: link.url,
-      icon: link.title.toLowerCase().includes('project') ? Rocket :
-        link.title.toLowerCase().includes('developer') ? Users :
-          link.title.toLowerCase().includes('resource') ? BookOpen :
-            link.title.toLowerCase().includes('review') ? Star :
-              link.title.toLowerCase().includes('hire') ? Code2 :
-                Terminal, // Default icon
-      hasDropdown: false,
-      openInNewTab: link.open_in_new_tab
-    }))
-    : [
-      { name: 'Projects', path: '/projects', icon: Rocket },
-      {
-        name: 'Developers', path: '/developers', icon: Users, hasDropdown: true, dropdownItems: [
-          { label: 'Developer Directory', path: '/developers' },
-          { label: 'Public Reviews', path: '/reviews' }
-        ]
-      },
-      { name: 'Resources', path: '/resources', icon: BookOpen },
-      { name: 'Reviews', path: '/reviews', icon: Star },
-      { name: 'Hiring', path: '/hiring', icon: Code2 },
-      { name: 'Contact', path: '/contact', icon: Mail },
-    ];
-
-  return (
-    <header className={`layout-header ${scrolled ? 'scrolled' : ''}`}>
-      <div className="layout-header-container">
-        <motion.div
-          className="layout-logo-wrapper"
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-        >
-          <Link to="/" className="layout-logo-link">
-            <div className="layout-logo-container">
-              <Terminal className="layout-logo-icon" />
-            </div>
-            <span className="layout-logo-text">{siteSettings?.heading || 'Sai Software Solutions'}</span>
-          </Link>
-        </motion.div>
-
-        <nav className="layout-desktop-nav">
-          <div className="layout-nav-items-wrapper">
-            {navItems.map((item, index) => {
-              const Icon = item.icon;
-              const isActive = item.hasDropdown
-                ? item.dropdownItems?.some(dropdownItem => location.pathname === dropdownItem.path)
-                : location.pathname === item.path;
-              return (
-                <motion.div
-                  key={item.name}
-                  className="layout-nav-item-wrapper"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  {item.hasDropdown ? (
-                    <div className="relative group">
-                      <button
-                        className={`layout-desktop-nav-link ${isActive ? 'active' : ''}`}
-                      >
-                        <div className="layout-nav-content">
-                          <Icon className="layout-nav-icon" />
-                          <span className="layout-nav-text">{item.name}</span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M6 9l6 6 6-6" />
-                          </svg>
-                        </div>
-                        <div className="layout-nav-indicator" />
-                      </button>
-                      <div className="absolute top-full left-0 mt-2 w-48 layout-nav-dropdown rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        {item.dropdownItems.map((dropdownItem, dropdownIndex) => (
-                          <Link
-                            key={dropdownIndex}
-                            to={dropdownItem.path}
-                            className="block px-4 py-3 text-sm layout-nav-dropdown-item transition-colors"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {dropdownItem.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    item.openInNewTab || item.path.startsWith('http') ? (
-                      <a
-                        href={item.path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`layout-desktop-nav-link ${isActive ? 'active' : ''}`}
-                      >
-                        <div className="layout-nav-content">
-                          <Icon className="layout-nav-icon" />
-                          <span className="layout-nav-text">{item.name}</span>
-                        </div>
-                        <div className="layout-nav-indicator" />
-                      </a>
-                    ) : (
-                      <Link
-                        to={item.path}
-                        className={`layout-desktop-nav-link ${isActive ? 'active' : ''}`}
-                      >
-                        <div className="layout-nav-content">
-                          <Icon className="layout-nav-icon" />
-                          <span className="layout-nav-text">{item.name}</span>
-                        </div>
-                        <div className="layout-nav-indicator" />
-                      </Link>
-                    )
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
-        </nav>
-
-        <div className="layout-header-actions">
-          {isAuthenticated && user ? (
-            <div className="layout-user-info">
-              <User size={16} />
-              <span className="layout-user-name">{truncateName(user.name)}</span>
-              <motion.button
-                className="layout-logout-button"
-                onClick={clearAuth}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <LogOut size={16} />
-              </motion.button>
-            </div>
-          ) : (
-            <Link to="/auth/login">
-              <motion.button
-                className="layout-cta-button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <LogIn size={16} />
-                <span>Login</span>
-              </motion.button>
-            </Link>
-          )}
-
-          <button
-            className="layout-mobile-menu-toggle"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <motion.div
-              animate={{ rotate: isMenuOpen ? 45 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.div>
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: '100vh' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="layout-mobile-nav"
-          >
-            <div className="layout-mobile-nav-container">
-              <div className="layout-mobile-nav-header">
-                <div className="layout-logo-container">
-                  <Terminal className="layout-logo-icon" />
-                </div>
-                <span className="layout-logo-text">{siteSettings?.heading || 'Sai Software Solutions'}</span>
-              </div>
-
-              <div className="layout-mobile-nav-items">
-                {navItems.map((item, index) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
-                  return (
-                    <motion.div
-                      key={item.name}
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      {item.openInNewTab || item.path.startsWith('http') ? (
-                        <a
-                          href={item.path}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`layout-mobile-nav-link ${isActive ? 'active' : ''}`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <Icon className="layout-mobile-nav-icon" />
-                          <span>{item.name}</span>
-                          {isActive && <div className="layout-mobile-nav-indicator" />}
-                        </a>
-                      ) : (
-                        <Link
-                          to={item.path}
-                          className={`layout-mobile-nav-link ${isActive ? 'active' : ''}`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <Icon className="layout-mobile-nav-icon" />
-                          <span>{item.name}</span>
-                          {isActive && <div className="layout-mobile-nav-indicator" />}
-                        </Link>
-                      )}
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              <div className="layout-mobile-nav-footer">
-                <motion.button
-                  className="layout-mobile-cta-button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <LogIn size={16} />
-                  <span>Login to Dashboard</span>
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
   );
 };

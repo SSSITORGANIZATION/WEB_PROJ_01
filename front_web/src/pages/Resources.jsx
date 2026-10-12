@@ -8,7 +8,6 @@ import {
   ChevronLeft, Library,
 } from 'lucide-react';
 import { apiService } from '../services/api';
-import CalculatorToolsPanel from '../components/calculators/CalculatorToolsPanel';
 
 // Helper function to get full media URL
 const getMediaUrl = (path) => {
@@ -33,7 +32,6 @@ const ResourceCard = ({ resource }) => {
           <div className={`absolute top-0 left-0 right-0 h-1 ${
             resource.category === 'BLOG' ? 'bg-gradient-to-r from-emerald-500 to-emerald-400' :
             resource.category === 'GUIDE' ? 'bg-gradient-to-r from-blue-500 to-blue-400' :
-            resource.category === 'TOOL'  ? 'bg-gradient-to-r from-amber-500 to-amber-400' :
                                             'bg-gradient-to-r from-rose-500 to-rose-400'
           }`} />
 
@@ -44,12 +42,10 @@ const ResourceCard = ({ resource }) => {
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
                 resource.category === 'BLOG'     ? 'bg-emerald-50 text-emerald-700' :
                 resource.category === 'GUIDE'    ? 'bg-blue-50 text-blue-700' :
-                resource.category === 'TOOL'     ? 'bg-amber-50 text-amber-700' :
                                                    'bg-rose-50 text-rose-700'
               }`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
                 {resource.category === 'BLOG'     && <FileText className="w-3 h-3" />}
                 {resource.category === 'GUIDE'    && <BookOpen className="w-3 h-3" />}
-                {resource.category === 'TOOL'     && <Lightbulb className="w-3 h-3" />}
                 {resource.category === 'GLOSSARY' && <Tag className="w-3 h-3" />}
                 {resource.category}
               </span>
@@ -90,7 +86,6 @@ const ResourceCard = ({ resource }) => {
               <span className={`inline-flex items-center gap-1 text-sm font-semibold ${
                 resource.category === 'BLOG'     ? 'text-emerald-600' :
                 resource.category === 'GUIDE'    ? 'text-blue-600' :
-                resource.category === 'TOOL'     ? 'text-amber-600' :
                 resource.category === 'GLOSSARY' ? 'text-rose-600' :
                                                    'text-gray-600'
               }`} style={{ fontFamily: 'Work Sans, sans-serif' }}>
@@ -118,8 +113,6 @@ const Resources = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [resourcesPerPage] = useState(9);
 
-  const isToolTab = activeCategory === 'TOOL';
-
   const indexOfLastResource = currentPage * resourcesPerPage;
   const indexOfFirstResource = indexOfLastResource - resourcesPerPage;
   const currentResources = filteredResources.slice(indexOfFirstResource, indexOfLastResource);
@@ -130,7 +123,6 @@ const Resources = () => {
     { id: 'ALL',      label: 'All Resources', icon: Bookmark,  color: 'slate'   },
     { id: 'BLOG',     label: 'Blogs',         icon: FileText,  color: 'emerald' },
     { id: 'GUIDE',    label: 'Guides',        icon: BookOpen,  color: 'blue'    },
-    { id: 'TOOL',     label: 'Tools',         icon: Lightbulb, color: 'amber'   },
     { id: 'GLOSSARY', label: 'Glossary',      icon: Tag,       color: 'red'     },
   ];
 
@@ -169,8 +161,7 @@ const Resources = () => {
     let filtered = resources;
 
     if (activeCategory === 'ALL') {
-      // Hide TOOL entries from the "All" tab — tools have their own tab
-      filtered = filtered.filter(r => r.category !== 'TOOL');
+      filtered = filtered;
     } else {
       filtered = filtered.filter(r => r.category === activeCategory);
     }
@@ -224,10 +215,7 @@ const Resources = () => {
                   <Library className="w-6 h-6" />
                   <span>{categories.length - 1} Categories</span>
                 </div>
-                <div className="flex items-center gap-3 text-lg text-blue-100">
-                  <Lightbulb className="w-6 h-6" />
-                  <span>3 Calculators</span>
-                </div>
+
               </motion.div>
             )}
           </div>
@@ -235,7 +223,7 @@ const Resources = () => {
       </section>
 
       {/* ── Main Content ── */}
-      <div className={`max-w-7xl mx-auto px-6 py-16 ${isToolTab ? 'bg-slate-950 rounded-none' : ''}`}>
+      <div className="max-w-7xl mx-auto px-6 py-16">
 
         {/* Filters & Search */}
         <motion.div
@@ -254,9 +242,7 @@ const Resources = () => {
                   className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     activeCategory === cat.id
                       ? activeBg[cat.color]
-                      : isToolTab
-                        ? 'bg-slate-800/60 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700/60'
-                        : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                      : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
                   }`}
                   style={{ fontFamily: 'Work Sans, sans-serif' }}
                 >
@@ -267,63 +253,23 @@ const Resources = () => {
               ))}
             </div>
 
-            {/* Search — hidden on tool tab since calculators don't need it */}
-            {!isToolTab && (
-              <div className="relative w-full lg:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search resources..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4f5d8c] focus:ring-2 focus:ring-[#4f5d8c]/20 transition-all text-base"
-                  style={{ fontFamily: 'Work Sans, sans-serif' }}
-                />
-              </div>
-            )}
+            {/* Search */}
+            <div className="relative w-full lg:w-96">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search resources..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-white border border-gray-200 rounded-xl py-3 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#4f5d8c] focus:ring-2 focus:ring-[#4f5d8c]/20 transition-all text-base"
+                style={{ fontFamily: 'Work Sans, sans-serif' }}
+              />
+            </div>
           </div>
         </motion.div>
 
-        {/* ── TOOLS TAB: interactive calculators ── */}
-        {isToolTab && (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key="tools-tab"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <CalculatorToolsPanel className="mb-14" />
-
-              {/* DB-backed tool resource cards (if any exist) */}
-              {!loading && filteredResources.length > 0 && (
-                <>
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="h-px flex-1 bg-slate-700/50" />
-                    <span className="text-slate-500 text-sm font-medium px-3"
-                      style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                      Related Tool Articles
-                    </span>
-                    <div className="h-px flex-1 bg-slate-700/50" />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <AnimatePresence mode="popLayout">
-                      {filteredResources.map((resource) => (
-                        <ResourceCard key={resource.id} resource={resource} />
-                      ))}
-                    </AnimatePresence>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        )}
-
-        {/* ── ALL OTHER TABS: resource cards grid ── */}
-        {!isToolTab && (
-          <>
-            {loading ? (
+        {/* ── Resource cards grid ── */}
+        {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
                 {[1, 2, 3, 4, 5, 6].map(i => (
                   <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse h-96">
@@ -417,8 +363,6 @@ const Resources = () => {
                   style={{ fontFamily: 'Work Sans, sans-serif' }}>Try adjusting your search or category filters.</p>
               </motion.div>
             )}
-          </>
-        )}
       </div>
     </div>
   );
