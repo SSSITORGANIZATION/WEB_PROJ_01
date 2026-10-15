@@ -192,11 +192,11 @@ const Resources = () => {
             >
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight"
                 style={{ fontFamily: 'Manrope, sans-serif' }}>
-                Resource Library
+                Insights &amp; Resources
               </h1>
               <p className="text-xl md:text-2xl text-blue-100 leading-relaxed mb-8"
                 style={{ fontFamily: 'Work Sans, sans-serif' }}>
-                Explore our curated collection of guides, tools, and insights to help you succeed
+                Guides, tools, and engineering write-ups from our team — built to help you ship better software, faster
               </p>
             </motion.div>
 
@@ -358,9 +358,9 @@ const Resources = () => {
                   <Library className="w-10 h-10 text-gray-400" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2"
-                  style={{ fontFamily: 'Manrope, sans-serif' }}>No resources found</h3>
+                  style={{ fontFamily: 'Manrope, sans-serif' }}>Nothing matches that search</h3>
                 <p className="text-gray-600"
-                  style={{ fontFamily: 'Work Sans, sans-serif' }}>Try adjusting your search or category filters.</p>
+                  style={{ fontFamily: 'Work Sans, sans-serif' }}>Try a different keyword or clear your category filter.</p>
               </motion.div>
             )}
       </div>

@@ -21,15 +21,13 @@ const About = () => {
             className="text-center max-w-4xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-              About Nexora
+              About SA
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 leading-relaxed mb-8">
-              Professional software development company focused on delivering innovative, scalable, and high-quality digital solutions for modern businesses.
-            </p>
+ SA is a software solutions company focused on creating modern digital products that help businesses turn ideas into practical, reliable solutions.            </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to="/contact" className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-                Get In Touch
-              </Link>
+Let's Work Together              </Link>
               <Link to="/projects" className="px-8 py-3 bg-blue-700 text-white rounded-lg font-semibold hover:bg-blue-800 transition-colors border border-blue-400/30">
                 View Our Work
               </Link>
@@ -40,59 +38,109 @@ const About = () => {
 
       {/* Company Overview */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Nexora
-              </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
-                <p>
-                 Nexora is a professional software development company focused on delivering innovative, scalable, and high-quality digital solutions. We specialize in building modern applications that help businesses streamline operations and achieve growth.
-                </p>
-                <p>
-                  Along with development services, we provide limited industry-oriented training programs to support skill development aligned with real-world project experience.
-                </p>
-                <p>
-                  Our team of experienced developers and consultants work closely with clients to understand their unique challenges and deliver tailored solutions that drive measurable results.
-                </p>
-              </div>
-            </motion.div>
+  <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+    <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-12 items-center">
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-2 gap-6"
-            >
-              {[
-                { icon: Target, label: "Projects Delivered", value: "250+" },
-                { icon: Users, label: "Happy Clients", value: "180+" },
-                { icon: Clock, label: "Years Experience", value: "10+" },
-                { icon: Award, label: "Awards Won", value: "15+" }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 * index }}
-                  className="bg-white rounded-xl shadow-lg p-6 text-center"
-                >
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <stat.icon className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
+      {/* Who We Are */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col justify-center"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 mt">
+          Who We Are
+        </h2>
+
+        <div className="space-y-5 text-gray-600 leading-relaxed">
+          <p>
+            SA is a technology company focused on building digital
+            solutions for businesses and turning ideas into useful products.
+          </p>
+
+          <p>
+            We work across software development, web applications,
+            digital experiences, and other technology solutions to help
+            businesses solve real problems and work more efficiently.
+          </p>
+
+          <p>
+            We believe good software is more than just code. It should be
+            simple to use, reliable, scalable, and designed around the
+            people and businesses that use it.
+          </p>
         </div>
-      </section>
+      </motion.div>
+
+
+      {/* What We Believe */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+          {[
+            {
+              icon: Target,
+              title: "Build with Purpose",
+              desc: "Technology should solve real problems and create meaningful value."
+            },
+            {
+              icon: Lightbulb,
+              title: "Keep It Simple",
+              desc: "We believe the best solutions are easy to understand, use, and maintain."
+            },
+            {
+              icon: Shield,
+              title: "Quality Matters",
+              desc: "We focus on building reliable, clean, and maintainable solutions."
+            },
+            {
+              icon: Users,
+              title: "Grow Together",
+              desc: "We work closely with our clients and build relationships that last."
+            },
+            {
+              icon: TrendingUp,
+              title: "Keep Learning",
+              desc: "We continuously learn, improve, and adapt as technology evolves."
+            }
+          ].map((value, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1
+              }}
+              whileHover={{ y: -5 }}
+              className={`bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all ${
+                index === 4 ? "sm:col-span-2" : ""
+              }`}
+            >
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-5">
+                <value.icon className="w-6 h-6 text-blue-600" />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                {value.title}
+              </h3>
+
+              <p className="text-gray-600 text-sm leading-relaxed">
+                {value.desc}
+              </p>
+            </motion.div>
+          ))}
+
+        </div>
+      </motion.div>
+
+    </div>
+  </div>
+</section>
 
       {/* Vision & Mission */}
       <section className="py-20 bg-white">

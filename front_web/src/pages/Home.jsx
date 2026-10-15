@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -553,8 +553,6 @@ const Home = () => {
 
     <div className="bg-gray-50">
 
-
-
       {/* Hero Section */}
 
       <section className="relative bg-[linear-gradient(180deg,#2563eb_0%,#1d4ed8_34%,#102654_62%,#000000_100%)] text-white lg:bg-[linear-gradient(108deg,#2563eb_0%,#1d4ed8_34%,#102654_53%,#050b16_70%,#000000_100%)]">
@@ -568,23 +566,19 @@ const Home = () => {
           </div>
         )}
 
-
-
         <div className="relative grid lg:grid-cols-2">
 
           <div className="contents">
 
             <motion.div
-
               initial={{ opacity: 0, x: -20 }}
-
               animate={{ opacity: 1, x: 0 }}
 
               className="relative z-10 flex min-h-[28rem] max-w-none flex-col items-start justify-center px-6 py-4 sm:px-8 lg:px-12"
 
             >
               <h1 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-[2.6rem] leading-tight">
-                <span className="text-blue-300">We Build Software That Works.</span>
+                <span className="text-blue-300">Building Products with Purpose</span>
               </h1>
               <p className="mb-5 text-sm leading-relaxed text-blue-100/90 md:text-base max-w-lg">
                 SA Technologies partners with startups, growing businesses, and large enterprises to design, develop, and scale high-quality digital products — fast, secure, and built to last.
@@ -631,21 +625,15 @@ const Home = () => {
             </motion.div>
 
             <motion.div
-
               initial={{ opacity: 0, x: 20 }}
-
               animate={{ opacity: 1, x: 0 }}
 
               className="flex min-h-[28rem] items-center justify-center px-6 py-6"
 
             >
-
               <div className="relative h-96 w-full max-w-lg lg:h-[32rem]">
-
                 {globeSettings.showGlobe && <Globe {...globeSettings} />}
-
               </div>
-
             </motion.div>
 
           </div>
@@ -653,14 +641,6 @@ const Home = () => {
         </div>
         </div>
       </section>
-
-
-
-      {/* Trust Section */}
-
-
-
-
 
 
 
@@ -673,48 +653,26 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
 
           <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
-
             <div className="flex items-center justify-between">
-
               <div className="text-center flex-1">
-
-                <h2 className="mb-2 text-2xl font-bold">Featured Projects</h2>
-
-                <p className="mx-auto max-w-2xl text-base text-blue-100">Discover the most innovative solutions built by our community of elite developers.</p>
-
+                <h2 className="mb-2 text-2xl font-bold">Our Work</h2>
+                <p className="mx-auto max-w-2xl text-base text-blue-100">A look at the products and platforms we've helped bring to life.</p>
               </div>
-
               <Link to="/projects" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
-
                 View All <ArrowRight className="w-4 h-4" />
-
               </Link>
-
             </div>
-
           </div>
-
-
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
             {loading ? (
-
               [1, 2, 3].map(i => <div key={i} className="h-[400px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
-
             ) : (
-
               projects.map(project => <ProjectCard key={project.id} project={project} />)
-
             )}
-
           </div>
-
         </div>
-
       </section>
-
-
 
       {/* Resources Section */}
 
@@ -723,48 +681,26 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
 
           <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
-
             <div className="flex items-center justify-between">
-
               <div className="text-center flex-1">
-
-                <h2 className="mb-2 text-2xl font-bold">Developer Resources</h2>
-
-                <p className="mx-auto max-w-2xl text-base text-blue-100">Access curated collection of Blogs, guides, and development tools.</p>
-
+                <h2 className="mb-2 text-2xl font-bold">Insights &amp; Resources</h2>
+                <p className="mx-auto max-w-2xl text-base text-blue-100">Practical guides, engineering write-ups, and tools from our team.</p>
               </div>
-
               <Link to="/resources" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
-
                 View All <ArrowRight className="w-4 h-4" />
-
               </Link>
-
             </div>
-
           </div>
-
-
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
             {loading ? (
-
               [1, 2, 3].map(i => <div key={i} className="h-[350px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
-
             ) : (
-
               resources.map(resource => <ResourceCard key={resource.id} resource={resource} />)
-
             )}
-
           </div>
-
         </div>
-
       </section>
-
-
 
       {/* Developers Section */}
 
@@ -773,46 +709,25 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
 
           <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
-
             <div className="flex items-center justify-between">
-
               <div className="text-center flex-1">
-
-                <h2 className="mb-2 text-2xl font-bold">Meet The Nexora Team</h2>
-
+                <h2 className="mb-2 text-2xl font-bold">The People Behind the Work</h2>
               </div>
-
               <Link to="/developers" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
-
                 View All <ArrowRight className="w-4 h-4" />
-
               </Link>
-
             </div>
-
           </div>
-
-
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
             {loading ? (
-
               [1, 2, 3].map(i => <div key={i} className="h-[380px] rounded-xl border border-gray-200 bg-white animate-pulse" />)
-
             ) : (
-
               developers.map(dev => <DeveloperCard key={dev.id} developer={dev} dataTimestamp={dataTimestamp} />)
-
             )}
-
           </div>
-
         </div>
-
       </section>
-
-
 
       {/* Reviews Section */}
 
@@ -821,37 +736,23 @@ const Home = () => {
         <div className="max-w-7xl mx-auto">
 
           <div className="mb-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 p-4 text-white shadow-lg w-full">
-
             <div className="flex items-center justify-between">
-
               <div className="text-center flex-1">
-
-                <h2 className="mb-2 text-2xl font-bold">Client Testimonials</h2>
-
-                <p className="mx-auto max-w-2xl text-base text-blue-100">Hear what our clients say about their experience working with our team</p>
-
+                <h2 className="mb-2 text-2xl font-bold">What Our Clients Say</h2>
+                <p className="mx-auto max-w-2xl text-base text-blue-100">Real feedback from the teams we've partnered with.</p>
               </div>
-
               <Link to="/reviews" className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-blue-100">
-
                 View All <ArrowRight className="w-4 h-4" />
-
               </Link>
-
             </div>
-
           </div>
 
           <ScrollingReviews limit={10} />
 
         </div>
-
       </section>
 
-
-
     </div>
-
   );
 
 };

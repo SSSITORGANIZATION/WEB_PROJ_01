@@ -164,10 +164,10 @@ const Developers = () => {
             className="text-center"
           >
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl" style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
-              Meet The <span className="text-blue-100">DevForge</span> Team
+              The People Behind <span className="text-blue-100">SA</span>
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-blue-100">
-              Discover talented developers contributing to innovative projects and shaping the future of technology.
+              Meet the engineers building and shipping the products our clients rely on every day.
             </p>
           </motion.div>
         </div>
@@ -198,7 +198,7 @@ const Developers = () => {
               <Users className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-1.5">No developers found</h3>
-            <p className="text-gray-600 text-sm">Try adjusting your search or filters to find the right talent.</p>
+            <p className="text-gray-600 text-sm">Try adjusting your search or filters to find the right person for your project.</p>
           </div>
         )}
       </div>

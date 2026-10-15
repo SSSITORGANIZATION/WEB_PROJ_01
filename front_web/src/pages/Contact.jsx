@@ -73,11 +73,12 @@ const Contact = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-              Contact Nexora
+  Let's Build Together
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 leading-relaxed">
-              Have questions about our software solutions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-            </p>
+  Have an idea, a project, or a business challenge?
+  Tell us about it and let's explore how SA can help.
+</p>
           </motion.div>
         </div>
       </section>
@@ -96,10 +97,9 @@ const Contact = () => {
                 <Mail className="w-6 h-6 text-blue-600" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gray-900">Email Us</h3>
-              <p className="text-gray-600 mb-4">Send us an email anytime</p>
+              <p className="text-gray-600 mb-4">Let's talk about your idea.<br/></p>
               <a href="mailto:saisoftwaresolutions99@gmail.com" className="text-blue-600 font-semibold hover:text-blue-700 transition-colors">
-                saisoftwaresolutions99@gmail.com
-              </a>
+hello@sa.com              </a>
             </motion.div>
 
             <motion.div
@@ -112,10 +112,9 @@ const Contact = () => {
                 <Phone className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3 text-gray-900">Call Us</h3>
-              <p className="text-gray-600 mb-4">Mon-Fri from 9am to 6pm</p>
+              <p className="text-gray-600 mb-4">Have a project to discuss?</p>
               <a href="tel:+917032703253" className="text-green-600 font-semibold hover:text-green-700 transition-colors">
-                +91 70327 03253
-              </a>
++91 XXXXX XXXXX              </a>
             </motion.div>
 
             <motion.div
@@ -130,8 +129,8 @@ const Contact = () => {
               <h3 className="text-xl font-bold mb-3 text-gray-900">Visit Us</h3>
               <p className="text-gray-600 mb-4">Come say hello at our office</p>
               <p className="text-purple-600 font-semibold">
-                KPHB<br />
-                Hyderabad, Telangana<br />
+                
+                Hyderabad, Telangana, 
                 India
               </p>
             </motion.div>
@@ -144,10 +143,9 @@ const Contact = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Contact Sai Software Solutions</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Tell Us About Your Idea</h2>
               <p className="text-gray-600 mb-8">
-                Fill out the form below and we'll get back to you as soon as possible. We typically respond within 24 hours.
-              </p>
+Tell us a little about what you're looking to build. Whether you have a clear plan or just an idea, we'll be happy to hear from you.              </p>
 
               {error && (
                 <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
@@ -250,7 +248,7 @@ const Contact = () => {
               className="space-y-8"
             >
               {/* Office Hours */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              {/* <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                     <Clock className="w-6 h-6 text-orange-600" />
@@ -266,15 +264,12 @@ const Contact = () => {
                     <span className="text-gray-600">Saturday</span>
                     <span className="font-semibold text-gray-900">10:00 AM - 4:00 PM</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Sunday</span>
-                    <span className="font-semibold text-gray-900">Closed</span>
-                  </div>
+                  
                 </div>
-              </div>
+              </div> */}
 
               {/* Other Ways to Connect */}
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              {/* <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
                     <MessageSquare className="w-6 h-6 text-indigo-600" />
@@ -291,10 +286,10 @@ const Contact = () => {
                     <span>Schedule a Meeting</span>
                   </a>
                 </div>
-              </div>
+              </div> */}
 
               {/* Map Placeholder */}
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-64">
+              {/* <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-64">
                 <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                   <div className="text-center">
                     <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -302,7 +297,7 @@ const Contact = () => {
                     <p className="text-gray-500">KPHB, Hyderabad, Telangana</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </motion.div>
           </div>
         </div>

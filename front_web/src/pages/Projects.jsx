@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Search, Filter, Code, Globe, Github,
   ExternalLink, ArrowRight, Layers,
@@ -245,10 +245,10 @@ const Projects = () => {
           <div className="flex items-center">
             <div className="max-w-3xl">
               <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-                Project <span className="text-blue-100">Showcase</span>
+                Our <span className="text-blue-100">Work</span>
               </h1>
               <p className="text-lg leading-relaxed text-blue-100">
-                Explore our curated gallery of high-performance software solutions, from enterprise-grade cloud architectures to innovative mobile experiences.
+                A look at the platforms, products, and systems we've built for clients — from enterprise-grade architectures to fast-moving consumer apps.
               </p>
             </div>
           </div>
@@ -278,7 +278,7 @@ const Projects = () => {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 transition-colors" />
             <input
               type="text"
-              placeholder="Search projects..."
+              placeholder="Search our work..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-[11px] text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
@@ -306,8 +306,8 @@ const Projects = () => {
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="h-10 w-10 text-gray-400" />
             </div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-2">No projects found</h3>
-            <p className="text-gray-600">Try adjusting your search or filters to find what you're looking for.</p>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">Nothing matches that search</h3>
+            <p className="text-gray-600">Try a different keyword or clear your filters to see everything we've built.</p>
           </div>
         )}
       </div>

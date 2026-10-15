@@ -263,11 +263,11 @@ const Hiring = () => {
               className="mb-8"
             >
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-                Join Our Team
+                Build What's Next, With Us
               </h1>
               <p className="text-xl md:text-2xl text-blue-100 leading-relaxed mb-8">
-                We're looking for talented people to help us build amazing products.
-                Find your next challenge and grow your career with us.
+                We're a team of engineers who care about craft. If you want to work on real
+                products with people who'll push you to do your best work, we'd love to meet you.
               </p>
             </motion.div>
 
@@ -280,7 +280,7 @@ const Hiring = () => {
               >
                 <div className="flex items-center gap-3 text-lg text-blue-100">
                   <Briefcase className="w-6 h-6" />
-                  <span>{jobs.length} Open Positions</span>
+                  <span>{jobs.length} Open Roles</span>
                 </div>
                 <div className="flex items-center gap-3 text-lg text-blue-100">
                   <MapPin className="w-6 h-6" />
@@ -301,9 +301,9 @@ const Hiring = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Open Positions</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Open Roles</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore our current openings and find the role that matches your skills and aspirations.
+              Take a look at what we're hiring for right now and find where you'd fit in.
             </p>
           </motion.div>
 
@@ -326,10 +326,10 @@ const Hiring = () => {
                   <div className="max-w-md mx-auto">
                     <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      No Open Positions
+                      No Open Roles Right Now
                     </h3>
                     <p className="text-gray-600">
-                      We're not hiring right now, but check back soon for new opportunities!
+                      We're fully staffed at the moment, but new roles open up often — check back soon.
                     </p>
                   </div>
                 </div>
