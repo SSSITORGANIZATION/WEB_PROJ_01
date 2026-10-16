@@ -1,25 +1,20 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Calendar, MapPin, Clock, Video, Phone, MessageSquare, X, Briefcase
+  Calendar, Video, Phone, MessageSquare, X, Briefcase
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import Navbar from '../components/Navbar';
 
 const ProjectCard = ({ project, onBook }) => {
   const projectImage = project.project_image || project.featured_image;
 
   return (
     <motion.div
-      whileHover={{
-        y: -12,
-        rotateX: 8,
-        rotateY: 8,
-        scale: 1.05,
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-      }}
-      className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform preserve-3d"
-      style={{ perspective: '1000px' }}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.2 }}
+      className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-md hover:shadow-xl"
     >
       {/* Project Image */}
       <div className="h-32 bg-gradient-to-br from-blue-50 to-indigo-50 relative overflow-hidden">
@@ -40,20 +35,9 @@ const ProjectCard = ({ project, onBook }) => {
       </div>
 
       <div className="p-4">
-        <h3 className="text-base font-semibold text-gray-900 mb-2">
+        <h3 className="text-base font-semibold text-gray-900 mb-3">
           {project.title}
         </h3>
-
-        <div className="flex flex-wrap gap-2 mb-3">
-          <div className="flex items-center gap-1 text-xs text-gray-600">
-            <Clock className="w-3 h-3" />
-            30 minutes
-          </div>
-          <div className="flex items-center gap-1 text-xs text-gray-600">
-            <MapPin className="w-3 h-3" />
-            Online
-          </div>
-        </div>
 
         <p className="text-gray-600 text-xs leading-relaxed mb-4 line-clamp-2">
           {project.description}
@@ -270,23 +254,25 @@ const BookDemo = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navbar />
+
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full mt-6">
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-7xl mx-auto px-6 py-12 sm:px-8 lg:px-12">
+        <div className="relative w-[90%] mx-auto px-6 py-8 sm:px-8 lg:px-12">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-6"
+              className="mb-5"
             >
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 tracking-tight">
                 Book a Demo
               </h1>
-              <p className="text-base md:text-xl text-blue-100 leading-relaxed mb-6">
-                Schedule a personalized demo with our team. See our platform in action
-                and discover how it can transform your workflow.
+              <p className="text-sm md:text-base text-blue-100 leading-relaxed max-w-2xl mx-auto">
+                Schedule a personalized walkthrough with our team. See our platform in action and discover how it can streamline your operations.
               </p>
             </motion.div>
 
@@ -325,7 +311,7 @@ const BookDemo = () => {
 
       {/* Projects Section - Horizontal Scroll */}
       <section id="projects" className="py-10">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="w-[90%] mx-auto px-6">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Choose a Project</h2>
             <p className="text-sm text-gray-600 max-w-2xl mx-auto">
@@ -365,7 +351,7 @@ const BookDemo = () => {
 
       {/* General Booking Demo Card */}
       <section className="py-10 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="w-[90%] mx-auto px-6">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Book a Demo</h2>
             <p className="text-sm text-gray-600 max-w-2xl mx-auto">
@@ -373,7 +359,7 @@ const BookDemo = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto items-center">
+          <div className="grid md:grid-cols-2 gap-8 w-[90%] mx-auto items-center">
             {/* Left Side - Related Text */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -525,7 +511,7 @@ const BookDemo = () => {
 
       {/* Contact Section */}
       <section className="py-10 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="w-[90%] mx-auto px-6">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Need Help Choosing?</h2>
             <p className="text-sm text-gray-600 max-w-2xl mx-auto">

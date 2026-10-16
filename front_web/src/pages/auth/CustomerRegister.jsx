@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { User, Mail, Phone, ArrowRight, AlertCircle, Shield, CheckCircle } from 'lucide-react';
+import { ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../auth/authContext.jsx';
 import { apiService } from '../../services/api';
 import PasswordInput from '../../components/auth/PasswordInput';
 import OTPInput from '../../components/auth/OTPInput';
+import Navbar from '../../components/Navbar';
 
 const CustomerRegister = () => {
   const [formData, setFormData] = useState({
@@ -15,11 +16,13 @@ const CustomerRegister = () => {
     password: '',
     confirmPassword: ''
   });
+
   const [showOTP, setShowOTP] = useState(false);
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -32,7 +35,13 @@ const CustomerRegister = () => {
   };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.phone || !formData.password) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setError('Please fill in all required fields');
       return false;
     }
@@ -48,12 +57,14 @@ const CustomerRegister = () => {
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(formData.email)) {
       setError('Please enter a valid email address');
       return false;
     }
 
-    const phoneRegex = /^[+]?[\d\s-()]+$/;
+    const phoneRegex = /^[0-9]+$/;
+
     if (!phoneRegex.test(formData.phone)) {
       setError('Please enter a valid phone number');
       return false;
@@ -65,6 +76,7 @@ const CustomerRegister = () => {
   const handleSendOTP = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     if (!validateForm()) return;
 
@@ -72,10 +84,14 @@ const CustomerRegister = () => {
 
     try {
       await apiService.sendOTP(formData.email);
+
       setShowOTP(true);
-      setSuccess('OTP sent to your email. Please verify to complete registration.');
+      setSuccess(
+        'OTP sent to your email. Please verify to complete registration.'
+      );
     } catch (err) {
       console.error('OTP error:', err);
+
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
@@ -106,12 +122,29 @@ const CustomerRegister = () => {
         otp
       });
 
-      if (response.data && response.data.token && response.data.user) {
-        setAuth(response.data.user, response.data.token);
-        navigate('/');
+      const result = response?.data ?? response;
+
+      const token =
+        result?.token ||
+        result?.access ||
+        result?.access_token ||
+        result?.key;
+
+      const user = result?.user || result?.customer;
+
+      if (token && user) {
+        setAuth(user, token);
+        navigate('/', { replace: true });
+      } else {
+        setError(
+          result?.error ||
+          result?.message ||
+          'Registration succeeded, but authentication details were not returned.'
+        );
       }
     } catch (err) {
       console.error('Registration error:', err);
+
       if (err.response?.data?.error) {
         setError(err.response.data.error);
       } else {
@@ -124,10 +157,14 @@ const CustomerRegister = () => {
 
   const handleResendOTP = async () => {
     setLoading(true);
+    setError('');
+    setSuccess('');
+
     try {
       await apiService.sendOTP(formData.email);
       setSuccess('New OTP sent to your email');
     } catch (err) {
+      console.error('Resend OTP error:', err);
       setError('Failed to resend OTP. Please try again.');
     } finally {
       setLoading(false);
@@ -135,88 +172,97 @@ const CustomerRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors mb-8">
-          <ArrowRight className="w-4 h-4 rotate-180" />
-          <span className="text-sm font-medium">Back to Home</span>
-        </Link>
+    <div className="min-h-screen bg-gray-100">
+      {/* Navbar added at the top */}
+      <Navbar />
 
+      {/* Existing registration card UI */}
+      <div className="flex min-h-[calc(100vh-64px)] items-center justify-center p-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden"
+          transition={{ duration: 0.35 }}
+          className="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-8 shadow-lg"
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-center">
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
-            <p className="text-blue-100 text-sm">Join Nexora and get started</p>
+          <div className="mb-7 text-center">
+            <h1 className="mb-1.5 text-2xl font-bold text-gray-900">
+              Create account
+            </h1>
+
+            <p className="text-sm text-gray-500">
+              Sign up to get started
+            </p>
           </div>
 
           {/* Form */}
-          <div className="p-8">
+          <div>
             {!showOTP ? (
-              <form onSubmit={handleSendOTP} className="space-y-5">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="John Doe"
-                      autoComplete="name"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
-                      disabled={loading}
-                    />
-                  </div>
+              <form
+                onSubmit={handleSendOTP}
+                className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2"
+              >
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Full Name
+                  </label>
+
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    autoComplete="name"
+                    disabled={loading}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50"
+                  />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Email Address</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                      inputMode="email"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
-                      disabled={loading}
-                    />
-                  </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Phone
+                  </label>
+
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={(e) => {
+                      const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+
+                      setFormData(prev => ({
+                        ...prev,
+                        phone: digitsOnly
+                      }));
+
+                      setError('');
+                    }}
+                    placeholder="7032703253"
+                    autoComplete="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    disabled={loading}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50"
+                  />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={(e) => {
-                        const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
-                        setFormData((prev) => ({ ...prev, phone: digitsOnly }));
-                        setError('');
-                      }}
-                      placeholder="1234567890"
-                      autoComplete="tel"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm text-gray-900 bg-white transition disabled:opacity-50 placeholder:text-slate-400"
-                      disabled={loading}
-                    />
-                  </div>
+                <div className="sm:col-span-2">
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    inputMode="email"
+                    disabled={loading}
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50"
+                  />
                 </div>
 
                 <PasswordInput
@@ -237,11 +283,11 @@ const CustomerRegister = () => {
 
                 {error && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+                    className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700 sm:col-span-2"
                   >
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <AlertCircle className="h-4 w-4 shrink-0" />
                     <span>{error}</span>
                   </motion.div>
                 )}
@@ -249,24 +295,34 @@ const CustomerRegister = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-60 sm:col-span-2"
                 >
                   {loading ? 'Sending OTP...' : 'Send Verification OTP'}
-                  <ArrowRight className="w-5 h-5" />
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleVerifyAndRegister} className="space-y-5">
+              <form
+                onSubmit={handleVerifyAndRegister}
+                className="space-y-4"
+              >
                 <div className="text-center">
-                  <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Verify Your Email</h3>
-                  <p className="text-sm text-gray-600">
-                    We've sent a 6-digit OTP to <strong>{formData.email}</strong>
+                  <CheckCircle className="mx-auto mb-3 h-12 w-12 text-emerald-500" />
+
+                  <h3 className="mb-1 text-base font-semibold text-gray-900">
+                    Verify Your Email
+                  </h3>
+
+                  <p className="text-xs text-slate-500">
+                    We've sent a 6-digit OTP to{' '}
+                    <strong>{formData.email}</strong>
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700 text-center block">Enter OTP</label>
+                <div className="space-y-1.5">
+                  <label className="block text-center text-xs font-medium text-slate-600">
+                    Enter OTP
+                  </label>
+
                   <OTPInput
                     length={6}
                     value={otp}
@@ -277,22 +333,22 @@ const CustomerRegister = () => {
 
                 {success && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm"
+                    className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm text-emerald-700"
                   >
-                    <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                    <CheckCircle className="h-4 w-4 shrink-0" />
                     <span>{success}</span>
                   </motion.div>
                 )}
 
                 {error && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+                    className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700"
                   >
-                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <AlertCircle className="h-4 w-4 shrink-0" />
                     <span>{error}</span>
                   </motion.div>
                 )}
@@ -300,17 +356,16 @@ const CustomerRegister = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-60"
                 >
                   {loading ? 'Verifying...' : 'Verify & Create Account'}
-                  <ArrowRight className="w-5 h-5" />
                 </button>
 
                 <button
                   type="button"
                   onClick={handleResendOTP}
                   disabled={loading}
-                  className="w-full text-sm text-blue-600 hover:text-blue-700 transition disabled:opacity-50"
+                  className="w-full text-sm font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50"
                 >
                   Resend OTP
                 </button>
@@ -323,7 +378,7 @@ const CustomerRegister = () => {
                     setError('');
                     setSuccess('');
                   }}
-                  className="w-full text-sm text-gray-600 hover:text-gray-700 transition"
+                  className="w-full text-sm text-gray-500 hover:text-gray-700"
                 >
                   Back to registration form
                 </button>
@@ -332,9 +387,12 @@ const CustomerRegister = () => {
 
             {!showOTP && (
               <div className="mt-6 text-center">
-                <p className="text-gray-600 text-sm">
+                <p className="text-sm text-gray-600">
                   Already have an account?{' '}
-                  <Link to="/auth/login" className="text-blue-600 font-semibold hover:text-blue-700 transition">
+                  <Link
+                    to="/auth/login"
+                    className="font-semibold text-blue-600 hover:text-blue-700"
+                  >
                     Sign in
                   </Link>
                 </p>

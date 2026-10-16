@@ -4,7 +4,7 @@ import {
   Save, Plus, X, Edit2, Trash2, Phone, Mail, MapPin, Clock,
   Globe, MessageSquare, Building, AlertCircle, CheckCircle
 } from '../icons';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const AdminContact = () => {
   const [contacts, setContacts] = useState([]);
@@ -285,8 +285,8 @@ const AdminContact = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <AdminSidebar />
+      <div className="flex flex-col h-screen bg-gray-50">
+        <AdminNavbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
@@ -298,8 +298,8 @@ const AdminContact = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col h-screen bg-gray-50">
+      <AdminNavbar />
       <div className="flex-1 overflow-auto">
         {/* Header */}
         <div className="bg-white shadow-sm border-b border-gray-200">
@@ -307,7 +307,7 @@ const AdminContact = () => {
             <div className="py-6">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Contact Management</h1>
+                  <h1 className="text-xl font-bold text-gray-900">Contact Management</h1>
                   <p className="text-sm text-gray-600 mt-1">Manage contact messages and website information</p>
                 </div>
                 {activeTab === 'info' && (
@@ -392,14 +392,14 @@ const AdminContact = () => {
             /* Contact Messages */
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Contact Messages</h2>
+                <h2 className="text-base font-semibold text-gray-900">Contact Messages</h2>
                 <p className="text-sm text-gray-600 mt-1">View and manage messages from the contact form</p>
               </div>
 
               {contactMessages.length === 0 ? (
-                <div className="text-center py-12">
+                <div className="text-center py-8">
                   <div className="text-gray-400 mb-4">
-                    <MessageSquare className="w-12 h-12 mx-auto" />
+                    <MessageSquare className="w-10 h-10 mx-auto" />
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">No messages yet</h3>
                   <p className="text-gray-500">Messages submitted through the contact form will appear here</p>
@@ -407,7 +407,7 @@ const AdminContact = () => {
               ) : (
                 <div className="divide-y divide-gray-200">
                   {contactMessages.map((message) => (
-                    <div key={message.id} className={`p-6 ${!message.is_read ? 'bg-blue-50' : ''}`}>
+                    <div key={message.id} className={`p-5 ${!message.is_read ? 'bg-blue-50' : ''}`}>
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-4">
@@ -491,15 +491,15 @@ const AdminContact = () => {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 overflow-hidden"
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden"
                   >
-                    <div className="p-6">
-                      <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                    <div className="p-5">
+                      <h2 className="text-base font-semibold text-gray-900 mb-6">
                         {isEditing ? 'Edit Contact Information' : 'Add New Contact Information'}
                       </h2>
 
                       <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {/* Company Information */}
                           <div className="lg:col-span-3">
                             <h3 className="text-md font-medium text-gray-700 mb-4 flex items-center gap-2">
@@ -782,14 +782,14 @@ const AdminContact = () => {
               {/* Contact List */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                 <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-gray-900">Contact Information</h2>
+                  <h2 className="text-base font-semibold text-gray-900">Contact Information</h2>
                   <p className="text-sm text-gray-600 mt-1">Manage your website's contact details</p>
                 </div>
 
                 {contacts.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-8">
                     <div className="text-gray-400 mb-4">
-                      <Mail className="w-12 h-12 mx-auto" />
+                      <Mail className="w-10 h-10 mx-auto" />
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No contact information</h3>
                     <p className="text-gray-500 mb-4">Get started by adding your first contact information</p>
@@ -804,7 +804,7 @@ const AdminContact = () => {
                 ) : (
                   <div className="divide-y divide-gray-200">
                     {contacts.map((contact) => (
-                      <div key={contact.id} className="p-6">
+                      <div key={contact.id} className="p-5">
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-4">

@@ -142,9 +142,9 @@ body {
   animation: shimmer 2s infinite;
 }
 
-/* Shared admin visual language for pages that mount AdminSidebar. */
-.admin-sidebar~main h1,
-.admin-sidebar~div h1 {
+/* Shared admin visual language for pages that mount AdminNavbar. */
+.admin-navbar~main h1,
+.admin-navbar~div h1 {
   display: inline-block;
   margin-bottom: 1.5rem;
   padding: 0.65rem 1rem;
@@ -154,10 +154,10 @@ body {
   box-shadow: 0 8px 20px rgba(29, 78, 216, 0.2);
 }
 
-.admin-sidebar~main h2,
-.admin-sidebar~main h3,
-.admin-sidebar~div h2,
-.admin-sidebar~div h3 {
+.admin-navbar~main h2,
+.admin-navbar~main h3,
+.admin-navbar~div h2,
+.admin-navbar~div h3 {
   border-radius: 0.4rem;
   background: #eff6ff;
   border-left: 4px solid #2563eb;
@@ -170,12 +170,4 @@ body {
   background: transparent !important;
   padding: 0 !important;
   color: #111827 !important;
-}
-
-@media (max-width: 767px) {
-
-  .admin-sidebar~main,
-  .admin-sidebar~div {
-    padding-top: 5rem;
-  }
 }

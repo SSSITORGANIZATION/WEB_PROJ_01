@@ -9,7 +9,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { apiService } from '../../services/api';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -263,15 +263,15 @@ const AdminProjects = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Manage Projects</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Manage Projects</h1>
               <p className="text-gray-600 text-sm">Create, edit, and showcase your engineering masterpieces.</p>
             </div>
             <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ const AdminProjects = () => {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Briefcase className="w-8 h-8 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No projects found</h3>
+                <h3 className="text-base font-semibold text-gray-900 mb-2">No projects found</h3>
                 <p className="text-gray-600 text-sm mb-6">Get started by creating your first project.</p>
                 <button
                   onClick={() => {
@@ -359,7 +359,7 @@ const AdminProjects = () => {
                   {loading ? (
                     [1, 2, 3].map(i => (
                       <tr key={i} className="animate-pulse">
-                        <td colSpan={5} className="p-6 bg-gray-50" />
+                        <td colSpan={5} className="p-5 bg-gray-50" />
                       </tr>
                     ))
                   ) : filteredProjects.map((project) => (
@@ -481,7 +481,7 @@ const AdminProjects = () => {
       {/* Modal */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -493,7 +493,7 @@ const AdminProjects = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow-xl p-6 relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar"
+              className="w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow-xl p-5 relative z-10 max-h-[90vh] overflow-y-auto custom-scrollbar"
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">{editingProject ? 'Edit Project' : 'Add New Project'}</h2>
@@ -741,7 +741,7 @@ const AdminProjects = () => {
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleteModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -753,11 +753,11 @@ const AdminProjects = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-md glass-card border-white/10 p-6 relative z-10"
+              className="w-full max-w-md glass-card border-white/10 p-5 relative z-10"
             >
               <div className="flex items-center justify-center mb-6">
-                <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                  <Trash2 className="w-6 h-6 text-red-500" />
+                <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-500" />
                 </div>
               </div>
 

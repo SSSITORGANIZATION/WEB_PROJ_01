@@ -6,7 +6,7 @@ import {
   Save, X
 } from 'lucide-react';
 import axios from 'axios';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const API_URL = "http://localhost:8000/documentation/";
 const PROJECT_API = "http://localhost:8000/projects/";
@@ -184,16 +184,16 @@ const AdminDocumentation = () => {
   });
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
 
           {/* HEADER */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">
+              <h1 className="text-xl font-bold text-gray-900 mb-1">
                 Manage <span className="text-blue-600">Documentation</span>
               </h1>
             </div>
@@ -283,7 +283,7 @@ const AdminDocumentation = () => {
                 {loading ? (
                   [1, 2, 3].map(i => (
                     <tr key={i} className="animate-pulse">
-                      <td colSpan={5} className="p-6 bg-gray-50" />
+                      <td colSpan={5} className="p-5 bg-gray-50" />
                     </tr>
                   ))
                 ) : filteredDocs.map(doc => (
@@ -350,7 +350,7 @@ const AdminDocumentation = () => {
       {/* MODAL */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
 
             {/* FIXED OVERLAY */}
             <div
@@ -358,7 +358,7 @@ const AdminDocumentation = () => {
               onClick={() => setIsModalOpen(false)}
             />
 
-            <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow-xl p-6 z-10">
+            <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-xl shadow-xl p-5 z-10">
 
               <div className="flex justify-between mb-6">
                 <h2 className="text-gray-900 font-semibold">
@@ -445,7 +445,7 @@ const AdminDocumentation = () => {
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleteModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -457,16 +457,16 @@ const AdminDocumentation = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-xl p-6 relative z-10"
+              className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-xl p-5 relative z-10"
             >
               <div className="flex items-center justify-center mb-6">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <Trash2 className="w-6 h-6 text-red-600" />
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-600" />
                 </div>
               </div>
 
               <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Documentation</h3>
+                <h3 className="text-base font-semibold text-gray-900 mb-2">Delete Documentation</h3>
                 <p className="text-sm text-gray-600">
                   Are you sure you want to delete the documentation for "{docToDelete?.project_name}"? This action cannot be undone.
                 </p>

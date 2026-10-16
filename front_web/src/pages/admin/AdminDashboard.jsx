@@ -11,13 +11,13 @@ import {
   CheckCircle, Clock, AlertCircle
 } from 'lucide-react';
 import { apiService } from '../../services/api';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const StatCard = ({ title, value, change, icon: Icon, trend }) => (
-  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+  <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-200">
     <div className="flex items-center justify-between mb-4">
-      <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-        <Icon className="w-6 h-6 text-blue-600" />
+      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+        <Icon className="w-5 h-5 text-blue-600" />
       </div>
       <div className={`flex items-center gap-1 text-sm font-medium ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
         {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
@@ -25,7 +25,7 @@ const StatCard = ({ title, value, change, icon: Icon, trend }) => (
       </div>
     </div>
     <h3 className="text-sm font-medium text-gray-600 mb-1">{title}</h3>
-    <p className="text-2xl font-bold text-gray-900">{value}</p>
+    <p className="text-xl font-bold text-gray-900">{value}</p>
   </div>
 );
 
@@ -135,31 +135,31 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">System Overview</h1>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">System Overview</h1>
               <p className="text-gray-600 text-sm">Real-time performance metrics and platform activity.</p>
             </div>
 
           </div>
 
           {/* Hero Section */}
-          <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl mb-8">
+          <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl mb-6">
             <div className="absolute inset-0 bg-black/10"></div>
-            <div className="relative px-6 py-12 sm:px-8 lg:px-12">
+            <div className="relative px-6 py-8 sm:px-8 lg:px-12">
               <div className="max-w-4xl">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 tracking-tight">
                     Welcome Back, Admin
                   </h2>
                   <p className="text-lg md:text-xl text-blue-100 leading-relaxed">
@@ -171,7 +171,7 @@ const AdminDashboard = () => {
           </section>
 
           {/* Stats Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatCard title="Active Projects" value={stats.projects} change="+12%" icon={Briefcase} trend="up" />
             <StatCard title="Elite Developers" value={stats.developers} change="+5%" icon={Users} trend="up" />
             <StatCard title="Knowledge Assets" value={stats.resources} change="+24%" icon={BookOpen} trend="up" />
@@ -179,15 +179,15 @@ const AdminDashboard = () => {
           </div>
 
           {/* Recent Things Section */}
-          <div className="grid lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-3 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="grid lg:grid-cols-3 gap-4 mb-6">
+            <div className="lg:col-span-3 p-5 bg-white rounded-xl border border-gray-200 shadow-sm">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                   <Clock className="w-5 h-5 text-blue-600" /> Recent Activity
                 </h3>
 
               </div>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-3 gap-4">
                 {/* Recent Projects */}
                 <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
                   <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -249,12 +249,12 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-1 gap-6">
+          <div className="grid lg:grid-cols-1 gap-4">
             {/* Recent Activity */}
             <div className="lg:col-span-1 space-y-6">
-              <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-all" onClick={() => navigate('/admin/demos')}>
+              <div className="p-5 bg-white rounded-xl border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-all" onClick={() => navigate('/admin/demos')}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-blue-600" /> Recent Demo Requests
                   </h3>
                   <div className="text-sm font-semibold text-blue-600 uppercase tracking-wide flex items-center gap-1">
@@ -293,9 +293,9 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="p-5 bg-white rounded-xl border border-gray-200 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                     <Users className="w-5 h-5 text-blue-600" /> Recent Applications
                   </h3>
 

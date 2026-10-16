@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { Star, ArrowLeft, CheckCircle, AlertCircle, X } from "lucide-react";
+import {
+  Star,
+  ArrowLeft,
+  CheckCircle,
+  AlertCircle,
+  LoaderCircle,
+} from "lucide-react";
 
 const REVIEWS_API = "http://localhost:8000/performance-reviews/";
 const PROJECTS_API = "http://localhost:8000/projects/";
@@ -14,21 +20,10 @@ const ReviewPage = () => {
   const [project, setProject] = useState(null);
   const [hover, setHover] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [projectLoading, setProjectLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [recommendedProjects, setRecommendedProjects] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Fetch recommended projects
-  const fetchRecommendedProjects = async () => {
-    try {
-      const res = await axios.get(PROJECTS_API);
-      const projects = res.data.filter(p => p.id !== parseInt(projectId)).slice(0, 2);
-      setRecommendedProjects(projects);
-    } catch (err) {
-      console.error("Failed to fetch recommended projects:", err);
-    }
-  };
 
   const [formData, setFormData] = useState({
     reviewer_name: "",
@@ -37,7 +32,15 @@ const ReviewPage = () => {
     review_period: "Project Delivery",
   });
 
-  // Fetch specific project
+  const ratingLabels = [
+    "",
+    "Poor",
+    "Fair",
+    "Good",
+    "Very Good",
+    "Excellent",
+  ];
+
   useEffect(() => {
     if (!projectId) {
       navigate("/projects");
@@ -46,32 +49,63 @@ const ReviewPage = () => {
 
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`${PROJECTS_API}${projectId}/`);
-        setProject(res.data);
-        setIsOpen(true); // Open modal when project is loaded
+        setProjectLoading(true);
+        const response = await axios.get(
+          `${PROJECTS_API}${projectId}/`
+        );
+        setProject(response.data);
       } catch (err) {
-        setError("Project not found.");
+        setError("Project not found. Please select a valid project.");
+      } finally {
+        setProjectLoading(false);
       }
     };
 
     fetchProject();
   }, [projectId, navigate]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const fetchRecommendedProjects = async () => {
+    try {
+      const response = await axios.get(PROJECTS_API);
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.results || [];
+
+      setRecommendedProjects(
+        data.filter((item) => String(item.id) !== String(projectId)).slice(0, 2)
+      );
+    } catch (err) {
+      console.error("Failed to fetch recommended projects:", err);
+    }
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+
     setError("");
   };
 
-  const handleClose = () => {
-    setIsOpen(false);
-    navigate(-1);
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (!formData.reviewer_name.trim()) {
+      setError("Please enter your name or company name.");
+      return;
+    }
 
-    if (!formData.reviewer_name || !formData.rating || !formData.feedback) {
-      setError("Please fill all required fields.");
+    if (!formData.rating) {
+      setError("Please select a star rating.");
+      return;
+    }
+
+    if (formData.feedback.trim().length < 10) {
+      setError("Your review must contain at least 10 characters.");
       return;
     }
 
@@ -80,7 +114,9 @@ const ReviewPage = () => {
 
       const submissionData = {
         ...formData,
-        project: parseInt(projectId),
+        reviewer_name: formData.reviewer_name.trim(),
+        feedback: formData.feedback.trim(),
+        project: Number(projectId),
       };
 
       await axios.post(REVIEWS_API, submissionData);
@@ -89,277 +125,349 @@ const ReviewPage = () => {
       await fetchRecommendedProjects();
     } catch (err) {
       if (err.response?.data) {
-        const errorMessages = Object.values(err.response.data)
+        const details = Object.values(err.response.data)
           .flat()
           .join(", ");
-        setError(errorMessages);
+
+        setError(details || "Failed to submit your review.");
       } else {
-        setError("Failed to submit review.");
+        setError("Unable to submit your review. Please try again.");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const ratingLabels = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
+  const inputClass =
+    "w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
-  if (!isOpen) {
-    return null; // Don't render anything if modal is not open
+  if (projectLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+        <div className="flex items-center gap-3 text-sm text-slate-500">
+          <LoaderCircle className="h-5 w-5 animate-spin text-blue-600" />
+          Loading project details...
+        </div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen bg-slate-50 px-4 py-12">
+        <div className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <AlertCircle className="mx-auto mb-3 h-9 w-9 text-red-500" />
+          <h1 className="text-xl font-semibold text-slate-900">
+            Project unavailable
+          </h1>
+          <p className="mt-2 text-sm text-slate-500">
+            {error || "We couldn't find the selected project."}
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate("/projects")}
+            className="mt-5 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+          >
+            Back to Projects
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-zinc-900 rounded-2xl border border-white/10 w-full max-w-xl h-[600px] overflow-hidden flex flex-col"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleClose}
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
-            >
-              <ArrowLeft width="20" height="20" />
-            </button>
-            <div>
-              <h1 className="text-xl font-bold text-white tracking-tight">
-                Share Your Experience
-              </h1>
-              <p className="text-zinc-400 text-xs">
-                Review for {project?.title || "Loading..."}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleClose}
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
+    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:py-10">
+      <div className="mx-auto w-full max-w-5xl">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="mb-5 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-slate-600 transition hover:text-blue-700"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
+
+        <div className="grid items-start gap-6 lg:grid-cols-[1fr_300px]">
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
           >
-            <X width="20" height="20" />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 p-4 overflow-hidden">
-          {success ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="h-full flex flex-col px-6 py-4"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mb-4 shadow-lg shadow-green-500/25 mx-auto"
-              >
-                <CheckCircle className="w-6 h-6 text-white" />
-              </motion.div>
-              
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-xl font-bold text-white mb-2 text-center"
-              >
-                Thank You for Your Review!
-              </motion.h2>
-              
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-zinc-400 text-sm mb-6 text-center"
-              >
-                Your feedback helps us improve. Check out these similar projects:
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex-1 overflow-y-auto mb-4"
-              >
-                <div className="flex gap-3 justify-center">
-                  {recommendedProjects.map((proj, index) => (
-                    <motion.div
-                      key={proj.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 + index * 0.1 }}
-                      className="bg-zinc-800/50 rounded-xl p-4 border border-zinc-700/50 hover:bg-zinc-800/70 hover:border-zinc-600/50 transition-all duration-200 cursor-pointer flex-1 max-w-[280px]"
-                      onClick={() => navigate(`/project/${proj.id}`)}
-                    >
-                      <div className="flex flex-col items-center text-center">
-                        {proj.project_image ? (
-                          <img
-                            src={proj.project_image}
-                            alt={proj.title}
-                            className="w-full h-24 object-cover rounded-lg mb-2"
-                          />
-                        ) : (
-                          <div className="w-full h-24 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mb-2">
-                            <span className="text-white font-bold text-lg">
-                              {proj.title?.charAt(0)?.toUpperCase() || 'P'}
-                            </span>
-                          </div>
-                        )}
-                        <h3 className="text-white font-medium text-sm mb-1 w-full">
-                          {proj.title || 'Untitled Project'}
-                        </h3>
-                        {proj.category && (
-                          <span className="inline-block px-2 py-1 bg-zinc-700/50 text-zinc-300 text-xs rounded-full">
-                            {proj.category}
-                          </span>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
+            {success ? (
+              <div className="py-5">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
+                  <CheckCircle className="h-8 w-8 text-emerald-600" />
                 </div>
-              </motion.div>
 
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                onClick={handleClose}
-                className="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm transition-all duration-200 border border-zinc-700"
-              >
-                Back to Previous Page
-              </motion.button>
-            </motion.div>
-          ) : (
-            <form onSubmit={handleSubmit} className="h-full flex flex-col justify-between">
-              <div className="space-y-3 flex-1 overflow-hidden">
-                {/* Rating Section */}
-                <div className="space-y-2">
-                  <label className="block">
-                    <span className="text-zinc-300 font-medium text-sm">Rate Your Experience</span>
-                  </label>
-                  <div className="flex justify-center gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <motion.button
-                        key={star}
-                        type="button"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="text-2xl transition-all duration-200"
-                        style={{
-                          color:
-                            star <= (hover || formData.rating)
-                              ? "#facc15"
-                              : "#374151",
-                        }}
-                        onClick={() =>
-                          setFormData({ ...formData, rating: star })
-                        }
-                        onMouseEnter={() => setHover(star)}
-                        onMouseLeave={() => setHover(0)}
-                      >
-                        <Star
-                          fill={star <= (hover || formData.rating) ? "currentColor" : "none"}
-                          className="w-6 h-6"
-                        />
-                      </motion.button>
-                    ))}
+                <h1 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
+                  Thank You for Your Review!
+                </h1>
+
+                <p className="mx-auto mt-2 max-w-md text-center text-sm leading-6 text-slate-500">
+                  Your feedback helps SA Technologies improve its services
+                  and deliver better project experiences.
+                </p>
+
+                {recommendedProjects.length > 0 && (
+                  <div className="mt-7">
+                    <h2 className="mb-3 text-base font-semibold text-slate-900">
+                      Explore Other Projects
+                    </h2>
+
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {recommendedProjects.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          onClick={() => navigate(`/project/${item.id}`)}
+                          className="overflow-hidden rounded-xl border border-slate-200 text-left transition hover:border-blue-300 hover:shadow-sm"
+                        >
+                          {item.project_image ? (
+                            <img
+                              src={item.project_image}
+                              alt={item.title || "Project"}
+                              className="h-32 w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-24 items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl font-bold text-white">
+                              {item.title?.charAt(0)?.toUpperCase() || "P"}
+                            </div>
+                          )}
+
+                          <div className="p-3">
+                            <h3 className="text-sm font-semibold text-slate-800">
+                              {item.title || "Untitled Project"}
+                            </h3>
+                            {item.category && (
+                              <p className="mt-1 text-xs text-slate-500">
+                                {item.category}
+                              </p>
+                            )}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  {formData.rating > 0 && (
-                    <div className="text-center">
-                      <span className="text-xs text-zinc-400">
-                        {ratingLabels[formData.rating]} ({formData.rating}/5)
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/projects")}
+                  className="mt-7 w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                >
+                  Explore All Projects
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-blue-600">
+                    SA Technologies
+                  </span>
+
+                  <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    Share Your Experience
+                  </h1>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                    Tell us about your experience with our work. Your feedback
+                    helps us improve our services.
+                  </p>
+
+                  <div className="mt-4 rounded-lg bg-blue-50 px-3 py-3">
+                    <p className="text-xs font-medium text-blue-700">
+                      Reviewing project
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-slate-900">
+                      {project.title || "Selected Project"}
+                    </p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Rate Your Experience
+                    </label>
+
+                    <div
+                      className="flex items-center gap-2"
+                      role="group"
+                      aria-label="Rate your experience"
+                    >
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const active = star <= (hover || formData.rating);
+
+                        return (
+                          <motion.button
+                            key={star}
+                            type="button"
+                            whileHover={{ scale: 1.08 }}
+                            whileTap={{ scale: 0.95 }}
+                            aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                            aria-pressed={formData.rating === star}
+                            onClick={() => {
+                              setFormData((previous) => ({
+                                ...previous,
+                                rating: star,
+                              }));
+                              setError("");
+                            }}
+                            onMouseEnter={() => setHover(star)}
+                            onMouseLeave={() => setHover(0)}
+                            className="rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                          >
+                            <Star
+                              className={`h-7 w-7 transition ${
+                                active
+                                  ? "fill-amber-400 text-amber-400"
+                                  : "text-slate-300"
+                              }`}
+                            />
+                          </motion.button>
+                        );
+                      })}
+
+                      {formData.rating > 0 && (
+                        <span className="ml-2 text-sm font-medium text-slate-600">
+                          {ratingLabels[formData.rating]}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="reviewer_name"
+                      className="mb-1.5 block text-sm font-medium text-slate-700"
+                    >
+                      Your Name / Company
+                    </label>
+                    <input
+                      id="reviewer_name"
+                      type="text"
+                      name="reviewer_name"
+                      value={formData.reviewer_name}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="Enter your name or company"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-1.5 flex items-center justify-between">
+                      <label
+                        htmlFor="feedback"
+                        className="block text-sm font-medium text-slate-700"
+                      >
+                        Your Review
+                      </label>
+                      <span className="text-xs text-slate-400">
+                        {formData.feedback.length}/1000
                       </span>
                     </div>
-                  )}
-                </div>
 
-                {/* Name Input */}
-                <div className="space-y-1">
-                  <label className="block">
-                    <span className="text-zinc-300 font-medium text-sm">Your Name / Company</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="reviewer_name"
-                    value={formData.reviewer_name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-blue-500/50 focus:bg-zinc-800 transition-all text-sm"
-                    placeholder="Enter your name"
-                  />
-                </div>
+                    <textarea
+                      id="feedback"
+                      name="feedback"
+                      value={formData.feedback}
+                      onChange={handleChange}
+                      maxLength={1000}
+                      rows={5}
+                      className={`${inputClass} resize-y`}
+                      placeholder="Share your experience with our project..."
+                      required
+                    />
 
-                {/* Feedback Textarea */}
-                <div className="space-y-1 flex-1 flex flex-col">
-                  <label className="block">
-                    <span className="text-zinc-300 font-medium text-sm">Your Review</span>
-                  </label>
-                  <textarea
-                    name="feedback"
-                    maxLength="1000"
-                    value={formData.feedback}
-                    onChange={handleChange}
-                    className="flex-1 w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-blue-500/50 focus:bg-zinc-800 transition-all resize-none text-sm"
-                    placeholder="Share your experience..."
-                  />
-                  <div className="flex justify-between items-center">
-                    <p className="text-zinc-500 text-xs">
-                      {formData.feedback.length}/1000
+                    <p className="mt-1 text-xs text-slate-400">
+                      Please enter at least 10 characters.
                     </p>
-                    <span className="text-zinc-400 text-xs">Min 10 chars</span>
                   </div>
-                </div>
 
-                {/* Review Period */}
-                <div className="space-y-1">
-                  <label className="block">
-                    <span className="text-zinc-300 font-medium text-sm">Review Period</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="review_period"
-                    value={formData.review_period}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:border-blue-500/50 focus:bg-zinc-800 transition-all text-sm"
-                    placeholder="e.g., Q1 2024"
-                  />
-                </div>
+                  <div>
+                    <label
+                      htmlFor="review_period"
+                      className="mb-1.5 block text-sm font-medium text-slate-700"
+                    >
+                      Review Period
+                    </label>
+                    <input
+                      id="review_period"
+                      type="text"
+                      name="review_period"
+                      value={formData.review_period}
+                      onChange={handleChange}
+                      className={inputClass}
+                      placeholder="e.g. Project Delivery"
+                    />
+                  </div>
 
-                {/* Error Message */}
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-2 p-2 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-xs"
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      role="alert"
+                      className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+                    >
+                      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>{error}</span>
+                    </motion.div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-700 px-4 py-3 text-sm font-semibold text-white transition hover:from-blue-700 hover:to-indigo-800 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <AlertCircle className="w-3 h-3" />
-                    <span>{error}</span>
-                  </motion.div>
-                )}
-              </div>
+                    {loading ? (
+                      <>
+                        <LoaderCircle className="h-4 w-4 animate-spin" />
+                        Submitting Review...
+                      </>
+                    ) : (
+                      "Submit Review"
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
+          </motion.section>
 
-              {/* Submit Button */}
-              <motion.button
-                type="submit"
-                disabled={loading}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-3"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Submitting...
+          <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="text-base font-semibold text-slate-900">
+              Why Your Feedback Matters
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Your review helps our team understand what worked well and where
+              we can improve.
+            </p>
+
+            <div className="mt-5 space-y-4">
+              {[
+                ["01", "Help us improve", "Share what went well and what could be better."],
+                ["02", "Support future clients", "Help others understand our project experience."],
+                ["03", "Recognize our team", "Let us know how our work made a difference."],
+              ].map(([number, title, description]) => (
+                <div key={number} className="flex gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-xs font-bold text-blue-700">
+                    {number}
                   </div>
-                ) : (
-                  "Submit Review"
-                )}
-              </motion.button>
-            </form>
-          )}
+                  <div>
+                    <h3 className="text-sm font-medium text-slate-800">
+                      {title}
+                    </h3>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </main>
   );
 };
 

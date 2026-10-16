@@ -5,7 +5,7 @@ import {
   Save, RefreshCw, CheckCircle, AlertCircle, Edit2, Plus, Trash2,
   FileText, Building, Link2, Copy, ExternalLink
 } from 'lucide-react';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 import { apiService } from '../../services/api';
 
 const AdminFooter = () => {
@@ -159,13 +159,13 @@ const AdminFooter = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <AdminSidebar />
+      <div className="flex flex-col h-screen bg-gray-50">
+        <AdminNavbar />
         <div className="flex-1 flex items-center justify-center">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 border-4 border-blue-600/20 border-t-blue-600 rounded-full"
+            className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full"
           />
         </div>
       </div>
@@ -173,12 +173,12 @@ const AdminFooter = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col h-screen bg-gray-50">
+      <AdminNavbar />
       <div className="flex-1 overflow-auto">
-        <div className="p-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Footer Settings</h1>
+        <div className="p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Footer Settings</h1>
             <p className="text-gray-600">Manage footer contact information and company details</p>
           </div>
 
@@ -204,9 +204,9 @@ const AdminFooter = () => {
             </motion.div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Contact Information */}
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
               <div className="flex items-center gap-3 mb-6">
                 <Building className="w-5 h-5 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Contact Information</h2>
@@ -297,7 +297,7 @@ const AdminFooter = () => {
             </div>
 
             {/* Social Links */}
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
               <div className="flex items-center gap-3 mb-6">
                 <Link2 className="w-5 h-5 text-blue-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Social Links</h2>

@@ -5,7 +5,7 @@ import {
   Star, Search, Filter, Edit3, Trash2, Save, X,
   ChevronLeft, ChevronRight, User, Calendar, MessageSquare
 } from "lucide-react";
-import AdminSidebar from "../../components/AdminSidebar";
+import AdminNavbar from "../../components/AdminNavbar";
 
 const REVIEWS_API = "http://localhost:8000/performance-reviews/";
 const ITEMS_PER_PAGE = 10;
@@ -175,9 +175,9 @@ const ManageReviews = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
-        <AdminSidebar />
-        <main className="flex-grow overflow-y-auto p-6">
+      <div className="flex flex-col min-h-screen bg-gray-50">
+        <AdminNavbar />
+        <main className="flex-grow overflow-y-auto p-5">
           <div className="flex items-center justify-center py-20">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
             <p className="ml-4 text-gray-600">Loading reviews...</p>
@@ -188,15 +188,15 @@ const ManageReviews = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow overflow-y-auto p-6">
+      <main className="flex-grow overflow-y-auto p-5">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Manage Reviews</h1>
+              <h1 className="text-xl font-bold text-gray-900">Manage Reviews</h1>
               <p className="text-sm text-gray-600">Edit and manage client reviews and feedback.</p>
             </div>
             <div className="flex items-center gap-3">
@@ -431,7 +431,7 @@ const ManageReviews = () => {
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleteModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -443,11 +443,11 @@ const ManageReviews = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative z-10 w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl"
+              className="relative z-10 w-full max-w-md rounded-xl border border-gray-200 bg-white p-5 shadow-xl"
             >
               <div className="flex items-center justify-center mb-6">
-                <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
-                  <Trash2 className="w-6 h-6 text-red-500" />
+                <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-500" />
                 </div>
               </div>
 

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -219,7 +219,7 @@ const ApplyForJob = () => {
 
   return (
     <div className="min-h-screen pt-16 pb-12 px-6 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-[90%] mx-auto">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column: Job Info */}
           <div className="lg:col-span-1 space-y-6">
@@ -303,7 +303,7 @@ const ApplyForJob = () => {
             <section>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 tracking-tighter">Submit Your <span className="text-blue-600">Application</span></h2>
               <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                Tell us about your professional journey and why you're the right fit for the DevForge team.
+                Tell us about your professional journey and why you're the right fit for the SA Technologies team.
               </p>
 
               <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-2xl p-6 space-y-6 shadow-lg">

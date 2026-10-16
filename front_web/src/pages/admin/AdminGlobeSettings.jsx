@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Check, Globe2, RotateCcw } from 'lucide-react';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 import Globe from '../../components/Globe/Globe';
 import {
     DEFAULT_GLOBE_SETTINGS,
@@ -35,8 +35,8 @@ const AdminGlobeSettings = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-slate-950">
-            <AdminSidebar />
+        <div className="flex flex-col min-h-screen bg-slate-950">
+            <AdminNavbar />
 
             <main className="relative min-h-screen flex-1 overflow-hidden bg-[#07111f]">
                 <div className="absolute inset-0">
@@ -51,13 +51,13 @@ const AdminGlobeSettings = () => {
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/75 via-transparent to-slate-950/20" />
 
-                <div className="pointer-events-none relative z-10 flex min-h-screen flex-col justify-between p-6 sm:p-10">
+                <div className="pointer-events-none relative z-10 flex min-h-screen flex-col justify-between p-5 sm:p-10">
                     <header className="max-w-xl">
                         <div className="mb-4 flex items-center gap-3 text-blue-300">
                             <Globe2 className="h-5 w-5" />
                             <span className="text-xs font-bold uppercase tracking-[0.3em]">Visual Systems</span>
                         </div>
-                        <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+                        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-5xl">
                             Globe Settings
                         </h1>
                         <p className="mt-3 max-w-md text-sm leading-relaxed text-slate-300">

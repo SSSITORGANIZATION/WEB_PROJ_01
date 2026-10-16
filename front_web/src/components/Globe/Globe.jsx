@@ -221,8 +221,8 @@ const GlobeScene = ({ autoRotate = true, showClouds = true, showAtmosphere = tru
             enablePan={true}
             enableZoom={true}
             enableRotate={true}
-            minDistance={7}
-            maxDistance={30}
+            minDistance={15}
+            maxDistance={50}
             autoRotate={autoRotate}
             autoRotateSpeed={0.5}
             rotateSpeed={0.5}

@@ -119,7 +119,7 @@ export default function PublicReviews() {
       <div className="min-h-screen bg-gray-50">
         <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
           <div className="absolute inset-0 bg-black/10" />
-          <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
+          <div className="relative mx-auto w-[90%] px-6 py-12 sm:px-8 lg:px-12">
             <div className="mx-auto flex max-w-4xl items-center justify-center gap-4 text-center">
               <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-200/30 border-t-white" />
               <p className="text-lg text-blue-100">Loading client reviews...</p>
@@ -143,25 +143,25 @@ export default function PublicReviews() {
       {/* Header */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
+        <div className="relative mx-auto w-[90%] px-6 py-12 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mx-auto max-w-4xl text-center"
           >
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-white md:text-6xl">
+            <h1 className="mb-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
               Client Reviews
             </h1>
-            <p className="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-blue-100 md:text-2xl">
+            <p className="mx-auto mb-5 max-w-2xl text-sm leading-relaxed text-blue-100 md:text-base">
               See what our clients say about working with us and the products we build together.
             </p>
-            <div className="flex flex-col items-center justify-center gap-5 sm:flex-row">
-              <div className="flex items-center gap-3 text-lg text-blue-100">
-                <Star className="h-6 w-6 fill-yellow-300 text-yellow-300" />
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="flex items-center gap-2.5 text-sm text-blue-100">
+                <Star className="h-4 w-4 fill-yellow-300 text-yellow-300" />
                 <span>{average} Average Rating</span>
               </div>
-              <div className="hidden h-6 w-px bg-blue-300/50 sm:block" />
-              <div className="text-lg text-blue-100">
+              <div className="hidden h-5 w-px bg-blue-300/50 sm:block" />
+              <div className="text-sm text-blue-100">
                 {reviews.length} {reviews.length === 1 ? 'Published Review' : 'Published Reviews'}
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function PublicReviews() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-6 py-16">
+      <main className="mx-auto w-[90%] px-6 py-16">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold text-gray-900">What Our Clients Say</h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600">

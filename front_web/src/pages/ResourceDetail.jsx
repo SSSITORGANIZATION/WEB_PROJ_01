@@ -74,7 +74,7 @@ const ResourceDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#faf8fe] pt-0 pb-16 px-4 md:px-6 lg:px-8">
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-[90%] mx-auto">
         {/* Breadcrumb & Navigation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -98,8 +98,8 @@ const ResourceDetail = () => {
           transition={{ delay: 0.1 }}
           className="mb-6 p-6 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl relative overflow-hidden text-white"
         >
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="flex flex-wrap items-center justify-center gap-3">
               <span className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full ${resource.category === 'BLOG' ? 'bg-white/20 text-white border border-white/30' :
                   resource.category === 'GUIDE' ? 'bg-white/20 text-white border border-white/30' :
                       'bg-white/20 text-white border border-white/30'
@@ -116,7 +116,7 @@ const ResourceDetail = () => {
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
               <div className="flex-1">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight" style={{ fontFamily: 'Manrope, sans-serif' }}>
                   {resource.title}
@@ -125,7 +125,7 @@ const ResourceDetail = () => {
 
               {/* Thumbnail Image */}
               {resource.thumbnail && (
-                <div className="lg:w-48 w-full rounded-2xl overflow-hidden border border-white/30 cursor-pointer" onClick={() => setSelectedImage(getMediaUrl(resource.thumbnail))}>
+                <div className="lg:w-48 w-full max-w-[16rem] mx-auto rounded-2xl overflow-hidden border border-white/30 cursor-pointer" onClick={() => setSelectedImage(getMediaUrl(resource.thumbnail))}>
                   <img
                     src={getMediaUrl(resource.thumbnail)}
                     alt={resource.title}

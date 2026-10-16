@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
-  Search, Book, Code, Globe,
-  ArrowRight, ChevronRight, FileText,
-  Terminal, Layers, Shield, Zap,
-  Cpu, Database, Layout, Smartphone,
-  Menu, X, Bookmark, ExternalLink, Clock, UserCheck
+  Search,
+  Book,
+  ArrowRight,
+  ChevronRight,
+  FileText,
+  Shield,
+  Menu,
+  X,
+  Bookmark,
+  ExternalLink,
+  Clock,
+  UserCheck,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -16,6 +23,7 @@ const Documentation = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [savedView, setSavedView] = useState(false);
+
   const [bookmarkedDocs, setBookmarkedDocs] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('bookmarkedDocs') || '[]');
@@ -24,8 +32,18 @@ const Documentation = () => {
     }
   });
 
-  const categories = ['All', 'Saved', 'Getting Started', 'API Reference', 'Frontend', 'Backend', 'Deployment', 'Security'];
+  const categories = [
+    'All',
+    'Saved',
+    'Getting Started',
+    'API Reference',
+    'Frontend',
+    'Backend',
+    'Deployment',
+    'Security',
+  ];
 
+  // Bookmark documentation
   const toggleBookmark = (docId) => {
     setBookmarkedDocs((prev) => {
       const next = prev.includes(docId)
@@ -42,9 +60,10 @@ const Documentation = () => {
     });
   };
 
+  // Share documentation
   const shareDoc = async (doc) => {
     const shareUrl = `${window.location.origin}/documentation/${doc.id}`;
-    const shareText = `Check out "${doc.title}" on DevForge.`;
+    const shareText = `Check out "${doc.title}" on SA Technologies.`;
 
     try {
       if (navigator.share) {
@@ -69,254 +88,395 @@ const Documentation = () => {
 
       window.alert('Documentation link copied to clipboard.');
     } catch (error) {
-      console.error('Share failed:', error);
-      window.alert('Unable to share this documentation right now.');
+      if (error.name !== 'AbortError') {
+        console.error('Share failed:', error);
+        window.alert('Unable to share this documentation right now.');
+      }
     }
   };
 
+  // Fetch documentation
   useEffect(() => {
     const fetchDocs = async () => {
       try {
-        // Mock documentation data
         const mockDocs = [
           {
             id: '1',
             title: 'Getting Started with DevHub',
-            content: 'Learn the basics of DevHub platform, including setup, configuration, and your first project. This comprehensive guide covers everything from account creation to deploying your first application.',
-            category: 'Getting Started'
+            content:
+              'Learn the basics of DevHub platform, including setup, configuration, and your first project. This comprehensive guide covers everything from account creation to deploying your first application.',
+            category: 'Getting Started',
           },
           {
             id: '2',
             title: 'API Reference Overview',
-            content: 'Complete API documentation including endpoints, authentication, request/response formats, rate limiting, and best practices for integration with external services.',
-            category: 'API Reference'
+            content:
+              'Complete API documentation including endpoints, authentication, request/response formats, rate limiting, and best practices for integration with external services.',
+            category: 'API Reference',
           },
           {
             id: '3',
             title: 'Frontend Development Guidelines',
-            content: 'Standards and best practices for frontend development including React patterns, styling guidelines, component architecture, and performance optimization techniques.',
-            category: 'Frontend'
+            content:
+              'Standards and best practices for frontend development including React patterns, styling guidelines, component architecture, and performance optimization techniques.',
+            category: 'Frontend',
           },
           {
             id: '4',
             title: 'Backend Architecture',
-            content: 'Understanding the backend architecture including microservices, database design, API gateway patterns, and scalability considerations for enterprise applications.',
-            category: 'Backend'
+            content:
+              'Understanding the backend architecture including microservices, database design, API gateway patterns, and scalability considerations for enterprise applications.',
+            category: 'Backend',
           },
           {
             id: '5',
             title: 'Deployment Strategies',
-            content: 'Learn about different deployment strategies including CI/CD pipelines, container orchestration, blue-green deployments, and monitoring best practices.',
-            category: 'Deployment'
+            content:
+              'Learn about different deployment strategies including CI/CD pipelines, container orchestration, blue-green deployments, and monitoring best practices.',
+            category: 'Deployment',
           },
           {
             id: '6',
             title: 'Security Best Practices',
-            content: 'Comprehensive security guide covering authentication, authorization, data encryption, vulnerability scanning, and compliance requirements for modern applications.',
-            category: 'Security'
-          }
+            content:
+              'Comprehensive security guide covering authentication, authorization, data encryption, vulnerability scanning, and compliance requirements for modern applications.',
+            category: 'Security',
+          },
         ];
 
         setDocs(mockDocs);
       } catch (error) {
-        console.error("Error fetching documentation:", error);
+        console.error('Error fetching documentation:', error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchDocs();
   }, []);
 
-  const savedDocs = docs.filter(doc => bookmarkedDocs.includes(doc.id));
+  // Filter documentation
+  const savedDocs = docs.filter((doc) =>
+    bookmarkedDocs.includes(doc.id)
+  );
 
-  const filteredDocs = (savedView ? savedDocs : docs).filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(search.toLowerCase()) ||
-      doc.content.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = savedView || activeCategory === 'All' || doc.category === activeCategory;
+  const filteredDocs = (savedView ? savedDocs : docs).filter((doc) => {
+    const query = search.trim().toLowerCase();
+
+    const matchesSearch =
+      doc.title.toLowerCase().includes(query) ||
+      doc.content.toLowerCase().includes(query);
+
+    const matchesCategory =
+      savedView ||
+      activeCategory === 'All' ||
+      doc.category === activeCategory;
+
     return matchesSearch && matchesCategory;
   });
 
+  // Category selection
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
     setSavedView(category === 'Saved');
     setIsSidebarOpen(false);
   };
 
+  // Sidebar content
+  const renderSidebarContent = () => (
+    <div className="space-y-5">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h4 className="mb-4 px-2 text-xs font-bold uppercase tracking-widest text-gray-500">
+          Categories
+        </h4>
+
+        <div className="flex flex-col gap-1">
+          {categories.map((cat) => {
+            const isActive =
+              (savedView && cat === 'Saved') ||
+              (!savedView && activeCategory === cat);
+
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => handleCategoryChange(cat)}
+                className={`flex w-full items-center justify-between rounded-lg border px-3 py-2.5 text-sm font-medium transition-all ${
+                  isActive
+                    ? 'border-blue-200 bg-blue-50 text-blue-700'
+                    : 'border-transparent bg-white text-gray-600 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <span>{cat}</span>
+
+                {isActive && (
+                  <ChevronRight className="h-4 w-4 shrink-0" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
+          <Shield className="h-5 w-5 text-blue-600" />
+        </div>
+
+        <h5 className="mb-2 text-base font-bold text-gray-900">
+          Need Help?
+        </h5>
+
+        <p className="mb-4 text-sm leading-relaxed text-gray-600">
+          Our engineering team is available to help with your technical
+          questions and enterprise support needs.
+        </p>
+
+        <Link
+          to="/book-demo"
+          onClick={() => setIsSidebarOpen(false)}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+        >
+          Contact Support
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white w-full">
+      {/* Page header - centered like the Home page */}
+      <section className="relative w-full overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="absolute inset-0 bg-black/10" />
-        <div className="relative mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
+
+        <div className="relative mx-auto w-[90%] px-6 py-12 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mx-auto flex max-w-4xl flex-col items-center justify-center text-center"
           >
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-              Technical <span className="text-blue-100">Repository</span>
+            <h1 className="mb-4 text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
+              Technical{' '}
+              <span className="text-blue-100">Repository</span>
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-blue-100">
-              Comprehensive guides and API references to help you integrate and build on the DevForge platform.
+
+            <p className="mx-auto max-w-3xl text-base leading-relaxed text-blue-100 sm:text-lg md:text-xl">
+              Comprehensive guides, API references, and best practices
+              to help your team integrate, extend, and build confidently
+              on the SA Technologies platform.
             </p>
           </motion.div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-12 pb-12">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <aside className={`lg:w-60 flex-shrink-0 lg:block ${isSidebarOpen ? 'fixed inset-0 z-50 bg-white p-6' : 'hidden'}`}>
-            <div className="flex items-center justify-between mb-6 lg:hidden">
-              <span className="text-base font-semibold text-gray-900">Documentation</span>
-              <button onClick={() => setIsSidebarOpen(false)}><X className="h-5 w-5 text-gray-900" /></button>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <h4 className="mb-3 text-[8px] font-bold uppercase tracking-[0.3em] text-gray-500">Categories</h4>
-                <div className="flex flex-col gap-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => handleCategoryChange(cat)}
-                      className={`flex items-center justify-between rounded-lg border px-2.5 py-1.5 text-[10px] font-medium transition-all ${(savedView && cat === 'Saved') || (!savedView && activeCategory === cat)
-                          ? 'border-blue-200 bg-blue-50 text-blue-600'
-                          : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                        }`}
-                    >
-                      {cat}
-                      {((savedView && cat === 'Saved') || (!savedView && activeCategory === cat)) && <ChevronRight className="h-2.5 w-2.5" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                <Shield className="mb-2 h-5 w-5 text-blue-600" />
-                <h5 className="mb-1 text-[11px] font-bold text-gray-900">Need Help?</h5>
-                <p className="mb-2 text-[9px] leading-relaxed text-gray-600">Our engineering team is available 24/7 for enterprise support.</p>
-                <Link to="/book-demo" className="flex items-center gap-1 text-[9px] font-bold text-blue-600 hover:text-blue-700">
-                  Contact Support <ArrowRight className="h-2 w-2" />
-                </Link>
-              </div>
-            </div>
+      {/* Main content */}
+      <div className="mx-auto w-[90%] px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+        <div className="flex flex-col items-start gap-6 lg:flex-row lg:gap-8">
+          {/* Desktop sidebar */}
+          <aside className="sticky top-24 hidden w-64 shrink-0 self-start lg:block">
+            {renderSidebarContent()}
           </aside>
 
-          {/* Main Content */}
-          <main className="flex-grow">
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-3 lg:hidden">
-                <button
-                  onClick={() => setIsSidebarOpen(true)}
-                  className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-900"
-                >
-                  <Menu className="h-4 w-4" />
-                </button>
-                <span className="text-sm font-semibold text-gray-900">Docs</span>
-              </div>
+          {/* Mobile sidebar overlay */}
+          {isSidebarOpen && (
+            <div className="fixed inset-0 z-50 lg:hidden">
+              <button
+                type="button"
+                aria-label="Close categories menu"
+                onClick={() => setIsSidebarOpen(false)}
+                className="absolute inset-0 bg-black/40"
+              />
 
-              <div className="relative w-full lg:max-w-md group">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-500 group-focus-within:text-blue-600 transition-colors" />
+              <aside className="absolute inset-y-0 left-0 w-[min(85%,340px)] overflow-y-auto bg-gray-50 p-5 shadow-xl">
+                <div className="mb-6 flex items-center justify-between">
+                  <span className="text-lg font-semibold text-gray-900">
+                    Documentation
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarOpen(false)}
+                    aria-label="Close sidebar"
+                    className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-200"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {renderSidebarContent()}
+              </aside>
+            </div>
+          )}
+
+          {/* Documentation content */}
+          <main className="min-w-0 flex-1">
+            {/* Search and mobile categories */}
+            <div className="mb-6 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsSidebarOpen(true)}
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 lg:hidden"
+              >
+                <Menu className="h-4 w-4" />
+                Categories
+              </button>
+
+              <div className="group relative w-full">
+                <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500 transition-colors group-focus-within:text-blue-600" />
+
                 <input
                   type="text"
                   placeholder="Search documentation..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-[11px] text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  onChange={(event) => setSearch(event.target.value)}
+                  className="w-full rounded-lg border border-gray-200 bg-white py-3 pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-500 transition-all focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
                 />
               </div>
             </div>
 
+            {/* Loading state */}
             {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => <div key={i} className="h-32 rounded-xl border border-gray-200 bg-white animate-pulse" />)}
+              <div className="space-y-5">
+                {[1, 2, 3].map((item) => (
+                  <div
+                    key={item}
+                    className="h-40 animate-pulse rounded-xl border border-gray-200 bg-white"
+                  />
+                ))}
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-5">
+                {/* Saved documents count */}
                 {savedView && (
-                  <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-                    {savedDocs.length} saved document{savedDocs.length === 1 ? '' : 's'}
+                  <div className="rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-medium text-blue-700">
+                    {savedDocs.length} saved document
+                    {savedDocs.length === 1 ? '' : 's'}
                   </div>
                 )}
+
+                {/* Empty state */}
                 {filteredDocs.length === 0 ? (
-                  <div className="py-24 text-center rounded-xl border border-dashed border-gray-200 bg-white">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                  <div className="rounded-xl border border-dashed border-gray-200 bg-white px-5 py-20 text-center">
+                    <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                       <Book className="h-8 w-8 text-gray-400" />
                     </div>
-                    <h3 className="mb-1.5 text-xl font-semibold text-gray-900">
-                      {savedView ? 'No saved documents yet' : 'No documentation found'}
+
+                    <h3 className="mb-2 text-xl font-semibold text-gray-900">
+                      {savedView
+                        ? 'No saved documents yet'
+                        : 'No documentation found'}
                     </h3>
-                    <p className="text-sm text-gray-600">
-                      {savedView ? 'Click the bookmark icon on any guide to save it here.' : 'Try searching for something else or browse categories.'}
+
+                    <p className="text-sm leading-relaxed text-gray-600">
+                      {savedView
+                        ? 'Click the bookmark icon on any guide to save it here.'
+                        : 'Try searching for something else or browse categories.'}
                     </p>
                   </div>
                 ) : (
-                  <div className="grid gap-3">
-                    {filteredDocs.map((doc) => (
-                      <motion.div
-                        key={doc.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="group rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md"
-                      >
-                        <div className="mb-3 flex items-start justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-blue-50 group-hover:scale-110 transition-transform">
-                              <FileText className="h-4 w-4 text-blue-600" />
-                            </div>
-                            <div>
-                              <span className="mb-0.5 block text-[8px] font-bold uppercase tracking-widest text-gray-500">{doc.category || 'General'}</span>
-                              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{doc.title}</h3>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                toggleBookmark(doc.id);
-                              }}
-                              className={`p-1 transition-colors ${bookmarkedDocs.includes(doc.id) ? 'text-blue-600 hover:text-blue-700' : 'text-gray-500 hover:text-gray-900'}`}
-                              aria-label={bookmarkedDocs.includes(doc.id) ? 'Remove bookmark' : 'Save document'}
-                            >
-                              <Bookmark className={`h-3.5 w-3.5 ${bookmarkedDocs.includes(doc.id) ? 'fill-current' : ''}`} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                shareDoc(doc);
-                              }}
-                              className="p-1 text-gray-500 hover:text-gray-900 transition-colors"
-                              aria-label="Share documentation"
-                            >
-                              <ExternalLink className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                        </div>
+                  /* Documentation cards */
+                  <div className="grid gap-5">
+                    {filteredDocs.map((doc) => {
+                      const isBookmarked = bookmarkedDocs.includes(doc.id);
 
-                        <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-gray-600">
-                          {doc.content?.substring(0, 200)}...
-                        </p>
+                      return (
+                        <motion.article
+                          key={doc.id}
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md sm:p-6 lg:p-7"
+                        >
+                          {/* Card header */}
+                          <div className="mb-4 flex items-start justify-between gap-4">
+                            <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 transition-transform group-hover:scale-105 sm:h-12 sm:w-12">
+                                <FileText className="h-5 w-5 text-blue-600" />
+                              </div>
 
-                        <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
-                              <Clock className="h-2 w-2" /> Updated 2 days ago
+                              <div className="min-w-0 pt-0.5">
+                                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-blue-600 sm:text-xs">
+                                  {doc.category || 'General'}
+                                </span>
+
+                                <h3 className="text-lg font-semibold leading-snug text-gray-900 transition-colors group-hover:text-blue-600 sm:text-xl">
+                                  {doc.title}
+                                </h3>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-1 text-[8px] font-bold uppercase tracking-widest text-gray-500">
-                              <UserCheck className="h-2 w-2" /> Verified
+
+                            {/* Bookmark and share */}
+                            <div className="flex shrink-0 items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => toggleBookmark(doc.id)}
+                                className={`rounded-lg p-2 transition-colors ${
+                                  isBookmarked
+                                    ? 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                                    : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+                                }`}
+                                aria-label={
+                                  isBookmarked
+                                    ? 'Remove bookmark'
+                                    : 'Save document'
+                                }
+                                title={
+                                  isBookmarked
+                                    ? 'Remove bookmark'
+                                    : 'Save document'
+                                }
+                              >
+                                <Bookmark
+                                  className={`h-4 w-4 sm:h-5 sm:w-5 ${
+                                    isBookmarked ? 'fill-current' : ''
+                                  }`}
+                                />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => shareDoc(doc)}
+                                className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                                aria-label="Share documentation"
+                                title="Share documentation"
+                              >
+                                <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5" />
+                              </button>
                             </div>
                           </div>
-                          <Link
-                            to={`/documentation/${doc.id}`}
-                            className="flex items-center gap-1 text-[10px] font-medium text-blue-600 group/link"
-                          >
-                            Read Guide <ArrowRight className="h-3 w-3 transition-transform group-hover/link:translate-x-1" />
-                          </Link>
-                        </div>
-                      </motion.div>
-                    ))}
+
+                          {/* Description */}
+                          <p className="mb-5 text-sm leading-7 text-gray-600 sm:text-base">
+                            {doc.content}
+                          </p>
+
+                          {/* Card footer */}
+                          <div className="flex flex-col gap-4 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
+                                <Clock className="h-3.5 w-3.5" />
+                                Updated 2 days ago
+                              </div>
+
+                              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
+                                <UserCheck className="h-3.5 w-3.5" />
+                                Verified
+                              </div>
+                            </div>
+
+                            <Link
+                              to={`/documentation/${doc.id}`}
+                              className="group/link inline-flex items-center gap-2 self-start text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 sm:self-auto"
+                            >
+                              Read Guide
+                              <ArrowRight className="h-4 w-4 transition-transform group-hover/link:translate-x-1" />
+                            </Link>
+                          </div>
+                        </motion.article>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -329,4 +489,3 @@ const Documentation = () => {
 };
 
 export default Documentation;
-

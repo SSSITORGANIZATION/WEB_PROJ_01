@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -84,7 +84,7 @@ const DeveloperDetail = () => {
 
   return (
     <div className="min-h-screen pt-0 pb-12 px-6 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-[90%] mx-auto">
         {/* Breadcrumb - Only Back Button */}
         <Link
           to="/developers"

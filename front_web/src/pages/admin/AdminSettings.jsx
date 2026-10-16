@@ -7,7 +7,7 @@ import {
   Camera, FileText, Zap, Lock, Eye, EyeOff, Copy, ExternalLink,
   Plus, Edit2, Trash2, Image, Type, Menu, ChevronUp, ChevronDown
 } from 'lucide-react';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 import { apiService } from '../../services/api';
 
 const AdminSettings = () => {
@@ -494,22 +494,22 @@ const AdminSettings = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Site Settings</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Site Settings</h1>
               <p className="text-gray-600 text-sm">Manage logo, project name, headings, and navbar links dynamically.</p>
             </div>
 
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center gap-1 mb-8 p-1 bg-white border border-gray-200 rounded-xl w-fit shadow-sm">
+          <div className="flex items-center gap-1 mb-6 p-1 bg-white border border-gray-200 rounded-xl w-fit shadow-sm">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -529,7 +529,7 @@ const AdminSettings = () => {
           <div className="space-y-6">
             {/* Branding Settings */}
             {activeTab === 'branding' && (
-              <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+              <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                 <h3 className="text-base font-semibold text-gray-900 mb-6 flex items-center gap-2">
                   <Palette className="w-4 h-4 text-blue-600" /> Branding & Content
                 </h3>
@@ -595,7 +595,7 @@ const AdminSettings = () => {
                           <img
                             src={logoPreview}
                             alt="Logo"
-                            className="w-6 h-6 object-contain"
+                            className="w-5 h-5 object-contain"
                             onError={(e) => {
                               e.target.style.display = 'none';
                             }}
@@ -714,7 +714,7 @@ const AdminSettings = () => {
 
             {/* Navbar Settings */}
             {activeTab === 'navbar' && (
-              <div className="p-6 glass-card border-white/5">
+              <div className="p-5 glass-card border-white/5">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-base font-bold text-white serif flex items-center gap-2">
                     <Menu className="w-4 h-4 text-blue-500" /> Navigation Links
@@ -729,8 +729,8 @@ const AdminSettings = () => {
 
                 <div className="space-y-3">
                   {navbarLinks.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Menu className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                    <div className="text-center py-8">
+                      <Menu className="w-10 h-10 text-zinc-600 mx-auto mb-4" />
                       <h4 className="text-lg font-bold text-white mb-2">No navbar links</h4>
                       <p className="text-zinc-500 text-sm mb-6">Add your first navigation link to get started.</p>
                       <button
@@ -817,7 +817,7 @@ const AdminSettings = () => {
 
             {/* Hero Section Settings */}
             {activeTab === 'hero' && (
-              <div className="p-6 glass-card border-white/5">
+              <div className="p-5 glass-card border-white/5">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-base font-bold text-white serif flex items-center gap-2">
                     <Globe className="w-4 h-4 text-blue-500" /> Hero Sections
@@ -832,8 +832,8 @@ const AdminSettings = () => {
 
                 <div className="space-y-3">
                   {heroSections.length === 0 ? (
-                    <div className="text-center py-12">
-                      <Globe className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                    <div className="text-center py-8">
+                      <Globe className="w-10 h-10 text-zinc-600 mx-auto mb-4" />
                       <h4 className="text-lg font-bold text-white mb-2">No hero sections</h4>
                       <p className="text-zinc-500 text-sm mb-6">Create your first hero section to customize the homepage.</p>
                       <button
@@ -896,7 +896,7 @@ const AdminSettings = () => {
 
             {/* Footer Settings */}
             {activeTab === 'footer' && (
-              <div className="p-6 glass-card border-white/5">
+              <div className="p-5 glass-card border-white/5">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-base font-bold text-white serif flex items-center gap-2">
                     <Mail className="w-4 h-4 text-blue-500" />
@@ -1018,8 +1018,8 @@ const AdminSettings = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <Mail className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                  <div className="text-center py-8">
+                    <Mail className="w-10 h-10 text-zinc-600 mx-auto mb-4" />
                     <p className="text-zinc-400 text-sm">No footer settings found. Please create footer settings.</p>
                   </div>
                 )}
@@ -1027,7 +1027,7 @@ const AdminSettings = () => {
             )}
             {/* Contact Settings */}
             {activeTab === 'Contact' && (
-              <div className="p-6 glass-card border-white/5">
+              <div className="p-5 glass-card border-white/5">
                 <h3 className="text-base font-bold text-white serif mb-6 flex items-center gap-2">
                   <Phone className="w-4 h-4 text-blue-500" /> Contact Settings
                 </h3>
@@ -1086,7 +1086,7 @@ const AdminSettings = () => {
           {/* Link Modal */}
           <AnimatePresence>
             {isLinkModalOpen && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1098,7 +1098,7 @@ const AdminSettings = () => {
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  className="w-full max-w-md glass-card border-white/10 p-6 relative z-10"
+                  className="w-full max-w-md glass-card border-white/10 p-5 relative z-10"
                 >
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-white serif">
@@ -1190,7 +1190,7 @@ const AdminSettings = () => {
           {/* Hero Modal */}
           <AnimatePresence>
             {isHeroModalOpen && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1202,7 +1202,7 @@ const AdminSettings = () => {
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  className="w-full max-w-2xl glass-card border-white/10 p-6 relative z-10 max-h-[90vh] overflow-y-auto"
+                  className="w-full max-w-2xl glass-card border-white/10 p-5 relative z-10 max-h-[90vh] overflow-y-auto"
                 >
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-white serif">

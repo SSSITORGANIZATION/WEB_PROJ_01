@@ -9,7 +9,7 @@ import {
   ChevronLeft
 } from 'lucide-react';
 import { apiService } from '../../services/api';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const AdminDemos = () => {
   const [demos, setDemos] = useState([]);
@@ -125,15 +125,15 @@ const AdminDemos = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Demo Requests</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Demo Requests</h1>
               <p className="text-gray-600 text-sm">Manage and schedule consultations with potential clients.</p>
             </div>
             <div className="flex items-center gap-4">
@@ -173,7 +173,7 @@ const AdminDemos = () => {
                 {loading ? (
                   [1, 2, 3].map(i => (
                     <tr key={i} className="animate-pulse">
-                      <td colSpan={4} className="p-8 bg-gray-50" />
+                      <td colSpan={4} className="p-6 bg-gray-50" />
                     </tr>
                   ))
                 ) : filteredDemos.map((demo) => (
@@ -281,8 +281,8 @@ const AdminDemos = () => {
       <AnimatePresence>
         {scheduleModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-xl w-full max-w-md">
-              <h2 className="text-gray-900 text-lg font-semibold mb-4">Schedule Demo</h2>
+            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-xl w-full max-w-md">
+              <h2 className="text-gray-900 text-base font-semibold mb-4">Schedule Demo</h2>
 
               <input
                 type="date"
@@ -310,7 +310,7 @@ const AdminDemos = () => {
           </div>
         )}
         {deleteModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -322,16 +322,16 @@ const AdminDemos = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-xl p-6 relative z-10"
+              className="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-xl p-5 relative z-10"
             >
               <div className="flex items-center justify-center mb-6">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <Trash2 className="w-6 h-6 text-red-600" />
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-600" />
                 </div>
               </div>
 
               <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Demo Request</h3>
+                <h3 className="text-base font-semibold text-gray-900 mb-2">Delete Demo Request</h3>
                 <p className="text-sm text-gray-600">
                   Are you sure you want to delete the demo request from "{demoToDelete?.name || demoToDelete?.full_name}"? This action cannot be undone.
                 </p>

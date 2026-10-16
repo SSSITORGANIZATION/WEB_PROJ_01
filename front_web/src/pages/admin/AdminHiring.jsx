@@ -8,7 +8,7 @@ import {
   Linkedin, MessageSquare, Trash2, Edit
 } from 'lucide-react';
 import { apiService } from '../../services/api';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 import axios from "axios";
 
 const AdminHiring = () => {
@@ -184,14 +184,14 @@ const AdminHiring = () => {
 
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Hiring Management</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Hiring Management</h1>
               <p className="text-gray-600 text-sm">Manage job postings and review candidate applications.</p>
             </div>
             <div className="flex items-center gap-3">
@@ -291,7 +291,7 @@ const AdminHiring = () => {
                             <Users className="w-5 h-5 text-gray-500" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900 leading-tight">{`${app.first_name || ''} ${app.last_name || ''}`.trim()}</h3>
+                            <h3 className="text-base font-semibold text-gray-900 leading-tight">{`${app.first_name || ''} ${app.last_name || ''}`.trim()}</h3>
                             <div className="flex items-center gap-3 mt-0.5">
                               <span className="text-xs text-gray-500 flex items-center gap-1"><Mail className="w-3 h-3" /> {app.email}</span>
                               <span className="text-xs text-gray-500 flex items-center gap-1"><Clock className="w-3 h-3" /> Applied {new Date(app.applied_at).toLocaleDateString()}</span>
@@ -354,7 +354,7 @@ const AdminHiring = () => {
                   {filteredApps.length === 0 && (
                     <div className="py-16 text-center bg-white border border-gray-200 border-dashed rounded-xl">
                       <Users className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">No applications found</h3>
+                      <h3 className="text-base font-semibold text-gray-900 mb-1">No applications found</h3>
                       <p className="text-gray-500 text-sm">Try adjusting your search criteria.</p>
                     </div>
                   )}
@@ -368,7 +368,7 @@ const AdminHiring = () => {
                       key={job.id}
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm group hover:border-blue-300 transition-all relative"
+                      className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm group hover:border-blue-300 transition-all relative"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center border border-blue-200 group-hover:scale-110 transition-transform">
@@ -420,7 +420,7 @@ const AdminHiring = () => {
                     Object.keys(groupedInterviews).map(jobId => {
                       const job = jobs.find(j => j.id == jobId);
                       return (
-                        <div key={jobId} className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+                        <div key={jobId} className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                           <h3 className="text-gray-900 font-semibold mb-3">{job?.title || "Unknown Job"}</h3>
                           <div className="space-y-2">
                             {groupedInterviews[jobId].map(round => (
@@ -454,7 +454,7 @@ const AdminHiring = () => {
       {/* Job Modal */}
       <AnimatePresence>
         {showJobModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -466,7 +466,7 @@ const AdminHiring = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-xl p-6 relative z-10"
+              className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-xl p-5 relative z-10"
             >
               <button
                 onClick={() => setShowJobModal(false)}
@@ -565,7 +565,7 @@ const AdminHiring = () => {
       {/* Interview Process Modal */}
       <AnimatePresence>
         {showInterviewModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-5">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -578,7 +578,7 @@ const AdminHiring = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-xl p-6 relative z-10"
+              className="w-full max-w-xl bg-white border border-gray-200 rounded-xl shadow-xl p-5 relative z-10"
             >
               <button
                 onClick={() => setShowInterviewModal(false)}

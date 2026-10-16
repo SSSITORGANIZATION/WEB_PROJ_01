@@ -119,7 +119,7 @@ const JoinCommunity = () => {
             <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <Globe className="w-7 h-7 text-white" />
             </div>
-            <span className="text-2xl font-bold tracking-tight uppercase">DEVFORGE</span>
+            <span className="text-2xl font-bold tracking-tight uppercase">SA Technologies</span>
           </Link>
           
           <div className="mt-16">

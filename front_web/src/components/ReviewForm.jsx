@@ -1,19 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, X, MessageSquare, Calendar, Briefcase, Send } from 'lucide-react';
+import {
+  Star,
+  X,
+  MessageSquare,
+  Calendar,
+  Briefcase,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
 import { apiService } from '../services/api';
 
-const ReviewForm = ({ projectId = null, onClose, onSubmit }) => {
+const ReviewForm = ({
+  projectId = null,
+  onClose,
+  onSubmit,
+}) => {
   const [projects, setProjects] = useState([]);
+
   const [formData, setFormData] = useState({
     project: projectId || '',
     reviewer_name: '',
     rating: 5,
     feedback: '',
-    review_period: ''
+    review_period: '',
   });
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [notice, setNotice] = useState(null);
 
   useEffect(() => {
     if (!projectId) {
@@ -24,31 +40,53 @@ const ReviewForm = ({ projectId = null, onClose, onSubmit }) => {
   const fetchProjects = async () => {
     try {
       const response = await apiService.getProjects();
-      const data = response.data;
-      const projectsData = Array.isArray(data) ? data : (data.results || data);
-      setProjects(projectsData.filter(project => project.is_featured));
+      const data = response?.data;
+
+      const projectsData = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.results)
+          ? data.results
+          : Array.isArray(data?.data)
+            ? data.data
+            : [];
+
+      setProjects(projectsData.filter((project) => project.is_featured));
     } catch (error) {
-      console.error("Error fetching projects:", error);
+      console.error('Error fetching projects:', error);
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
     }));
 
-    // Clear error for this field
+    setNotice(null);
+
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((previous) => ({
+        ...previous,
+        [name]: '',
+      }));
     }
   };
 
   const handleRatingChange = (rating) => {
-    setFormData(prev => ({ ...prev, rating }));
+    setFormData((previous) => ({
+      ...previous,
+      rating,
+    }));
+
+    setNotice(null);
+
     if (errors.rating) {
-      setErrors(prev => ({ ...prev, rating: '' }));
+      setErrors((previous) => ({
+        ...previous,
+        rating: '',
+      }));
     }
   };
 
@@ -56,111 +94,105 @@ const ReviewForm = ({ projectId = null, onClose, onSubmit }) => {
     const newErrors = {};
 
     if (!formData.reviewer_name.trim()) {
-      newErrors.reviewer_name = 'Name is required';
+      newErrors.reviewer_name = 'Please enter your name.';
+    } else if (formData.reviewer_name.trim().length > 150) {
+      newErrors.reviewer_name = 'Name must not exceed 150 characters.';
     }
 
     if (!formData.feedback.trim()) {
-      newErrors.feedback = 'Review content is required';
+      newErrors.feedback = 'Please write your review.';
     } else if (formData.feedback.trim().length < 10) {
-      newErrors.feedback = 'Review must be at least 10 characters';
+      newErrors.feedback = 'Your review must contain at least 10 characters.';
     }
 
-    // Project validation - only required if not on project page and projects exist
-    if (!projectId && projects.length > 0 && !formData.project) {
-      newErrors.project = 'Please select a project or leave empty for general review';
-    }
+    const rating = Number(formData.rating);
 
-    if (formData.rating < 1 || formData.rating > 5) {
-      newErrors.rating = 'Rating must be between 1 and 5';
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      newErrors.rating = 'Please select a rating between 1 and 5.';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (loading || !validateForm()) return;
 
     setLoading(true);
+    setNotice(null);
+
     try {
-      // Ensure project is properly set
       const submissionData = {
         ...formData,
-        project: projectId || formData.project || null
+        reviewer_name: formData.reviewer_name.trim(),
+        feedback: formData.feedback.trim(),
+        review_period: formData.review_period.trim(),
+        rating: Number(formData.rating),
+        project:
+          projectId !== null && projectId !== undefined
+            ? projectId
+            : formData.project || null,
       };
 
-      console.log('Submitting review data:', submissionData);
       await apiService.createPerformanceReview(submissionData);
 
-      // Reset form
-      setFormData({
-        project: projectId || '',
-        reviewer_name: '',
-        rating: 5,
-        feedback: '',
-        review_period: ''
+      setNotice({
+        type: 'success',
+        message: 'Your review has been submitted successfully.',
       });
 
-      // Notify parent component
+      // Refresh the reviews shown by the parent component.
       if (onSubmit) {
-        onSubmit();
+        await onSubmit();
       }
 
-      // Close form
-      onClose();
-
-      // Show success message (you could add a toast notification here)
-      alert('Thank you for your review! It will be visible after approval.');
-
+      // Close after submission and parent refresh.
+      if (onClose) {
+        onClose();
+      }
     } catch (error) {
-      console.error("Error submitting review:", error);
-      console.error("Error response:", error.response?.data);
-      if (error.response?.status === 400) {
-        const errorData = error.response?.data;
-        const errorMessage = typeof errorData === 'object'
-          ? Object.values(errorData).flat().join(', ')
-          : 'Please ensure all required fields are filled correctly.';
-        alert(`Invalid data: ${errorMessage}`);
-      } else {
-        alert('Failed to submit review. Please try again.');
+      console.error('Error submitting review:', error);
+      console.error('API response:', error.response?.data);
+
+      const responseData = error.response?.data;
+
+      let message = 'Unable to submit your review. Please try again.';
+
+      if (error.response?.status === 400 && responseData) {
+        if (typeof responseData === 'object') {
+          message = Object.entries(responseData)
+            .map(([field, value]) => {
+              const details = Array.isArray(value)
+                ? value.join(', ')
+                : String(value);
+
+              return `${field}: ${details}`;
+            })
+            .join(' ');
+        } else {
+          message = String(responseData);
+        }
+      } else if (!error.response) {
+        message = 'Cannot connect to the server. Please check your connection.';
       }
+
+      setNotice({
+        type: 'error',
+        message,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const renderStars = (interactive = false) => {
-    return (
-      <div className="flex items-center gap-2">
-        {[...Array(5)].map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => interactive && handleRatingChange(i + 1)}
-            className={`transition-all ${interactive ? 'cursor-pointer hover:scale-110' : 'cursor-default'
-              }`}
-            disabled={!interactive}
-          >
-            <Star
-              className={`w-6 h-6 ${i < formData.rating
-                ? 'text-yellow-500 fill-yellow-500'
-                : 'text-zinc-600'
-                }`}
-            />
-          </button>
-        ))}
-        {interactive && (
-          <span className="text-zinc-400 text-sm ml-2">
-            {formData.rating} out of 5
-          </span>
-        )}
-      </div>
-    );
-  };
+  const inputClasses = (field) =>
+    `w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 ${
+      errors[field]
+        ? 'border-red-400'
+        : 'border-slate-200 hover:border-slate-300'
+    }`;
 
   return (
     <AnimatePresence>
@@ -168,161 +200,287 @@ const ReviewForm = ({ projectId = null, onClose, onSubmit }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         onClick={onClose}
+        className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm sm:p-6"
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="review-form-title"
+          initial={{ opacity: 0, scale: 0.96, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="bg-zinc-900 rounded-2xl border border-white/10 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
+          exit={{ opacity: 0, scale: 0.96, y: 20 }}
+          transition={{ duration: 0.22 }}
+          onClick={(event) => event.stopPropagation()}
+          className="my-auto flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-950/20 sm:rounded-3xl"
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-white/10">
+          {/* Modal header */}
+          <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-5 sm:px-7">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                <MessageSquare size={23} />
               </div>
+
               <div>
-                <h3 className="text-xl font-bold text-white serif">
-                  Share Your <span className="italic text-blue-500">Experience</span>
-                </h3>
-                <p className="text-zinc-400 text-sm">
-                  We value your feedback
+                <h2
+                  id="review-form-title"
+                  className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl"
+                >
+                  Share Your{' '}
+                  <span className="text-indigo-600">Experience</span>
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-500">
+                  Your feedback helps us improve.
                 </p>
               </div>
             </div>
+
             <button
+              type="button"
               onClick={onClose}
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-all"
+              aria-label="Close review form"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-4 focus:ring-indigo-100"
             >
-              <X className="w-5 h-5" />
+              <X size={21} />
             </button>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            {/* Project Selection */}
+          {/* Scrollable form content */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 overflow-y-auto px-5 py-6 sm:px-7"
+          >
+            {/* Status message */}
+            {notice && (
+              <div
+                role="alert"
+                className={`flex items-start gap-3 rounded-xl border p-4 text-sm ${
+                  notice.type === 'success'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                    : 'border-red-200 bg-red-50 text-red-700'
+                }`}
+              >
+                {notice.type === 'success' ? (
+                  <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
+                ) : (
+                  <AlertCircle size={19} className="mt-0.5 shrink-0" />
+                )}
+
+                <span>{notice.message}</span>
+              </div>
+            )}
+
+            {/* Project selection */}
             {!projectId && (
               <div>
-                <label className="block text-white font-bold mb-2">
-                  <Briefcase className="w-4 h-4 inline mr-2" />
-                  Project (Optional)
+                <label
+                  htmlFor="review-project"
+                  className="mb-2 block text-sm font-semibold text-slate-800"
+                >
+                  <Briefcase
+                    size={16}
+                    className="mr-2 inline text-indigo-600"
+                  />
+                  Project
+                  <span className="ml-1 font-normal text-slate-400">
+                    (Optional)
+                  </span>
                 </label>
+
                 <select
+                  id="review-project"
                   name="project"
                   value={formData.project}
                   onChange={handleInputChange}
-                  className={`w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all ${errors.project ? 'border-red-500/50' : ''
-                    }`}
+                  className={inputClasses('project')}
                 >
-                  <option value="">General Review (no specific project)</option>
-                  {projects.map(project => (
+                  <option value="">General review</option>
+
+                  {projects.map((project) => (
                     <option key={project.id} value={project.id}>
                       {project.title}
                     </option>
                   ))}
                 </select>
-                {errors.project && (
-                  <p className="text-red-500 text-sm mt-1">{errors.project}</p>
-                )}
-                <p className="text-zinc-500 text-xs mt-1">
-                  Leave empty for a general review about our services
+
+                <p className="mt-2 text-xs text-slate-500">
+                  Select a project or leave this blank to review our services.
                 </p>
+
+                {errors.project && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.project}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Name */}
+            {/* Reviewer name */}
             <div>
-              <label className="block text-white font-bold mb-2">
-                Your Name *
+              <label
+                htmlFor="reviewer-name"
+                className="mb-2 block text-sm font-semibold text-slate-800"
+              >
+                Your Name <span className="text-red-500">*</span>
               </label>
+
               <input
+                id="reviewer-name"
                 type="text"
                 name="reviewer_name"
                 value={formData.reviewer_name}
                 onChange={handleInputChange}
                 placeholder="Enter your full name"
-                className={`w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all ${errors.reviewer_name ? 'border-red-500/50' : ''
-                  }`}
+                autoComplete="name"
+                maxLength={150}
+                className={inputClasses('reviewer_name')}
+                aria-invalid={Boolean(errors.reviewer_name)}
+                required
               />
+
               {errors.reviewer_name && (
-                <p className="text-red-500 text-sm mt-1">{errors.reviewer_name}</p>
+                <p className="mt-1.5 text-sm text-red-600">
+                  {errors.reviewer_name}
+                </p>
               )}
             </div>
 
             {/* Rating */}
             <div>
-              <label className="block text-white font-bold mb-2">
-                Rating *
+              <label className="mb-3 block text-sm font-semibold text-slate-800">
+                Your Rating <span className="text-red-500">*</span>
               </label>
-              {renderStars(true)}
+
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div
+                  className="flex items-center gap-1"
+                  role="group"
+                  aria-label="Choose a rating from one to five stars"
+                >
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <button
+                      key={rating}
+                      type="button"
+                      onClick={() => handleRatingChange(rating)}
+                      aria-label={`${rating} star${rating > 1 ? 's' : ''}`}
+                      aria-pressed={Number(formData.rating) === rating}
+                      className="rounded-md p-1 transition hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    >
+                      <Star
+                        size={27}
+                        className={
+                          rating <= Number(formData.rating)
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'text-slate-300'
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+
+                <span className="text-sm font-semibold text-slate-700">
+                  {formData.rating} out of 5
+                </span>
+              </div>
+
               {errors.rating && (
-                <p className="text-red-500 text-sm mt-1">{errors.rating}</p>
+                <p className="mt-1.5 text-sm text-red-600">
+                  {errors.rating}
+                </p>
               )}
             </div>
 
-            {/* Review Period (Optional) */}
+            {/* Review period */}
             <div>
-              <label className="block text-white font-bold mb-2">
-                <Calendar className="w-4 h-4 inline mr-2" />
-                Review Period (Optional)
+              <label
+                htmlFor="review-period"
+                className="mb-2 block text-sm font-semibold text-slate-800"
+              >
+                <Calendar
+                  size={16}
+                  className="mr-2 inline text-indigo-600"
+                />
+                Review Period
+                <span className="ml-1 font-normal text-slate-400">
+                  (Optional)
+                </span>
               </label>
+
               <input
+                id="review-period"
                 type="text"
                 name="review_period"
                 value={formData.review_period}
                 onChange={handleInputChange}
-                placeholder="e.g., Q1 2024, January 2024"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                placeholder="e.g., January 2026"
+                className={inputClasses('review_period')}
               />
             </div>
 
             {/* Feedback */}
             <div>
-              <label className="block text-white font-bold mb-2">
-                Your Review *
+              <label
+                htmlFor="review-feedback"
+                className="mb-2 block text-sm font-semibold text-slate-800"
+              >
+                Your Review <span className="text-red-500">*</span>
               </label>
+
               <textarea
+                id="review-feedback"
                 name="feedback"
                 value={formData.feedback}
                 onChange={handleInputChange}
-                placeholder="Share your experience working with us..."
+                placeholder="Tell us about your experience working with us..."
                 rows={5}
-                className={`w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 transition-all resize-none ${errors.feedback ? 'border-red-500/50' : ''
-                  }`}
+                maxLength={3000}
+                className={`${inputClasses('feedback')} resize-y leading-6`}
+                aria-invalid={Boolean(errors.feedback)}
+                required
               />
-              {errors.feedback && (
-                <p className="text-red-500 text-sm mt-1">{errors.feedback}</p>
-              )}
-              <p className="text-zinc-500 text-xs mt-1">
-                Minimum 10 characters. Be detailed and constructive.
-              </p>
+
+              <div className="mt-2 flex items-start justify-between gap-3">
+                {errors.feedback ? (
+                  <p className="text-sm text-red-600">
+                    {errors.feedback}
+                  </p>
+                ) : (
+                  <p className="text-xs text-slate-500">
+                    Please write at least 10 characters.
+                  </p>
+                )}
+
+                <span className="shrink-0 text-xs text-slate-400">
+                  {formData.feedback.length}/3000
+                </span>
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-end gap-4 pt-4 border-t border-white/10">
+            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-lg font-bold hover:bg-white/10 transition-all"
+                disabled={loading}
+                className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     Submitting...
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4" />
+                    <Send size={17} />
                     Submit Review
                   </>
                 )}

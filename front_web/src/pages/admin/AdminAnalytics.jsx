@@ -5,7 +5,7 @@ import {
   Calendar, Download, RefreshCw, Globe, Clock, AlertCircle,
   ArrowUpRight, Filter, Search, CheckCircle, XCircle
 } from 'lucide-react';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 
 const AdminAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState({
@@ -84,7 +84,7 @@ const AdminAnalytics = () => {
   const StatCard = ({ title, value, change, icon: Icon, trend, color = 'blue' }) => (
     <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-        <Icon className="w-12 h-12 text-gray-400" />
+        <Icon className="w-10 h-10 text-gray-400" />
       </div>
       <div className="flex items-center justify-between mb-4">
         <div className={`w-10 h-10 rounded-lg bg-${color}-50 flex items-center justify-center border border-${color}-200`}>
@@ -96,20 +96,20 @@ const AdminAnalytics = () => {
         </div>
       </div>
       <h3 className="text-xs text-gray-600 uppercase tracking-wide font-semibold mb-0.5">{title}</h3>
-      <p className="text-3xl font-bold text-gray-900 tracking-tighter">{value.toLocaleString()}</p>
+      <p className="text-2xl font-bold text-gray-900 tracking-tighter">{value.toLocaleString()}</p>
     </div>
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Analytics Dashboard</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Analytics Dashboard</h1>
               <p className="text-gray-600 text-sm">Comprehensive website performance metrics and user behavior insights.</p>
             </div>
             <div className="flex items-center gap-3">
@@ -134,17 +134,17 @@ const AdminAnalytics = () => {
           </div>
 
           {/* Key Metrics */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatCard title="Total Visitors" value={analyticsData.visitors.total} change="+12.5%" icon={Users} trend="up" />
             <StatCard title="Page Views" value={analyticsData.pageViews.total} change="+8.3%" icon={Eye} trend="up" />
             <StatCard title="Avg. Duration" value={`${analyticsData.sessions.duration}s`} change="-2.1%" icon={Clock} trend="down" />
             <StatCard title="Conversion Rate" value={`${analyticsData.sessions.conversion}%`} change="+15.7%" icon={TrendingUp} trend="up" />
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-4">
             {/* Traffic Sources */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+              <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                     <Globe className="w-4 h-4 text-blue-500" /> Traffic Sources
@@ -178,7 +178,7 @@ const AdminAnalytics = () => {
               </div>
 
               {/* Export Options */}
-              <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+              <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Download className="w-4 h-4 text-blue-600" /> Export Analytics Data
                 </h3>

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Search, Filter, Briefcase, CheckCircle2, Clock, Eye, XCircle } from 'lucide-react';
 import { APPLICATIONS } from '../constants';
 import { motion } from 'motion/react';
@@ -14,7 +14,7 @@ const MyApplications = () => {
   return (
     <div className="pb-10">
       <section className="py-8 bg-slate-900/50 border-b border-white/5 mb-8">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="w-[90%] mx-auto px-4">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-10 h-10 bg-orange-900/20 rounded-xl flex items-center justify-center">
               <Briefcase className="text-orange-500 w-5 h-5" />
@@ -25,7 +25,7 @@ const MyApplications = () => {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 space-y-8">
+      <div className="w-[90%] mx-auto px-4 space-y-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {stats.map(stat => (

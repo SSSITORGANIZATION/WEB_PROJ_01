@@ -69,7 +69,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-black flex items-center justify-center p-5 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full animate-pulse" />
@@ -81,19 +81,19 @@ const AdminLogin = () => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-2xl mx-auto relative z-10 flex flex-col items-center"
       >
-        <Link to="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors mb-8 group">
+        <Link to="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors mb-6 group">
           <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
           <span className="text-[10px] font-bold uppercase tracking-widest">Back to Site</span>
         </Link>
 
-        <div className="p-8 glass-card border-white/10 relative overflow-hidden">
+        <div className="p-6 glass-card border-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 accent-gradient" />
 
-          <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-12 h-12 accent-gradient rounded-xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-4 group hover:scale-110 transition-transform">
-              <Shield className="w-6 h-6 text-white" />
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="w-10 h-10 accent-gradient rounded-xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-4 group hover:scale-110 transition-transform">
+              <Shield className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white serif mb-1 tracking-tighter">Admin <span className="italic text-blue-500">Portal</span></h1>
+            <h1 className="text-xl font-bold text-white serif mb-1 tracking-tighter">Admin <span className="italic text-blue-500">Portal</span></h1>
             <p className="text-zinc-500 text-xs">Authorized personnel only beyond this point.</p>
           </div>
 

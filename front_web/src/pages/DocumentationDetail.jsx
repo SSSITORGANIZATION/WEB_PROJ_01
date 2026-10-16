@@ -437,7 +437,7 @@ Protect your application with these security measures.
     if (!doc) return;
 
     const shareUrl = `${window.location.origin}/documentation/${doc.id}`;
-    const shareText = `Check out "${doc.title}" in DevForge documentation.`;
+    const shareText = `Check out "${doc.title}" in SA Technologies documentation.`;
 
     try {
       if (navigator.share) {
@@ -494,7 +494,7 @@ Protect your application with these security measures.
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="w-[90%] mx-auto px-6 py-8">
           <Link
             to="/documentation"
             className="inline-flex items-center gap-2 text-blue-100 hover:text-white transition-colors mb-6"
@@ -513,7 +513,7 @@ Protect your application with these security measures.
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="w-[90%] mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">

@@ -6,7 +6,7 @@ import {
   Clock, Activity, Database, Wifi, Mail, Phone, User,
   ChevronRight, Settings, AlertCircle, Info
 } from 'lucide-react';
-import AdminSidebar from '../../components/AdminSidebar';
+import AdminNavbar from '../../components/AdminNavbar';
 import { apiService } from '../../services/api';
 
 const AdminSecurity = () => {
@@ -201,7 +201,7 @@ const AdminSecurity = () => {
   const SecurityCard = ({ title, value, status, icon: Icon, color = 'blue' }) => (
     <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-        <Icon className="w-12 h-12 text-gray-400" />
+        <Icon className="w-10 h-10 text-gray-400" />
       </div>
       <div className="flex items-center justify-between mb-4">
         <div className={`w-10 h-10 rounded-lg bg-${color}-50 flex items-center justify-center border border-${color}-200`}>
@@ -210,20 +210,20 @@ const AdminSecurity = () => {
         <div className={`w-2 h-2 rounded-full ${status === 'active' ? 'bg-green-600 animate-pulse' : status === 'warning' ? 'bg-yellow-600' : 'bg-red-600'}`} />
       </div>
       <h3 className="text-xs text-gray-600 uppercase tracking-wide font-semibold mb-0.5">{title}</h3>
-      <p className="text-3xl font-bold text-gray-900 tracking-tighter">{value.toLocaleString()}</p>
+      <p className="text-2xl font-bold text-gray-900 tracking-tighter">{value.toLocaleString()}</p>
     </div>
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <AdminSidebar />
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <AdminNavbar />
 
-      <main className="flex-grow p-6 overflow-y-auto">
+      <main className="flex-grow p-5 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-1">Security Center</h1>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Security Center</h1>
               <p className="text-gray-600 text-sm">Monitor and manage website security protocols and threat detection.</p>
             </div>
             <div className="flex items-center gap-3">
@@ -240,17 +240,17 @@ const AdminSecurity = () => {
           </div>
 
           {/* Security Overview */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <SecurityCard title="Threats Blocked" value={securityData.threats.blocked} status="active" icon={Ban} color="green" />
             <SecurityCard title="Active Threats" value={securityData.threats.active} status="warning" icon={AlertTriangle} color="yellow" />
             <SecurityCard title="Failed Logins" value={securityData.auth.failures} status="warning" icon={XCircle} color="red" />
             <SecurityCard title="Firewall Rules" value={securityData.firewall.rules} status="active" icon={Shield} color="blue" />
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-4">
             {/* Security Settings */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+              <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Settings className="w-4 h-4 text-blue-600" /> Security Configuration
                 </h3>
@@ -362,7 +362,7 @@ const AdminSecurity = () => {
               </div>
 
               {/* Password Change */}
-              <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+              <div className="p-5 bg-white border border-gray-200 rounded-xl shadow-sm">
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Lock className="w-4 h-4 text-blue-600" /> Change Admin Password
                 </h3>

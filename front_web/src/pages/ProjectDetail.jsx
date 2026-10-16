@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProjectImageCarousel, DeveloperImage } from '../components/ImageComponents';
@@ -84,7 +84,7 @@ const ProjectDetailPage = () => {
 
   return (
     <div className="min-h-screen pt-10 pb-12 px-1 bg-gray-50">
-      <div className="max-w-1xl mx-auto">
+      <div className="w-[90%] mx-auto">
         {/* Back Navigation */}
         <div className="mb-1">
           <button

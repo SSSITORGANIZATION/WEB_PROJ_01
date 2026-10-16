@@ -1,179 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ChevronDown,
-  Rocket,
-  Users,
-  Code2,
-  BookOpen,
-  LogIn,
-  LogOut,
-  Menu,
-  X,
   Github,
   Linkedin,
   Twitter,
-  Mail,
-  Terminal,
-  ArrowRight,
-  Star,
-  User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { apiService } from '../services/api';
-import { useAuth } from '../auth/authContext.jsx';
 import Navbar from './Navbar';
 import '../styles/components/Layout.css';
 
-const Footer = ({ siteSettings, footerData }) => {
-  // Use dynamic footer data if available, otherwise fallback to hardcoded values
+export const SiteFooter = () => {
+  const [footerData, setFooterData] = useState(null);
+
+  useEffect(() => {
+    const fetchFooter = async () => {
+      try {
+        const response = await apiService.getFooter();
+        if (response.data && response.data.length > 0) {
+          setFooterData(response.data[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching footer data:', error);
+      }
+    };
+
+    fetchFooter();
+  }, []);
+
   const socialLinks = footerData?.social_links || {};
-  const productLinks = ['Projects', 'Developers', 'Hiring', 'Resources', 'Reviews'];
-  const companyLinks = ['About Us', 'Hiring', 'Press', 'Contact'];
-  const legalLinks = ['Privacy Policy', 'Terms of Service', 'Cookie Policy'];
 
   return (
-    <span></span>
-    // <footer className="layout-footer">
-    //   <div className="layout-footer-container">
-    //     <div className="layout-footer-grid">
-    //       {/* Brand Section - Expanded */}
-    //       <div className="layout-footer-brand">
-    //         <Link to="/" className="layout-footer-logo-link">
-    //           {siteSettings?.logo && (
-    //             <img
-    //               src={siteSettings.logo}
-    //               alt="Site Logo"
-    //               className="layout-footer-logo-image-inline"
-    //               onError={(e) => {
-    //                 e.target.style.display = 'none';
-    //               }}
-    //             />
-    //           )}
-    //           <span className="layout-footer-logo-text">{siteSettings?.heading || 'Sai Software Solutions'}</span>
-    //         </Link>
-    //         <p className="layout-footer-description">
-    //           {footerData?.company_description || 'Professional software development company delivering innovative digital solutions for modern businesses. Specializing in custom web applications, enterprise software, and mobile app development.'}
-    //         </p>
-    //         <div className="layout-footer-social-links">
-    //           {Object.entries(socialLinks).map(([platform, url], i) => {
-    //             const Icon = platform.toLowerCase().includes('github') ? Github :
-    //               platform.toLowerCase().includes('twitter') ? Twitter :
-    //                 platform.toLowerCase().includes('linkedin') ? Linkedin :
-    //                   Github; // Default fallback
-    //             return (
-    //               <a key={i} href={url} className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
-    //                 <Icon className="layout-footer-social-icon" />
-    //               </a>
-    //             );
-    //           })}
-    //           {/* Fallback social links if none exist */}
-    //           {Object.keys(socialLinks).length === 0 && (
-    //             <>
-    //               <a href="https://linkedin.com" className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
-    //                 <Linkedin className="layout-footer-social-icon" />
-    //               </a>
-    //               <a href="https://twitter.com" className="layout-footer-social-link" target="_blank" rel="noopener noreferrer">
-    //                 <Twitter className="layout-footer-social-icon" />
-    //               </a>
-    //             </>
-    //           )}
-    //         </div>
-    //       </div>
+    <footer className="bg-[#1a237e] pt-10 pb-5 text-white">
+      <div className="mx-auto w-[90%] px-6">
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Link to="/" className="mb-4 flex items-center gap-2">
+              <span className="text-xl font-bold tracking-tight">SA Technologies</span>
+            </Link>
+            <p className="mb-4 max-w-md text-sm leading-relaxed text-white/70">
+              {footerData?.company_description || 'Professional software development company delivering innovative digital solutions for modern businesses.'}
+            </p>
+          </div>
 
-    //       {/* Quick Links Section */}
-    //       <div className="layout-footer-section">
-    //         <h4 className="layout-footer-section-title">Quick Links</h4>
-    //         <ul className="layout-footer-links">
-    //           {productLinks.slice(0, 4).map(item => (
-    //             <li key={item}>
-    //               <Link to={`/${item.toLowerCase()}`} className="layout-footer-link">{item}</Link>
-    //             </li>
-    //           ))}
-    //         </ul>
-    //       </div>
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Product</h4>
+            <ul className="flex flex-col gap-2">
+              <li><Link to="/projects" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Project Showcase</Link></li>
+              <li><Link to="/documentation" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Documentation</Link></li>
+              <li><Link to="/developers" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Developer Directory</Link></li>
+              <li><Link to="/reviews" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Client Reviews</Link></li>
+              <li><Link to="/book-demo" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Book a Demo</Link></li>
+            </ul>
+          </div>
 
-    //       {/* Company Section */}
-    //       <div className="layout-footer-section">
-    //         <h4 className="layout-footer-section-title">Company</h4>
-    //         <ul className="layout-footer-links">
-    //           {companyLinks.map(item => {
-    //             if (item === 'About Us') {
-    //               return (
-    //                 <li key={item}>
-    //                   <Link to="/about" className="layout-footer-link">{item}</Link>
-    //                 </li>
-    //               );
-    //             }
-    //             return (
-    //               <li key={item}>
-    //                 <a href="#" className="layout-footer-link">{item}</a>
-    //               </li>
-    //             );
-    //           })}
-    //         </ul>
-    //       </div>
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h4>
+            <ul className="flex flex-col gap-2">
+              <li><Link to="/resources?category=BLOG" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Blogs</Link></li>
+              <li><Link to="/resources?category=GUIDE" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Guides</Link></li>
+              <li><Link to="/resources?category=GLOSSARY" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Glossary</Link></li>
+              <li><Link to="/resources" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">All Resources</Link></li>
+            </ul>
+          </div>
 
-    //       {/* Newsletter Section */}
-    //       <div className="layout-footer-section">
-    //         <h4 className="layout-footer-section-title">Stay Updated</h4>
-    //         <p className="layout-footer-newsletter-text">Get the latest updates on software solutions and technology trends.</p>
-    //         <div className="layout-footer-newsletter-form">
-    //           <input
-    //             type="email"
-    //             placeholder="Enter your email"
-    //             className="layout-footer-newsletter-input"
-    //           />
-    //           <button className="layout-footer-newsletter-button">
-    //             <ArrowRight className="layout-footer-newsletter-icon" />
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </div>
+          <div>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Company</h4>
+            <ul className="flex flex-col gap-2">
+              <li><Link to="/about" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">About Us</Link></li>
+              <li><Link to="/contact" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Contact</Link></li>
+              <li><Link to="/hiring" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Hiring</Link></li>
+              <li><Link to="/join-community" className="text-sm text-white/70 transition-all duration-300 hover:translate-x-1 hover:text-white">Join Community</Link></li>
+            </ul>
+          </div>
+        </div>
 
-    //     {/* Footer Bottom */}
-    //     <div className="layout-footer-bottom">
-    //       <p className="layout-footer-copyright">
-    //         {footerData?.copyright_text || '© 2026 Sai Software Solutions. All rights reserved.'}
-    //       </p>
-    //       <div className="layout-footer-legal-links">
-    //         {legalLinks.map(item => (
-    //           <a key={item} href="#" className="layout-footer-legal-link">{item}</a>
-    //         ))}
-    //       </div>
-    //     </div>
-    //   </div>
-    // </footer >
+        <div className="flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-5 md:flex-row">
+          <p className="text-center text-sm text-white/60 md:text-left">
+            {footerData?.copyright_text || `© ${new Date().getFullYear()} SA Technologies. Built for businesses who refuse to compromise on quality.`}
+          </p>
+          <div className="flex items-center gap-3">
+            {[
+              { label: 'LinkedIn', url: socialLinks.linkedin || 'https://linkedin.com', Icon: Linkedin },
+              { label: 'Twitter', url: socialLinks.twitter || 'https://twitter.com', Icon: Twitter },
+              { label: 'GitHub', url: socialLinks.github || 'https://github.com', Icon: Github },
+            ].map(({ label, url, Icon }) => (
+              <a
+                key={label}
+                href={url}
+                className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-white/70 transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#1a237e]"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 
 export const Layout = ({ children }) => {
   const location = useLocation();
-  const [siteSettings, setSiteSettings] = useState(null);
-  const [footerData, setFooterData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch site settings
-        const settingsResponse = await apiService.getSiteSettings();
-        if (settingsResponse.data && settingsResponse.data.length > 0) {
-          setSiteSettings(settingsResponse.data[0]);
-        }
-
-        // Fetch footer data
-        const footerResponse = await apiService.getFooter();
-        if (footerResponse.data && footerResponse.data.length > 0) {
-          setFooterData(footerResponse.data[0]);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <div className="layout">
       <Navbar />
@@ -191,7 +122,6 @@ export const Layout = ({ children }) => {
           </motion.div>
         </AnimatePresence>
       </main>
-      <Footer siteSettings={siteSettings} footerData={footerData} />
     </div>
   );
 };
